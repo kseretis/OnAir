@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/list_itemIDwithReturn"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/plane" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="origin"
+                android:textSize="19dp"
+                android:id="@+id/originR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="destination"
+                android:textSize="19dp"
+                android:paddingLeft="15dp"
+                android:id="@+id/destinationR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/long_arrow_pointing_to_the_right"/>
+
+            <TextView
+                android:text="time"
+                android:textSize="15dp"
+                android:paddingLeft="5dp"
+                android:id="@+id/departureTimeR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:text="day"
+                android:textSize="14dp"
+                android:id="@+id/departuredayR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="origin"
+                android:textSize="19dp"
+                android:id="@+id/originReturn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="destination"
+                android:textSize="19dp"
+                android:paddingLeft="15dp"
+                android:id="@+id/destinationReturn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/long_arrow_pointing_to_left"/>
+
+            <TextView
+                android:text="time"
+                android:textSize="15dp"
+                android:paddingLeft="5dp"
+                android:id="@+id/returnTimeR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:text="day"
+                android:textSize="14dp"
+                android:id="@+id/returndayR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="111111"
+                android:id="@+id/directdepart"
+                android:textSize="15dp"
+                android:textColor="#5F8AFF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="/"
+                android:textSize="15dp"
+                android:id="@+id/slash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/directdepart"/>
+            <TextView
+                android:id="@+id/directReturn"
+                android:textSize="15dp"
+                android:textColor="#5F8AFF"
+                android:text="222222"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/slash" />
+
+            <TextView
+                android:text="price"
+                android:id="@+id/priceR"
+                android:textColor="#FC6D45"
+                android:textSize="18dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

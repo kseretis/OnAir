@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">OnAir</string>
+    <string name="key_currency">key_Currency</string>
+    <item name="list_itemID_" type="id" />
+
+    <string-array name="nomismata">
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+    </string-array>
+
+    <string-array name="travel_class">
+        <item>Economy</item>
+        <item>Business</item>
+        <item>First</item>
+    </string-array>
+</resources>

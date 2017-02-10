@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="reset"
+        android:icon="@drawable/reload"
+        android:id="@+id/menurestart"
+        app:showAsAction="always">
+    </item>
+    <item android:title="Currency"
+        android:id="@+id/menucurrency"
+        app:showAsAction="never">
+    </item>
+
+</menu>
