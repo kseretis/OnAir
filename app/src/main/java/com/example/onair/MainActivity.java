@@ -53,100 +53,44 @@ public class MainActivity extends AppCompatActivity {
     String[] origin_airports_for_view, origin_airports_for_use;
     String[] destination_airports_for_view, destination_airports_for_use;
 
+    // widget
+    public Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
+    public EditText locationfield, destinationfield, departureDate, returnDate, adutlsnumber;
+    public Switch aSwitch;
+    public TextView progressTextview;
+    public ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
+    public Spinner spinner;
+    public SeekBar seekBar;
 
+    int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
+    String departure_day_String, departure_month_String;
+    int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
+    String return_day_String, return_month_String;
+    String IfswitchIsChecked = "";
+    static String storeCurrency;
+    int NUMBER_OF_ADULTS = 1;
 
-    private int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
-    private String departure_day_String, departure_month_String;
-    private int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
-    private String return_day_String, return_month_String;
-
-
-    private String IfswitchIsChecked = "";
-
-    private static String storeCurrency;
-
-    private int NUMBER_OF_ADULTS = 1;
-
-    static class MyViewHolder{
-        Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
-        EditText locationfield, destinationfield, departureDate, returnDate, adutlsnumber;
-        Switch aSwitch;
-        TextView progressTextview;
-        ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
-        Spinner spinner;
-        SeekBar seekBar;
-
-        MyViewHolder(View v){
-            SearchForFlightsBUTTON = (Button) v.findViewById(R.id.button);
-            CheckFieldsBUTTON = (Button) v.findViewById(R.id.button2);
-            sin = (Button) v.findViewById(R.id.sin);
-            locationfield = (EditText) v.findViewById(R.id.locationfield);
-            destinationfield = (EditText) v.findViewById(R.id.destinationfield);
-            swap_image_button = (ImageView) v.findViewById(R.id.swap_image_button);
-            departureDate = (EditText) v.findViewById(R.id.departureDate);
-            clearDepartureDateField = (ImageView) v.findViewById(R.id.removeDate1);
-            returnDate = (EditText) v.findViewById(R.id.returnDate);
-            clearReturnDateField = (ImageView) v.findViewById(R.id.removeDate2) ;
-            aSwitch = (Switch) v.findViewById(R.id.idswitch);
-            spinner = (Spinner) v.findViewById(R.id.spinner);
-            progressTextview = (TextView) v.findViewById(R.id.progressTextview);
-            seekBar = (SeekBar) v.findViewById(R.id.seekBarForPrice);
-            plin = (Button) v.findViewById(R.id.plin);
-            adutlsnumber = (EditText) v.findViewById(R.id.adultsnumber);
-        }
-
-        public MyViewHolder() {
-
-        }
-    }
-
-    public View getView(int position, ){
-
-        return null;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MyViewHolder holder = new MyViewHolder();
-        holder
-
-
-
-
-
-
-        // Swap origin with destination
-        Swap_location_and_destination_field();
-
-        // Clear Dates
-        Clear_Dates();
-
-        //Spinner & Seek bar & switch
-        SpinnerWidget();
-        SeekBarWidget();
-        SwitchWidget();
-
-
-        //Για το dialog βγάζει σαν πρώτη φορά την σημερινή ημερομίνια
-        final Calendar cal = Calendar.getInstance();
-        departure_year = cal.get(Calendar.YEAR);
-        departure_month = cal.get(Calendar.MONTH);
-        departure_day = cal.get(Calendar.DAY_OF_MONTH);
-        return_year = cal.get(Calendar.YEAR);
-        return_month = cal.get(Calendar.MONTH);
-        return_day = cal.get(Calendar.DAY_OF_MONTH);
-
-        //departureDate.setHint("*Departure date: "+ departure_day +"/"+ departure_month +"/"+ departure_year);
+        castingWidgets();   //cast widgets
+        Swap_location_and_destination_field();  //swap location and destination field
+        Clear_Dates();  //clear dates
+        SpinnerWidget();    //Spinner & Seek bar & switch
+        SeekBarWidget();    //Spinner & Seek bar & switch
+        SwitchWidget();     //Spinner & Seek bar & switch
+        firstDateShowAtField(); //Για το dialog βγάζει σαν πρώτη φορά την σημερινή ημερομίνια
+        departureDate.setHint("*Departure date: "+ departure_day +"/"+ departure_month +"/"+ departure_year);
+        adults();   //επιλογη ατομων
 
         //Άνοιγμα ημερολόγιου και επιλογή μέρας
         showDialogOnButtonClickForDates();
         SearchForFlightsBUTTON.setEnabled(false);
 
-        //Επιλογη ατομων
-        adults();
+
 
         CheckFieldsBUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +106,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void castingWidgets(){
+        SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
+        CheckFieldsBUTTON = (Button) findViewById(R.id.button2);
+        sin = (Button) findViewById(R.id.sin);
+        locationfield = (EditText) findViewById(R.id.locationfield);
+        destinationfield = (EditText) findViewById(R.id.destinationfield);
+        swap_image_button = (ImageView) findViewById(R.id.swap_image_button);
+        departureDate = (EditText) findViewById(R.id.departureDate);
+        clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
+        returnDate = (EditText) findViewById(R.id.returnDate);
+        clearReturnDateField = (ImageView) findViewById(R.id.removeDate2) ;
+        aSwitch = (Switch) findViewById(R.id.idswitch);
+        spinner = (Spinner) findViewById(R.id.spinner);
+        progressTextview = (TextView) findViewById(R.id.progressTextview);
+        seekBar = (SeekBar) findViewById(R.id.seekBarForPrice);
+        plin = (Button) findViewById(R.id.plin);
+        adutlsnumber = (EditText) findViewById(R.id.adultsnumber);
+    }
+
+    public void firstDateShowAtField(){
+        final Calendar cal = Calendar.getInstance();
+        departure_year = cal.get(Calendar.YEAR);
+        departure_month = cal.get(Calendar.MONTH);
+        departure_day = cal.get(Calendar.DAY_OF_MONTH);
+        return_year = cal.get(Calendar.YEAR);
+        return_month = cal.get(Calendar.MONTH);
+        return_day = cal.get(Calendar.DAY_OF_MONTH);
     }
 
     private void updatePreferences(){
