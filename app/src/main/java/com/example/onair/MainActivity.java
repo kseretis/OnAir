@@ -60,18 +60,49 @@ public class MainActivity extends AppCompatActivity {
     private int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
     private String return_day_String, return_month_String;
 
-    private EditText locationfield, destinationfield, departureDate, returnDate, adutlsnumber;
-    private Switch aSwitch;
+
     private String IfswitchIsChecked = "";
-    private TextView progressTextview;
-    private ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
+
     private static String storeCurrency;
-    private Spinner spinner;
-    private SeekBar seekBar;
+
     private int NUMBER_OF_ADULTS = 1;
 
     static class MyViewHolder{
-        private Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
+        Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
+        EditText locationfield, destinationfield, departureDate, returnDate, adutlsnumber;
+        Switch aSwitch;
+        TextView progressTextview;
+        ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
+        Spinner spinner;
+        SeekBar seekBar;
+
+        MyViewHolder(View v){
+            SearchForFlightsBUTTON = (Button) v.findViewById(R.id.button);
+            CheckFieldsBUTTON = (Button) v.findViewById(R.id.button2);
+            sin = (Button) v.findViewById(R.id.sin);
+            locationfield = (EditText) v.findViewById(R.id.locationfield);
+            destinationfield = (EditText) v.findViewById(R.id.destinationfield);
+            swap_image_button = (ImageView) v.findViewById(R.id.swap_image_button);
+            departureDate = (EditText) v.findViewById(R.id.departureDate);
+            clearDepartureDateField = (ImageView) v.findViewById(R.id.removeDate1);
+            returnDate = (EditText) v.findViewById(R.id.returnDate);
+            clearReturnDateField = (ImageView) v.findViewById(R.id.removeDate2) ;
+            aSwitch = (Switch) v.findViewById(R.id.idswitch);
+            spinner = (Spinner) v.findViewById(R.id.spinner);
+            progressTextview = (TextView) v.findViewById(R.id.progressTextview);
+            seekBar = (SeekBar) v.findViewById(R.id.seekBarForPrice);
+            plin = (Button) v.findViewById(R.id.plin);
+            adutlsnumber = (EditText) v.findViewById(R.id.adultsnumber);
+        }
+
+        public MyViewHolder() {
+
+        }
+    }
+
+    public View getView(int position, ){
+
+        return null;
     }
 
     @Override
@@ -79,26 +110,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(this);
-        storeCurrency = spf.getString(getString(R.string.key_currency), "USD");
+        MyViewHolder holder = new MyViewHolder();
+        holder
 
-        //πεδία κειμένου τοποθεσίας και προορισμου και τα κουμπια για την ημερομινία
-        locationfield = (EditText) findViewById(R.id.locationfield);
-        destinationfield = (EditText) findViewById(R.id.destinationfield);
-        swap_image_button = (ImageView) findViewById(R.id.swap_image_button);
-        CheckFieldsBUTTON = (Button) findViewById(R.id.button2);
-        departureDate = (EditText) findViewById(R.id.departureDate);
-        clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
-        returnDate = (EditText) findViewById(R.id.returnDate);
-        clearReturnDateField = (ImageView) findViewById(R.id.removeDate2) ;
-        aSwitch = (Switch)findViewById(R.id.idswitch);
-        spinner = (Spinner) findViewById(R.id.spinner);
-        progressTextview = (TextView) findViewById(R.id.progressTextview);
-        seekBar = (SeekBar) findViewById(R.id.seekBarForPrice);
-        sin = (Button) findViewById(R.id.sin);
-        plin = (Button) findViewById(R.id.plin);
-        adutlsnumber = (EditText) findViewById(R.id.adultsnumber);
-        SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
+
+
+
 
 
         // Swap origin with destination
@@ -122,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         return_month = cal.get(Calendar.MONTH);
         return_day = cal.get(Calendar.DAY_OF_MONTH);
 
-        departureDate.setHint("*Departure date: "+ departure_day +"/"+ departure_month +"/"+ departure_year);
+        //departureDate.setHint("*Departure date: "+ departure_day +"/"+ departure_month +"/"+ departure_year);
 
         //Άνοιγμα ημερολόγιου και επιλογή μέρας
         showDialogOnButtonClickForDates();
@@ -145,6 +162,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void updatePreferences(){
+        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(this);
+        storeCurrency = spf.getString(getString(R.string.key_currency), "USD");
     }
 
     // Κανει Swap τα πεδία των αεροδρομιων
@@ -327,6 +349,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        SearchForFlightsBUTTON.setEnabled(false);
     }
 
     public Dialog onCreateDialog(int id){
