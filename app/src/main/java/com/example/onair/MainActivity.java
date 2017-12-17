@@ -7,10 +7,13 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     String[] origin_airports_for_view, origin_airports_for_use;
     String[] destination_airports_for_view, destination_airports_for_use;
 
-    private Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
+
 
     private int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
     private String departure_day_String, departure_month_String;
@@ -66,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner;
     private SeekBar seekBar;
     private int NUMBER_OF_ADULTS = 1;
+
+    static class MyViewHolder{
+        private Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         SpinnerWidget();
         SeekBarWidget();
         SwitchWidget();
+
 
         //Για το dialog βγάζει σαν πρώτη φορά την σημερινή ημερομίνια
         final Calendar cal = Calendar.getInstance();
@@ -168,16 +176,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void SwitchWidget(){
-        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked)
-                    IfswitchIsChecked = "&nonstop=true";
-                else
-                    IfswitchIsChecked = "";
-            }
-        });
+       if(aSwitch.isChecked())
+           IfswitchIsChecked = "TRUE";
+       else
+           IfswitchIsChecked = "FALSE";
+
     }
+
 
     public void SpinnerWidget() {
         ArrayAdapter<CharSequence> SPadapter = ArrayAdapter.createFromResource(this, R.array.travel_class, android.R.layout.simple_spinner_dropdown_item);
@@ -391,9 +396,20 @@ public class MainActivity extends AppCompatActivity {
             OriginsuggestedAirports = new ArrayList<>();
             HttpURLConnection connection = null;
             BufferedReader reader = null;
+
             try {
-                link = "https://api.sandbox.amadeus.com/v1.2/airports/autocomplete?apikey=4JiBVoAAA8rLiuEAZPrkbaIxXkBohGZt&origin&term="+ LOCAL_TOWN_REQUEST;
-                URL url = new URL(link);
+                final String baseUrl = "https://api.sandbox.amadeus.com/v1.2/airports/autocomplete?";
+                final String apiKeyParam = "apikey";
+                final String termParam = "term";
+
+                // under construction
+                Uri buildUri = Uri.parse(baseUrl).buildUpon()
+                        .appendQueryParameter(apiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
+                        .appendQueryParameter(termParam, LOCAL_TOWN_REQUEST)
+                        .build();
+                Log.i(this.getClass().getSimpleName(), buildUri.toString());
+
+                URL url = new URL(buildUri.toString());
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
@@ -478,9 +494,20 @@ public class MainActivity extends AppCompatActivity {
             DestinationsuggestedAirports = new ArrayList<>();
             HttpURLConnection connection = null;
             BufferedReader reader = null;
+
             try {
-                link = "https://api.sandbox.amadeus.com/v1.2/airports/autocomplete?apikey=4JiBVoAAA8rLiuEAZPrkbaIxXkBohGZt&origin&term="+ DESTINATION_TOWN_REQUEST;
-                URL url = new URL(link);
+                final String baseUrl = "https://api.sandbox.amadeus.com/v1.2/airports/autocomplete?";
+                final String apiKeyParam = "apikey";
+                final String termParam = "term";
+
+                // under construction
+                Uri buildUri = Uri.parse(baseUrl).buildUpon()
+                        .appendQueryParameter(apiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
+                        .appendQueryParameter(termParam, DESTINATION_TOWN_REQUEST)
+                        .build();
+                Log.i(this.getClass().getSimpleName(), buildUri.toString());
+
+                URL url = new URL(buildUri.toString());
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
