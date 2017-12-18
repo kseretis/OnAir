@@ -2,6 +2,10 @@
     <string name="app_name">OnAir</string>
     <string name="key_currency">key_Currency</string>
     <item name="list_itemID_" type="id" />
+    <string name="USD">USD</string>
+
+
+
 
     <string-array name="nomismata">
         <item>USD</item>

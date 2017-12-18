@@ -14,11 +14,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -43,6 +47,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static String link;
@@ -54,9 +59,12 @@ public class MainActivity extends AppCompatActivity {
     String[] origin_airports_for_view, origin_airports_for_use;
     String[] destination_airports_for_view, destination_airports_for_use;
 
+    ArrayList<String> autoCompleteDropDownList;
+
     // widget
     public Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
-    public EditText locationfield, destinationfield, departureDate, returnDate, adutlsnumber;
+    public EditText  destinationfield, departureDate, returnDate, adutlsnumber;
+    public AutoCompleteTextView locationfield;
     public Switch aSwitch;
     public TextView progressTextview;
     public ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
@@ -94,6 +102,30 @@ public class MainActivity extends AppCompatActivity {
         SearchForFlightsBUTTON.setEnabled(false);
 
 
+        locationfield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    int textFiledCharacterCounter = locationfield.getText().toString().length();
+
+                    if(textFiledCharacterCounter > 1){
+                        Log.i(getClass().toString(), textFiledCharacterCounter + "");
+                        new conversionOrigin().execute();
+                    }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
 
 
         CheckFieldsBUTTON.setOnClickListener(new View.OnClickListener() {
@@ -112,11 +144,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     public void castingWidgets(){
         SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
         CheckFieldsBUTTON = (Button) findViewById(R.id.button2);
         sin = (Button) findViewById(R.id.sin);
-        locationfield = (EditText) findViewById(R.id.locationfield);
+        locationfield = (AutoCompleteTextView) findViewById(R.id.locationfield);
         destinationfield = (EditText) findViewById(R.id.destinationfield);
         swap_image_button = (ImageView) findViewById(R.id.swap_image_button);
         departureDate = (EditText) findViewById(R.id.departureDate);
@@ -230,6 +264,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void TestAutoCompleteTextViewDropDownList(){
+
+    }
+
 
     public void CheckFields(){
         // loctown & destown χρησιμοποιουνται για την μετατροπη της πολης στον κωδικου αεροδρομιου
@@ -406,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
                 // under construction
                 Uri buildUri = Uri.parse(baseUrl).buildUpon()
                         .appendQueryParameter(apiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
-                        .appendQueryParameter(termParam, LOCAL_TOWN_REQUEST)
+                        .appendQueryParameter(termParam, locationfield.getText().toString())
                         .build();
                 Log.i(this.getClass().getSimpleName(), buildUri.toString());
 
@@ -427,25 +466,16 @@ public class MainActivity extends AppCompatActivity {
                 if(parentObject.length() == 0) {
                     String toThrowException = parentObject.getJSONObject(0).getString("toThrowException");
                 }
-                /* σε περίπτωση που το array έχει παραπάνω απο ένα αντικείμενο μέσα σημαίνει ότι
-                 * ο προορισμός που διάλεξε ο χρήστης έχει παραπάνω απο ένα αεροδρόμιο*/
-                if(parentObject.length()>1){
-                    for(int i=0; i<parentObject.length(); i++){
-                        HashMap<String, String> table = new HashMap<>();
-                        JSONObject in = parentObject.getJSONObject(i);
-                        String value = in.getString("value");
-                        String label = in.getString("label");
-                        table.put("value", value);
-                        table.put("label", label);
-                        OriginsuggestedAirports.add(table);
-                    }
-                }
-                else {
-                    for (int i = 0; i < parentObject.length(); i++) {
-                        JSONObject in = parentObject.getJSONObject(i);
-                        Origin_value = in.getString("value");
-                        labelGo = in.getString("label");
-                    }
+
+                // fill autocomplete drop down list
+                autoCompleteDropDownList = new ArrayList<String>();
+                for(int i=0; i<parentObject.length(); i++){
+                    HashMap<String, String> table = new HashMap<>();
+                    JSONObject in = parentObject.getJSONObject(i);
+                    String value = in.getString("value");
+                    String label = in.getString("label");
+                    String compined_String = value +" - "+ label;
+                    autoCompleteDropDownList.add(compined_String);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -459,31 +489,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void s) {
             super.onPostExecute(s);
-            /* εάν έχει ένα αεροδρόμιο τότε απλα θέτει στο πεδίο κειμένου τον κωδικό του αεροδρομίου*/
-            if(parentObject.length() == 1){
-                locationfield.setText(Origin_value);
-            }
-            //Σε περιπτωση που δεν βρεθει η πολη το notFound θα γινει true και δεν θα μπει παρακατω
-            else if(!notFound){
-                /* αλλιώς αποθηκεύει σε μια λίστα τα (_only_for_view) τα ονόματα των αεροδρομιων
-                 * και σε μια άλλη τους κωδικούς (for_use). Βγαίνουν στο πεδίο κειμένου τα ονομάτα
-                 * για να επιλέξη ο χρηστης αλλα σε εμάς τα ονόματα είναι αχρηστα χρειαζόμαστε μονο
-                 * τους κωδικούς τους, οποτε με την setOnItemClickListener κρατάμε μονο τους κωδικους*/
-                origin_airports_for_view = new String[OriginsuggestedAirports.size()];
-                origin_airports_for_use = new String[OriginsuggestedAirports.size()];
-                for (int i = 0; i < OriginsuggestedAirports.size(); i++){
-                    origin_airports_for_view[i] = OriginsuggestedAirports.get(i).get("label");
-                    origin_airports_for_use[i] = OriginsuggestedAirports.get(i).get("value");
+
+            ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(getApplicationContext(),
+                    R.layout.support_simple_spinner_dropdown_item, autoCompleteDropDownList);
+            locationfield.setAdapter(dropDownAdapter);
+
+            locationfield.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    locationfield.setText(parent.getItemAtPosition(position).toString().substring(0,3));
                 }
-                dialog dia = new dialog(loctown, origin_airports_for_view, origin_airports_for_use);
-                dia.setCancelable(false);
-                dia.show(getFragmentManager(), "dia");
-            }
-            else {
-                //θα μπει εδω και θα ξανα-αρχισει την mainactivity
-                Toast.makeText(getApplicationContext(), "City \""+ loctown +"\" didn't found. Try again!", Toast.LENGTH_LONG).show();
-                locationfield.setText("");
-            }
+            });
         }
     }
     public class conversionDestination extends AsyncTask<Void, Void, Void> {
