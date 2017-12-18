@@ -50,15 +50,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/locationfield"
+                        android:hint="*City of departure"
+                        android:maxLines="1"
+                        android:imeOptions="actionDone"/>
 
-                        android:hint="*City of departure" />
-
-                    <EditText
+                    <AutoCompleteTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/destinationfield"
+                        android:hint="*Where do you want to travel"
                         android:maxLines="1"
-                        android:hint="*Where do you want to travel" />
+                        android:imeOptions="actionDone"/>
 
             </LinearLayout>
 
@@ -79,15 +81,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/firstlinear">
 
-                <Button
-                    android:text="Check!"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#FC6D45"
-                    android:id="@+id/button2"
-                    android:textAllCaps="false"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true" />
 
             </RelativeLayout>
 

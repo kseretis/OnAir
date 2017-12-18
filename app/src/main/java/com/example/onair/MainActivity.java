@@ -1,18 +1,13 @@
 package com.example.onair;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,11 +15,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,24 +42,17 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static String link;
-    String loctown, destown, LOCAL_TOWN_REQUEST, DESTINATION_TOWN_REQUEST;
     String labelGo = null , labelDestination = null;
-    ArrayList<HashMap<String, String>> OriginsuggestedAirports;
-    ArrayList<HashMap<String, String>> DestinationsuggestedAirports;
 
-    String[] origin_airports_for_view, origin_airports_for_use;
-    String[] destination_airports_for_view, destination_airports_for_use;
-
-    ArrayList<String> autoCompleteDropDownList;
+    ArrayList<String> autoCompleteDropDownList_forLocationAirport = new ArrayList<String>();
+    ArrayList<String> autoCompleteDropDownList_forDestinationAirport = new ArrayList<String>();
 
     // widget
-    public Button SearchForFlightsBUTTON, CheckFieldsBUTTON, sin, plin;
-    public EditText  destinationfield, departureDate, returnDate, adutlsnumber;
-    public AutoCompleteTextView locationfield;
+    public Button SearchForFlightsBUTTON, sin, plin;
+    public EditText departureDate, returnDate, adutlsnumber;
+    public AutoCompleteTextView locationfield, destinationfield;
     public Switch aSwitch;
     public TextView progressTextview;
     public ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
@@ -101,39 +89,13 @@ public class MainActivity extends AppCompatActivity {
         showDialogOnButtonClickForDates();
         SearchForFlightsBUTTON.setEnabled(false);
 
+        //drop down list for airports
+        dropdownlistMethod();
 
-        locationfield.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    int textFiledCharacterCounter = locationfield.getText().toString().length();
-
-                    if(textFiledCharacterCounter > 1){
-                        Log.i(getClass().toString(), textFiledCharacterCounter + "");
-                        new conversionOrigin().execute();
-                    }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        //set search button enable
+        setSearchButtonEnabled();
 
 
-
-
-        CheckFieldsBUTTON.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CheckFields();
-            }
-        });
 
         SearchForFlightsBUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,14 +106,62 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void setSearchButtonEnabled(){
+        if (locationfield.equals("") || destinationfield.equals("") || departureDate.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "One of the required fields is empty", Toast.LENGTH_LONG).show();
+            SearchForFlightsBUTTON.setEnabled(true);
+        }
+    }
+
+
+    public void dropdownlistMethod(){
+
+        locationfield.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                int textFiledCharacterCounter = locationfield.getText().toString().length();
+
+                if(textFiledCharacterCounter > 1){
+                    Log.i(getClass().toString(), locationfield.toString() +" - "+ textFiledCharacterCounter + "");
+                    new conversionMethod(locationfield, autoCompleteDropDownList_forLocationAirport).execute();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        destinationfield.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                int textFiledCharacterCounter = destinationfield.getText().toString().length();
+
+                if(textFiledCharacterCounter > 1){
+                    Log.i(getClass().toString(), destinationfield.toString() +" - "+ textFiledCharacterCounter + "");
+                    new conversionMethod(destinationfield, autoCompleteDropDownList_forDestinationAirport).execute();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
 
 
     public void castingWidgets(){
         SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
-        CheckFieldsBUTTON = (Button) findViewById(R.id.button2);
         sin = (Button) findViewById(R.id.sin);
         locationfield = (AutoCompleteTextView) findViewById(R.id.locationfield);
-        destinationfield = (EditText) findViewById(R.id.destinationfield);
+        destinationfield = (AutoCompleteTextView) findViewById(R.id.destinationfield);
         swap_image_button = (ImageView) findViewById(R.id.swap_image_button);
         departureDate = (EditText) findViewById(R.id.departureDate);
         clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
@@ -265,84 +275,52 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void TestAutoCompleteTextViewDropDownList(){
-
-    }
-
-
-    public void CheckFields(){
-        // loctown & destown χρησιμοποιουνται για την μετατροπη της πολης στον κωδικου αεροδρομιου
-        loctown = locationfield.getText().toString();
-        destown = destinationfield.getText().toString();
-
-        //εάν η πολη που εβαλε ο χρηστης έχει κενο το αντικαταστει με %20 γιατι δημιουεγούσε προβλημα με το request
-        if(loctown.contains(" "))
-            LOCAL_TOWN_REQUEST = loctown.replace(" ", "%20");
-        else
-            LOCAL_TOWN_REQUEST = loctown;
-        if(destown.contains(" "))
-            DESTINATION_TOWN_REQUEST = destown.replace(" ", "%20");
-        else
-            DESTINATION_TOWN_REQUEST = destown;
-
-        if (loctown.equals("") || destown.equals(""))
-            Toast.makeText(getApplicationContext(), "Please fill the required fields", Toast.LENGTH_LONG).show();
-        else {
-            new conversionOrigin().execute();
-            new conversionDestination().execute();
-            SearchForFlightsBUTTON.setEnabled(true);
-        }
-    }
     public void Call_Next_Activity(){
-        //ελέγχει εάν τα απαραίτητα πεδία είναι συμπληρωμένα για να συνεχίσει
-        if (locationfield.equals("") || destinationfield.equals("") || departureDate.getText().toString().equals(""))
-            Toast.makeText(getApplicationContext(), "One of the required fields is empty", Toast.LENGTH_LONG).show();
+
+        //εαν το κουμπι για την επιστροφη έχει το αρχικο κειμενο τοτε κανει τα παρακατω και ψάχνει πτησεις χωρις επιστροφη
+        if(returnDate.getText().toString().equals("")){
+            Intent intent = new Intent(MainActivity.this, Http_Request_Activity.class);
+            intent.putExtra("loctown", locationfield.getText().toString());
+            intent.putExtra("destown", destinationfield.getText().toString());
+            intent.putExtra("d_year", departure_year);
+            intent.putExtra("d_month", departure_month_String);
+            intent.putExtra("d_day", departure_day_String);
+            intent.putExtra("nonstop", IfswitchIsChecked);
+            intent.putExtra("labelGo", labelGo);
+            intent.putExtra("labelDestination", labelDestination);
+            intent.putExtra("adults", NUMBER_OF_ADULTS);
+            if(!spinner.getSelectedItem().equals("Economy"))
+                intent.putExtra("travel_class", spinner.getSelectedItem().toString());
+            if(!progressTextview.getText().equals("none"))
+                intent.putExtra("max_price", progressTextview.getText().toString());
+            else
+                intent.putExtra("max_price", "none");
+
+            startActivity(intent);
+        }
+        //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
         else{
-            //εαν το κουμπι για την επιστροφη έχει το αρχικο κειμενο τοτε κανει τα παρακατω και ψάχνει πτησεις χωρις επιστροφη
-            if(returnDate.getText().toString().equals("")){
-                Intent intent = new Intent(MainActivity.this, Http_Request_Activity.class);
-                intent.putExtra("loctown", locationfield.getText().toString());
-                intent.putExtra("destown", destinationfield.getText().toString());
-                intent.putExtra("d_year", departure_year);
-                intent.putExtra("d_month", departure_month_String);
-                intent.putExtra("d_day", departure_day_String);
-                intent.putExtra("nonstop", IfswitchIsChecked);
-                intent.putExtra("labelGo", labelGo);
-                intent.putExtra("labelDestination", labelDestination);
-                intent.putExtra("adults", NUMBER_OF_ADULTS);
-                if(!spinner.getSelectedItem().equals("Economy"))
-                    intent.putExtra("travel_class", spinner.getSelectedItem().toString());
-                if(!progressTextview.getText().equals("none"))
-                    intent.putExtra("max_price", progressTextview.getText().toString());
-                else
-                    intent.putExtra("max_price", "none");
+            Intent intent = new Intent(MainActivity.this, Http_Request_Activity_With_Return.class);
+            intent.putExtra("loctown", locationfield.getText().toString());
+            intent.putExtra("destown", destinationfield.getText().toString());
+            intent.putExtra("d_year", departure_year);
+            intent.putExtra("d_month", departure_month_String);
+            intent.putExtra("d_day", departure_day_String);
+            intent.putExtra("r_year", return_year);
+            intent.putExtra("r_month", return_month_String);
+            intent.putExtra("r_day", return_day_String);
+            intent.putExtra("nonstop", IfswitchIsChecked);
+            intent.putExtra("labelGo", labelGo);
+            intent.putExtra("labelDestination", labelDestination);
+            intent.putExtra("adults", NUMBER_OF_ADULTS);
+            if(!spinner.getSelectedItem().equals("Economy"))
+                intent.putExtra("travel_class", spinner.getSelectedItem().toString());
+            if(!progressTextview.getText().equals("none"))
+                intent.putExtra("max_price", progressTextview.getText().toString());
+            else
+                intent.putExtra("max_price", "none");
 
-                startActivity(intent);
-            }
-            //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
-            else{
-                Intent intent = new Intent(MainActivity.this, Http_Request_Activity_With_Return.class);
-                intent.putExtra("loctown", locationfield.getText().toString());
-                intent.putExtra("destown", destinationfield.getText().toString());
-                intent.putExtra("d_year", departure_year);
-                intent.putExtra("d_month", departure_month_String);
-                intent.putExtra("d_day", departure_day_String);
-                intent.putExtra("r_year", return_year);
-                intent.putExtra("r_month", return_month_String);
-                intent.putExtra("r_day", return_day_String);
-                intent.putExtra("nonstop", IfswitchIsChecked);
-                intent.putExtra("labelGo", labelGo);
-                intent.putExtra("labelDestination", labelDestination);
-                intent.putExtra("adults", NUMBER_OF_ADULTS);
-                if(!spinner.getSelectedItem().equals("Economy"))
-                    intent.putExtra("travel_class", spinner.getSelectedItem().toString());
-                if(!progressTextview.getText().equals("none"))
-                    intent.putExtra("max_price", progressTextview.getText().toString());
-                else
-                    intent.putExtra("max_price", "none");
-
-                startActivity(intent);
-            }
+            startActivity(intent);
         }
     }
 
@@ -427,13 +405,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class conversionOrigin extends AsyncTask<Void, Void, Void> {
-        String Origin_value;
+    public class conversionMethod extends AsyncTask<Void, Void, Void> {
         JSONArray parentObject;
         boolean notFound = false;
+        AutoCompleteTextView textViewinConvensionMethod;
+        ArrayList<String> theListinConvensionMethod;
+
+        public conversionMethod(AutoCompleteTextView AtextViewParam, ArrayList<String> theList) {
+            this.textViewinConvensionMethod = AtextViewParam;
+            this.theListinConvensionMethod = theList;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
-            OriginsuggestedAirports = new ArrayList<>();
             HttpURLConnection connection = null;
             BufferedReader reader = null;
 
@@ -445,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
                 // under construction
                 Uri buildUri = Uri.parse(baseUrl).buildUpon()
                         .appendQueryParameter(apiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
-                        .appendQueryParameter(termParam, locationfield.getText().toString())
+                        .appendQueryParameter(termParam, textViewinConvensionMethod.getText().toString())
                         .build();
                 Log.i(this.getClass().getSimpleName(), buildUri.toString());
 
@@ -462,20 +446,15 @@ public class MainActivity extends AppCompatActivity {
                 String finalJSon = buffer.toString();
                 parentObject = new JSONArray(finalJSon);
 
-                //Σε περίπτωση που δεν βρεθει η πολη ή έχει γραφτει λαθος με το παρακατω if θα πεταξει exception
-                if(parentObject.length() == 0) {
-                    String toThrowException = parentObject.getJSONObject(0).getString("toThrowException");
-                }
-
                 // fill autocomplete drop down list
-                autoCompleteDropDownList = new ArrayList<String>();
+
+                theListinConvensionMethod.clear();
                 for(int i=0; i<parentObject.length(); i++){
-                    HashMap<String, String> table = new HashMap<>();
                     JSONObject in = parentObject.getJSONObject(i);
                     String value = in.getString("value");
                     String label = in.getString("label");
                     String compined_String = value +" - "+ label;
-                    autoCompleteDropDownList.add(compined_String);
+                    theListinConvensionMethod.add(compined_String);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -491,154 +470,15 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                    R.layout.support_simple_spinner_dropdown_item, autoCompleteDropDownList);
-            locationfield.setAdapter(dropDownAdapter);
+                    R.layout.support_simple_spinner_dropdown_item, theListinConvensionMethod);
+            textViewinConvensionMethod.setAdapter(dropDownAdapter);
 
-            locationfield.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            textViewinConvensionMethod.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    locationfield.setText(parent.getItemAtPosition(position).toString().substring(0,3));
+                    textViewinConvensionMethod.setText(parent.getItemAtPosition(position).toString().substring(0,3));
                 }
             });
-        }
-    }
-    public class conversionDestination extends AsyncTask<Void, Void, Void> {
-        String Destination_Value;
-        JSONArray parentObject;
-        boolean notFound = false;
-        @Override
-        protected Void doInBackground(Void... voids) {
-            DestinationsuggestedAirports = new ArrayList<>();
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-
-            try {
-                final String baseUrl = "https://api.sandbox.amadeus.com/v1.2/airports/autocomplete?";
-                final String apiKeyParam = "apikey";
-                final String termParam = "term";
-
-                // under construction
-                Uri buildUri = Uri.parse(baseUrl).buildUpon()
-                        .appendQueryParameter(apiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
-                        .appendQueryParameter(termParam, DESTINATION_TOWN_REQUEST)
-                        .build();
-                Log.i(this.getClass().getSimpleName(), buildUri.toString());
-
-                URL url = new URL(buildUri.toString());
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJSon = buffer.toString();
-                parentObject = new JSONArray(finalJSon);
-
-                //Σε περίπτωση που δεν βρεθει η πολη ή έχει γραφτει λαθος με το παρακατω if θα πεταξει exception
-                if(parentObject.length() == 0) {
-                    String toThrowException = parentObject.getJSONObject(0).getString("toThrowException");
-                }
-                /* σε περίπτωση που το array έχει παραπάνω απο ένα αντικείμενο μέσα σημαίνει ότι
-                 * ο προορισμός που διάλεξε ο χρήστης έχει παραπάνω απο ένα αεροδρόμιο*/
-                if(parentObject.length()>1){
-                    for(int i=0; i<parentObject.length(); i++){
-                        HashMap<String, String> table = new HashMap<>();
-                        JSONObject in = parentObject.getJSONObject(i);
-                        String value = in.getString("value");
-                        String label = in.getString("label");
-                        table.put("value",value);
-                        table.put("label", label);
-                        DestinationsuggestedAirports.add(table);
-                    }
-                }
-                else {
-                    for (int i = 0; i < parentObject.length(); i++) {
-                        JSONObject in = parentObject.getJSONObject(i);
-                        Destination_Value = in.getString("value");
-                        labelDestination = in.getString("label");
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                notFound = true;
-            } catch (JSONException e) {
-                e.printStackTrace();
-                notFound = true;
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void s) {
-            super.onPostExecute(s);
-            /* εάν έχει ένα αεροδρόμιο τότε απλα θέτει στο πεδίο κειμένου τον κωδικό του αεροδρομίου*/
-            if(parentObject.length() == 1) {
-                destinationfield.setText(Destination_Value);
-            }
-            //Σε περιπτωση που δεν βρεθει η πολη το notFound θα γινει true και δεν θα μπει παρακατω
-            else if(!notFound){
-                /* αλλιώς αποθηκεύει σε μια λίστα τα (_only_for_view) τα ονόματα των αεροδρομιων
-                 * και σε μια άλλη τους κωδικούς (for_use). Βγαίνουν στο πεδίο κειμένου τα ονομάτα
-                 * για να επιλέξη ο χρηστης αλλα σε εμάς τα ονόματα είναι αχρηστα χρειαζόμαστε μονο
-                 * τους κωδικούς τους, οποτε με την setOnItemClickListener κρατάμε μονο τους κωδικους*/
-                destination_airports_for_view = new String[DestinationsuggestedAirports.size()];
-                destination_airports_for_use = new String[DestinationsuggestedAirports.size()];
-                for (int i = 0; i < DestinationsuggestedAirports.size(); i++){
-                    destination_airports_for_view[i] = DestinationsuggestedAirports.get(i).get("label");
-                    destination_airports_for_use[i] = DestinationsuggestedAirports.get(i).get("value");
-                }
-                dialog dia = new dialog(destown, destination_airports_for_view, destination_airports_for_use);
-                dia.setCancelable(false);
-                dia.show(getFragmentManager(), "dia");
-            }
-            else {
-                //θα μπει εδω και θα ξανα-αρχισει την mainactivity
-                Toast.makeText(getApplicationContext(), "City \""+ destown +"\" didn't found. Try again!", Toast.LENGTH_LONG).show();
-                destinationfield.setText("");
-            }
-        }
-    }
-    public class dialog extends DialogFragment{
-        String town, saveClick, saveClickName;
-        String airportsList_for_view[], airportsList_for_use[];
-
-        public dialog(String town, String[] airportsList_for_view, String[] airportsList_for_use){
-            this.town = town;
-            this.airportsList_for_view = airportsList_for_view;
-            this.airportsList_for_use = airportsList_for_use;
-        }
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-            builder.setTitle(town+"'s airports. Please choose one").setSingleChoiceItems(airportsList_for_view, -1,
-                                                new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int click) {
-                    saveClick = airportsList_for_use[click];
-                    saveClickName = airportsList_for_view[click];
-                }
-            }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    /* στην περιπτωση που η πολη που στάλθηκε ως παραμετρος με το κάλεσμα της μεθοδου ειναι
-                     * ιδια με αυτη που πληκτρολογήθηκε απο τον χρηστη στο πεδιο της αναχωρησης τοτε
-                     * βαζει σε αυτο τον κωδικο του αεροδρομιου που επελεξε. Αλλιώς σημαίνει ότι
-                     * η πόλη αυτη γράφτηκε στο πεδιο του προορισμου και βάζει τον κωδικο εκει */
-                    if(loctown.equals(town)) {
-                        locationfield.setText(saveClick);
-                        labelGo = saveClickName;
-                    }
-                    else {
-                        destinationfield.setText(saveClick);
-                        labelDestination = saveClickName;
-                    }
-                }
-            });
-            return builder.create();
         }
     }
 
