@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
     String return_day_String, return_month_String;
     String IfswitchIsChecked = "";
-    static String storeCurrency;
+    String storeCurrency;
     int NUMBER_OF_ADULTS = 1;
 
 
@@ -75,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        updatePreferences();
 
         castingWidgets();   //cast widgets
         Swap_location_and_destination_field();  //swap location and destination field
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         //Άνοιγμα ημερολόγιου και επιλογή μέρας
         showDialogOnButtonClickForDates();
         SearchForFlightsBUTTON.setEnabled(false);
+
 
 
 
@@ -138,8 +142,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updatePreferences(){
-        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(this);
-        storeCurrency = spf.getString(getString(R.string.key_currency), "USD");
+        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        storeCurrency = sharedPreferences.getString("currency", "");
+        Log.i(getClass().toString(), storeCurrency + " selected currency!!!!!!!!!!!!!!!!!!!");
     }
 
     // Κανει Swap τα πεδία των αεροδρομιων
@@ -263,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("d_month", departure_month_String);
                 intent.putExtra("d_day", departure_day_String);
                 intent.putExtra("nonstop", IfswitchIsChecked);
-                intent.putExtra("currency", storeCurrency);
                 intent.putExtra("labelGo", labelGo);
                 intent.putExtra("labelDestination", labelDestination);
                 intent.putExtra("adults", NUMBER_OF_ADULTS);
@@ -288,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("r_month", return_month_String);
                 intent.putExtra("r_day", return_day_String);
                 intent.putExtra("nonstop", IfswitchIsChecked);
-                intent.putExtra("currency", storeCurrency);
                 intent.putExtra("labelGo", labelGo);
                 intent.putExtra("labelDestination", labelDestination);
                 intent.putExtra("adults", NUMBER_OF_ADULTS);
@@ -371,14 +374,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.menucurrency ) {
             Intent intent = new Intent(getApplicationContext(), Settings_activity.class);
+            onPause();;
             startActivity(intent);
             return true;
         }
         else if(id == R.id.menurestart){
-            Toast.makeText(getApplicationContext(), "Refresh Page", Toast.LENGTH_SHORT).show();
-            Intent intent = getIntent();
+            Toast.makeText(getApplicationContext(), "Temporary Disabled", Toast.LENGTH_SHORT).show();
+            /*Intent intent = getIntent();
             startActivity(intent);
-            return true;
+            return true;*/
         }
         return super.onOptionsItemSelected(item);
     }

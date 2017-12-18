@@ -1,11 +1,15 @@
 package com.example.onair;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,12 +44,12 @@ public class Http_Request_Activity extends AppCompatActivity {
 
     private int departure_year;
     private String departure_month_String, departure_day_String;
-    private String locationAirport, destinationAirport;
-    private String mera_anaxwrishs, nonstop, storeCurrency, adults, travel_class, max_price;
+    private String originAirport_forAPI, destinationAirport_forAPI;
+    private String departureDay_forAPI, nonStop_forAPI, storeCurrency, adults, travelClass_forAPI, maxPrice_forAPI;
     ArrayList<HashMap<String, String>> theList;
     ArrayList<HashMap<String, String>> onlyForPrint;
     HashMap<String, String> AIRPORT_LIST = new HashMap<String, String>();
-    private int NUMBER_OF_ADULTS;
+    private int adults_forAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,49 +70,33 @@ public class Http_Request_Activity extends AppCompatActivity {
         onlyForPrint = new ArrayList<HashMap<String, String>>();
 
         //Πέρνει της πληροφορίες απο το πρωτο activity
-        locationAirport = getIntent().getStringExtra("loctown");
-        destinationAirport = getIntent().getStringExtra("destown");
+        originAirport_forAPI = getIntent().getStringExtra("loctown");
+        destinationAirport_forAPI = getIntent().getStringExtra("destown");
         departure_year = getIntent().getIntExtra("d_year", 0);
         departure_month_String = getIntent().getStringExtra("d_month");
         departure_day_String = getIntent().getStringExtra("d_day");
-        nonstop = getIntent().getStringExtra("nonstop");
-        storeCurrency = getIntent().getStringExtra("currency");
+        nonStop_forAPI = getIntent().getStringExtra("nonStop_forAPI");
         labelGo = getIntent().getStringExtra("labelGo");
         labelDestination = getIntent().getStringExtra("labelDestination");
-        NUMBER_OF_ADULTS = getIntent().getIntExtra("adults", 0);
-        travel_class = getIntent().getStringExtra("travel_class");
-        max_price = getIntent().getStringExtra("max_price");
+        adults_forAPI = getIntent().getIntExtra("adults", 0);
+        travelClass_forAPI = getIntent().getStringExtra("travelClass_forAPI");
+        maxPrice_forAPI = getIntent().getStringExtra("maxPrice_forAPI");
 
-        //τιτλος
-        if(NUMBER_OF_ADULTS >1 )
-            setTitle(locationAirport +" - "+ destinationAirport +" | "+ NUMBER_OF_ADULTS + " persons");
+        //get currency from sharedpreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        storeCurrency = sharedPreferences.getString("currency", "");
+        Log.i(getClass().toString(), "this is ---->>>" +  storeCurrency);
+
+        /*//τιτλος
+        if(adults_forAPI >1 )
+            setTitle(originAirport_forAPI +" - "+ destinationAirport_forAPI +" | "+ adults_forAPI + " persons");
         else
-            setTitle(locationAirport +" - "+ destinationAirport +" | "+ NUMBER_OF_ADULTS + " person");
+            setTitle(originAirport_forAPI +" - "+ destinationAirport_forAPI +" | "+ adults_forAPI + " person");*/
 
         //Βάζει την ημερομινία σε σωστή μορφή
-        mera_anaxwrishs = departure_year + "-" + departure_month_String + "-" + departure_day_String;
-
-        //καλει την παρακατω μεθοδο για να διαμορφώσει το url
-        configuration_URL_STRING();
-
-        //https://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?apikey=4JiBVoAAA8rLiuEAZPrkbaIxXkBohGZt&origin=SKG&destination=ATH&departure_date=2016-12-30
+        departureDay_forAPI = departure_year + "-" + departure_month_String + "-" + departure_day_String;
 
         new JSONTask().execute();
-    }
-
-    public void configuration_URL_STRING() {
-        urlString = "https://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?apikey=4JiBVoAAA8rLiuEAZPrkbaIxXkBohGZt&origin="
-                + locationAirport + "&destination=" + destinationAirport + "&departure_date=" + mera_anaxwrishs;
-        urlString += ""+ nonstop;
-        if(!storeCurrency.equals("USD"))
-            urlString += "&currency="+ storeCurrency;
-        if(NUMBER_OF_ADULTS > 1)
-            urlString += "&adults=" + NUMBER_OF_ADULTS+"";
-        if(travel_class != null)
-            urlString += "&travel_class="+ travel_class;
-        if(!max_price.equals("none"))
-            urlString += "&max_price="+ max_price;
-
     }
 
     public void findAirLine() {
@@ -154,7 +142,32 @@ public class Http_Request_Activity extends AppCompatActivity {
             BufferedReader reader = null;
 
             try {
-                URL url = new URL(urlString);
+                final String baseUrl = "https://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?";
+                final String originParam = "origin";
+                final String destinationParam = "destination";
+                final String departureDayParam = "departure_date";
+                final String adultsParam = "adults";
+                final String currencyParam = "currency";
+                final String travelClassParam = "travelClass_forAPI";
+                final String maxPriceParam = "maxPrice_forAPI";
+                final String nonStopParam = "nonStop_forAPI";
+                final String ApiKeyParam = "apikey";
+
+                Uri buildUri = Uri.parse(baseUrl).buildUpon()
+                        .appendQueryParameter(originParam, originAirport_forAPI)
+                        .appendQueryParameter(destinationParam, destinationAirport_forAPI)
+                        .appendQueryParameter(departureDayParam, departureDay_forAPI)
+                        .appendQueryParameter(adultsParam, String.valueOf(adults_forAPI))
+                        .appendQueryParameter(currencyParam, storeCurrency)
+                        .appendQueryParameter(travelClassParam, travelClass_forAPI)     // may be null
+                        .appendQueryParameter(maxPriceParam, maxPrice_forAPI)           // may be null
+                        .appendQueryParameter(nonStopParam, nonStop_forAPI)             // may be null
+                        .appendQueryParameter(ApiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
+                        .build();
+
+                Log.i(getClass().toString(), buildUri.toString());
+
+                URL url = new URL(buildUri.toString());
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -259,8 +272,8 @@ public class Http_Request_Activity extends AppCompatActivity {
                             cost.put("change_penalties", change_penaltiesString);
                             theList.set(theList.size() - p, cost);
                             HashMap<String, String> forprint = new HashMap<>();
-                            forprint.put("origin", locationAirport );
-                            forprint.put("destination", destinationAirport);
+                            forprint.put("origin", originAirport_forAPI);
+                            forprint.put("destination", destinationAirport_forAPI);
                             forprint.put("direct", "Direct");
                             forprint.put("depart_time", "Time: " + cost.get("departs_at_time"));
                             forprint.put("departs_day", "(" + cost.get("departs_at_day") + ")");
@@ -282,8 +295,8 @@ public class Http_Request_Activity extends AppCompatActivity {
                             cost.put("change_penalties", change_penaltiesString);
                             theList.set(theList.size() - n, cost);
                             HashMap<String, String> forprint = new HashMap<>();
-                            forprint.put("origin", locationAirport );
-                            forprint.put("destination", destinationAirport);
+                            forprint.put("origin", originAirport_forAPI);
+                            forprint.put("destination", destinationAirport_forAPI);
                             forprint.put("direct", "Stops: " + (flightsLength-1)+"");
                             forprint.put("depart_time", "Time: " + cost.get("departs_at_time"));
                             forprint.put("departs_day", "(" + cost.get("departs_at_day") + ")");
@@ -384,14 +397,14 @@ public class Http_Request_Activity extends AppCompatActivity {
                         }
                         firstFlight = false;
                         arrayListToGo.add(theList.get(counter));
-                    }while(!theList.get(counter).get("destination_airport").equals(destinationAirport));
+                    }while(!theList.get(counter).get("destination_airport").equals(destinationAirport_forAPI));
 
                     Intent intent = new Intent(Http_Request_Activity.this, Detail_Activity.class);
                     intent.putExtra("detailsToGo", arrayListToGo);
                     intent.putExtra("currency", storeCurrency);
                     intent.putExtra("labelGo", labelGo);
                     intent.putExtra("labelDestination", labelDestination);
-                    intent.putExtra("adults", NUMBER_OF_ADULTS);
+                    intent.putExtra("adults", adults_forAPI);
                     startActivity(intent);
                 }
             });
