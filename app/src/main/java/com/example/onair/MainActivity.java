@@ -371,14 +371,14 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.menucurrency ) {
             Intent intent = new Intent(getApplicationContext(), Settings_activity.class);
-            finish();
             startActivity(intent);
+            return true;
         }
         else if(id == R.id.menurestart){
             Toast.makeText(getApplicationContext(), "Refresh Page", Toast.LENGTH_SHORT).show();
             Intent intent = getIntent();
-            finish();
             startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

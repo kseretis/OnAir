@@ -1,5 +1,9 @@
 package com.example.onair;
 
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,60 +16,36 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class Settings_activity extends AppCompatActivity {
+import java.util.List;
 
-    TextView currencyClick;
+public class Settings_activity extends PreferenceActivity
+                implements Preference.OnPreferenceChangeListener{
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        currencyClick = (TextView) findViewById(R.id.currencyClick);
-        onSettingClick();
-    }
+        addPreferencesFromResource(R.xml.prefs_general);
 
-    private void onSettingClick(){
-
-        currencyClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //alert pop up dialog
-                AlertDialog.Builder mbuild = new AlertDialog.Builder(Settings_activity.this);
-                View mview = getLayoutInflater().inflate(R.layout.popup_radio_group, null);
-
-
-                RadioGroup radioGroup = (RadioGroup) findViewById(R.id.currencyRadioGroup);
-                radioGroup = new RadioGroup(Settings_activity.this);
-                String[] curr = getResources().getStringArray(R.array.nomismata);
-
-                for(int i=0; i< curr.length; i++) {
-                    RadioButton button = new RadioButton(Settings_activity.this);
-                    Log.i(getClass().toString(), curr[i]);
-                    button.setText("" + curr[i]);
-                    radioGroup.addView(button);
-
-                }
-
-
-                //pre-checked 0
-                //  int radio_button_Id = radioGroup.getChildAt(0).getId();
-                //radioGroup.check( radio_button_Id );
-
-                radioGroup.setOnCheckedChangeListener(
-                        new RadioGroup.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                                // TODO shared preferences for currency
-                            }
-                        }
-                );
-
-                mbuild.setView(mview);
-                AlertDialog dialog = mbuild.create();
-                dialog.show();
-            }
-        });
+        Preference currencyPreference = findPreference(getString(R.string.key_currency));
+        currencyPreference.setOnPreferenceChangeListener(this);
+        onPreferenceChange(currencyPreference, PreferenceManager
+                                .getDefaultSharedPreferences(currencyPreference.getContext())
+                                .getString(currencyPreference.getKey(), ""));
 
     }
 
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        String stringValue = newValue.toString();
+
+        if(preference instanceof ListPreference){
+            ListPreference listPreference = (ListPreference) preference;
+            int prefIndex = listPreference.findIndexOfValue(stringValue);
+            if(prefIndex >= 0)
+                preference.setSummary(listPreference.getEntries()[prefIndex]);
+        }
+
+        return true;
+    }
 }
