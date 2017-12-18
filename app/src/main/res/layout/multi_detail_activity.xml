@@ -5,7 +5,7 @@
     android:id="@+id/activity_multi_detail_"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.onair.Detail_Activity_Return">
+    tools:context="com.example.onair.Detail_Activity$Detail_Activity_Return">
 
     <RelativeLayout
         android:layout_width="match_parent"

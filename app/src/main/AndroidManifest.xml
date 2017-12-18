@@ -41,14 +41,23 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Detail_Activity_Return">
+        <activity android:name=".Detail_Activity$Detail_Activity_Return">
             <intent-filter>
                 <action android:name="com.example.onair.List_Item_Data" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Detail_Activity"></activity>
+        <activity android:name=".Detail_Activity" />
+        <activity
+            android:name=".Settings_activity"
+            android:parentActivityName=".MainActivity">
+            <intent-filter>
+                <action android:name="com.example.onair.Settings_activity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

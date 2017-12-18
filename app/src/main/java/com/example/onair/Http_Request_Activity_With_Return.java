@@ -487,7 +487,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
                         arrayListReturn.add(theListReturn.get(counter));
                     }while(!theListReturn.get(counter).get("destination_airport").equals(locationAirport));
 
-                    Intent intent = new Intent(Http_Request_Activity_With_Return.this, Detail_Activity_Return.class);
+                    Intent intent = new Intent(Http_Request_Activity_With_Return.this, Detail_Activity.Detail_Activity_Return.class);
                     intent.putExtra("detailsToGo", arrayListToGo);
                     intent.putExtra("detailsReturn", arrayListReturn);
                     intent.putExtra("currency", storeCurrency);

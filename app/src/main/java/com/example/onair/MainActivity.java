@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.menucurrency ) {
-            Intent intent = new Intent(getApplicationContext(), Settings.class);
+            Intent intent = new Intent(getApplicationContext(), Settings_activity.class);
             finish();
             startActivity(intent);
         }
