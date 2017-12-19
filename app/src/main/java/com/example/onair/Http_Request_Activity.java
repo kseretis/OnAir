@@ -38,7 +38,6 @@ import java.util.concurrent.ExecutionException;
 public class Http_Request_Activity extends AppCompatActivity {
     private ListView listView;
     private ProgressDialog progressDialog ;
-    private static String urlString;
     private boolean exception = false;
     String labelGo, labelDestination;
 
@@ -49,6 +48,9 @@ public class Http_Request_Activity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> theList;
     ArrayList<HashMap<String, String>> onlyForPrint;
     HashMap<String, String> AIRPORT_LIST = new HashMap<String, String>();
+
+    // arraylist with class Flights
+    ArrayList<Flights> allFlights = new ArrayList<Flights>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +88,6 @@ public class Http_Request_Activity extends AppCompatActivity {
         adults_forAPI = sharedPreferencesFromMain.getString("adults_number", "");
         nonStop_forAPI = sharedPreferencesFromMain.getString("nonstop", "");
         maxPrice_forAPI = sharedPreferencesFromMain.getString("max_price", "");
-
-        /*//τιτλος
-        if(adults_forAPI >1 )
-            setTitle(originAirport_forAPI +" - "+ destinationAirport_forAPI +" | "+ adults_forAPI + " persons");
-        else
-            setTitle(originAirport_forAPI +" - "+ destinationAirport_forAPI +" | "+ adults_forAPI + " person");*/
 
         //Βάζει την ημερομινία σε σωστή μορφή
         departureDay_forAPI = departure_year + "-" + departure_month_String + "-" + departure_day_String;
@@ -159,14 +155,14 @@ public class Http_Request_Activity extends AppCompatActivity {
                         .appendQueryParameter(departureDayParam, departureDay_forAPI)
                         .appendQueryParameter(adultsParam, adults_forAPI)
                         .appendQueryParameter(currencyParam, storeCurrency)
-                        .appendQueryParameter(travelClassParam, travelClass_forAPI)     // may be null
-                        .appendQueryParameter(nonStopParam, nonStop_forAPI)             // may be null
+                        .appendQueryParameter(travelClassParam, travelClass_forAPI)
+                        .appendQueryParameter(nonStopParam, nonStop_forAPI)
                         .appendQueryParameter(ApiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
                         .build();
 
+                // check if there is a max price or not
                 if(!maxPrice_forAPI.equals("none"))
                     buildUri.buildUpon().appendQueryParameter(maxPriceParam, maxPrice_forAPI).build();
-
                 Log.i(getClass().toString(), buildUri.toString());
 
                 URL url = new URL(buildUri.toString());
@@ -191,6 +187,10 @@ public class Http_Request_Activity extends AppCompatActivity {
                 currency = parentObject.getString("currency");
                 JSONArray results = parentObject.getJSONArray("results");
                 for (int i = 0; i < results.length(); i++) {
+
+                    //class Flights
+                    Flights flight = new Flights();
+
                     JSONObject outside = results.getJSONObject(i);
                     JSONArray itineraries = outside.getJSONArray("itineraries");
                     /* Με την μορφη JSON που πέρνουμε τα δεδομένα απο το http request υπάρχουν
@@ -204,20 +204,42 @@ public class Http_Request_Activity extends AppCompatActivity {
                         JSONArray flights = outbound.getJSONArray("flights");
                         for (int k = 0; k < flights.length(); k++) {
                             JSONObject inside = flights.getJSONObject(k);
+
                             departs_at = inside.getString("departs_at");
+                            flight.setDeparts_at(departs_at);
+
                             arrives_at = inside.getString("arrives_at");
+                            flight.setArrives_at(arrives_at);
+
                             JSONObject origin = inside.getJSONObject("origin");
                             origin_airport = origin.getString("airport");
+                            flight.setOrigin_airport(origin.getString("airport"));
+
                             JSONObject destination = inside.getJSONObject("destination");
                             destination_airport = destination.getString("airport");
+                            flight.setDestination_airport(destination_airport);
+
                             marketing_airline = inside.getString("marketing_airline");
+                            flight.setMarketing_airline(marketing_airline);
+
                             operating_airline = inside.getString("operating_airline");
+                            flight.setOperating_airline(operating_airline);
+
                             flight_number = inside.getString("flight_number");
+                            flight.setFlight_number(flight_number);
+
                             aircraft = inside.getString("aircraft");
+                            flight.setAircraft(aircraft);
+
                             JSONObject booking_info = inside.getJSONObject("booking_info");
                             travel_class = booking_info.getString("travel_class");
+                            flight.setTravel_class(travel_class);
+
                             booking_code = booking_info.getString("booking_code");
+                            flight.setBooking_code(booking_code);
+
                             seats_remaining = booking_info.getInt("seats_remaining");
+                            flight.setSeats_remaining(seats_remaining);
 
                             //προσωρινή αποθήκευση τον στοιχείων σε hashmap
                             HashMap<String, String> temp = new HashMap<>();
@@ -238,6 +260,7 @@ public class Http_Request_Activity extends AppCompatActivity {
 
                             //αποθήκευση στην ArrayList
                             theList.add(temp);
+                            allFlights.add(flight);
                         }
                         flightsLength = flights.length();
                     }
@@ -281,6 +304,16 @@ public class Http_Request_Activity extends AppCompatActivity {
                             forprint.put("departs_day", "(" + cost.get("departs_at_day") + ")");
                             forprint.put("Price",  cost.get("total_price") );
                             forprint.put("location", theList.size() -p + ""); //αποθηκεύει σε ποιο σημειο της theList βρισκονται οι πληροφοριες
+
+                            // the new way -- under construction
+                            Flights flight2 =  allFlights.get(allFlights.size() - p);
+
+                            flight2.setTotal_price(total_price);
+                            flight2.setTotal_fare(total_fare);
+                            flight2.setTax(tax);
+                            flight2.setRefundable(refundable);
+                            flight2.setChange_penalties(change_penalties);
+
                             onlyForPrint.add(forprint);
                         }
                     }
@@ -304,6 +337,16 @@ public class Http_Request_Activity extends AppCompatActivity {
                             forprint.put("departs_day", "(" + cost.get("departs_at_day") + ")");
                             forprint.put("Price",  cost.get("total_price"));
                             forprint.put("location", theList.size() -n + ""); //αποθηκεύει σε ποιο σημειο της theList βρισκονται οι πληροφοριες
+
+                            // the new way -- under construction
+                            Flights flight2 =  allFlights.get(allFlights.size() - n);
+
+                            flight2.setTotal_price(total_price);
+                            flight2.setTotal_fare(total_fare);
+                            flight2.setTax(tax);
+                            flight2.setRefundable(refundable);
+                            flight2.setChange_penalties(change_penalties);
+
                             onlyForPrint.add(forprint);
                         }
                     }
@@ -347,6 +390,7 @@ public class Http_Request_Activity extends AppCompatActivity {
                     "origin", "destination", "depart_time", "departs_day", "direct", "Price"},
                     new int[]{R.id.origin, R.id.destination, R.id.departureTime, R.id.departureday, R.id.direct, R.id.price});
             listView.setAdapter(adapter);
+
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
             progressDialog.cancel();
@@ -423,8 +467,14 @@ public class Http_Request_Activity extends AppCompatActivity {
             String param = params[0];
 
             try {
-                String urlForAirlines = "https://iatacodes.org/api/v6/airlines?api_key=01b77c00-91c5-4417-ba5f-0e940713aea1&code=" +param;
-                URL url = new URL(urlForAirlines);
+                final String baseUrl = "https://iatacodes.org/api/v6/airlines?";
+                final String apiKeyParam = "api_key";
+                final String codeParam = "code";
+                Uri buildUri = Uri.parse(baseUrl).buildUpon()
+                        .appendQueryParameter(apiKeyParam, "01b77c00-91c5-4417-ba5f-0e940713aea1")
+                        .appendQueryParameter(codeParam, param).build();
+
+                URL url = new URL(buildUri.toString());
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
