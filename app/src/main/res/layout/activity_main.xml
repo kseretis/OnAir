@@ -1,284 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.onair.MainActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="20dp"
+        android:paddingTop="10dp"
+        android:text="Origin and Destination Airports"
+        android:textColor="#000000"/>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:fillViewport="true"
-        android:overScrollMode="never">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:paddingBottom="80dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="0dp"
+            android:src="@drawable/flight_icon"/>
 
-            <TextView
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="15dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <AutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/necessaryFields"
-                android:text="* Indicates required fields"
-                android:gravity="center"
-                android:textColor="@android:color/holo_red_dark" />
+                android:id="@+id/locationfield"
+                android:hint="*City of departure"
+
+                android:maxLines="1"
+                android:imeOptions="actionDone"/>
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/destinationfield"
+                android:hint="*Destination"
+                android:maxLines="1"
+                android:imeOptions="actionDone"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/swap_image_button"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:clickable="true"
+            android:src="@drawable/refresh"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:src="@drawable/round_trip_80"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date"
+                    android:id="@+id/departureDate"
+                    android:focusableInTouchMode="false"
+                    android:layout_weight="0.8"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/removeDate1"
+                    android:padding="5dp"
+                    android:src="@drawable/round_delete_button"
+                    android:layout_gravity="center"
+                    android:clickable="true" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:id="@+id/firstlinear"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/necessaryFields">
+                android:layout_weight="0.2">
 
-                <LinearLayout
-                    android:id="@+id/secondlinear"
+                <EditText
+                    android:hint="Return date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/necessaryFields"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-
-                    <AutoCompleteTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/locationfield"
-                        android:hint="*City of departure"
-                        android:maxLines="1"
-                        android:imeOptions="actionDone"/>
-
-                    <AutoCompleteTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/destinationfield"
-                        android:hint="*Where do you want to travel"
-                        android:maxLines="1"
-                        android:imeOptions="actionDone"/>
-
-            </LinearLayout>
+                    android:inputType="date"
+                    android:id="@+id/returnDate"
+                    android:focusableInTouchMode="false"
+                    android:layout_weight="0.8" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/swap_image_button"
+                    android:id="@+id/removeDate2"
+                    android:padding="5dp"
+                    android:src="@drawable/round_delete_button"
                     android:layout_gravity="center"
-                    android:padding="10dp"
-                    android:clickable="true"
-                    android:src="@drawable/refresh"/>
+                    android:clickable="true"/>
 
             </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/relativeforbutton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/firstlinear">
-
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/linear2"
-                android:layout_below="@+id/relativeforbutton"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="date"
-                        android:id="@+id/departureDate"
-                        android:focusableInTouchMode="false"
-                        android:layout_weight="1"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/removeDate1"
-                        android:padding="10dp"
-                        android:src="@drawable/round_delete_button"
-                        android:layout_gravity="center"
-                        android:clickable="true"/>
-
-                </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:hint="Return date"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="date"
-                            android:id="@+id/returnDate"
-                            android:focusableInTouchMode="false"
-                            android:layout_weight="1"/>
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/removeDate2"
-                            android:padding="10dp"
-                            android:src="@drawable/round_delete_button"
-                            android:layout_gravity="center"
-                            android:clickable="true"/>
-
-                    </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="10dp"
-                android:paddingTop="100dp"
-                android:layout_below="@+id/linear2"
-                android:id="@+id/linearLayout">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:text="Only direct flights"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView2" />
-
-                    <Switch
-                        android:text="(NO/YES)"
-                        android:paddingLeft="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/idswitch" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:paddingTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:text="Travel class: "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="0dp"
-                        android:gravity="right"
-                        android:id="@+id/spinner" />
-                </LinearLayout>
-                <LinearLayout
-                    android:paddingTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:text="Maximum price: "
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:text="none"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
-                            android:id="@+id/progressTextview"/>
-                    </LinearLayout>
-
-                    <SeekBar
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/seekBarForPrice"
-                        android:max="2950"/>
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-    </ScrollView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_alignParentBottom="true"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:background="#E7E7E7">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <TextView
-                android:text="Adults: "
-                android:paddingTop="15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3" />
-            <Button
-                android:text="-"
-                android:layout_width="20dp"
-                android:layout_height="35dp"
-                android:id="@+id/plin"
-                android:layout_weight="0.05"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:ems="1"
-                android:text="1"
-                android:inputType="number"
-                android:focusableInTouchMode="false"
-                android:id="@+id/adultsnumber" />
-
-            <Button
-                android:text="+"
-                android:layout_width="20dp"
-                android:layout_height="35dp"
-                android:id="@+id/sin"
-                android:layout_weight="0.05"/>
 
         </LinearLayout>
 
-        <Button
-            android:text="Search for flights"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#FC6D45"
-            android:textAllCaps="false"
-            android:id="@+id/button"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true" />
-    </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:id="@+id/more_choices"
+        android:src="@drawable/more"
+        android:clickable="true"/>
+
+    <Button
+        android:text="Search for flights"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textColor="#FC6D45"
+        android:textAllCaps="false"
+        android:id="@+id/button"
+        android:layout_gravity="center" />
 
 
-</RelativeLayout>
+
+</LinearLayout>

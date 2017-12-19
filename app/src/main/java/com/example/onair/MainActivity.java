@@ -1,5 +1,6 @@
 package com.example.onair;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -15,7 +16,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -41,7 +41,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     String labelGo = null , labelDestination = null;
@@ -50,13 +49,14 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> autoCompleteDropDownList_forDestinationAirport = new ArrayList<String>();
 
     // widget
-    public Button SearchForFlightsBUTTON, sin, plin;
-    public EditText departureDate, returnDate, adutlsnumber;
-    public AutoCompleteTextView locationfield, destinationfield;
-    public Switch aSwitch;
+    public Button SearchForFlightsBUTTON, ok_button_in_dialog, ok_button_at_extra;
+    public EditText departureDate, returnDate;
+    public AutoCompleteTextView locationfield_in_dialog, destinationfield_in_dialog;
+    public TextView  locationfield, destinationfield;
+    public Switch nonstop_flight;
     public TextView progressTextview;
-    public ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
-    public Spinner spinner;
+    public ImageView swap_image_button, clearDepartureDateField, clearReturnDateField, more_choices;
+    public Spinner spinner_travel_class, adutlsnumber;
     public SeekBar seekBar;
 
     int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
@@ -78,19 +78,18 @@ public class MainActivity extends AppCompatActivity {
         castingWidgets();   //cast widgets
         Swap_location_and_destination_field();  //swap location and destination field
         Clear_Dates();  //clear dates
-        SpinnerWidget();    //Spinner & Seek bar & switch
-        SeekBarWidget();    //Spinner & Seek bar & switch
-        SwitchWidget();     //Spinner & Seek bar & switch
         firstDateShowAtField(); //Για το dialog βγάζει σαν πρώτη φορά την σημερινή ημερομίνια
-        departureDate.setHint("*Departure date: "+ departure_day +"/"+ departure_month +"/"+ departure_year);
-        adults();   //επιλογη ατομων
+        departureDate.setHint(departure_day +"/"+ departure_month +"/"+ departure_year);
 
         //Άνοιγμα ημερολόγιου και επιλογή μέρας
         showDialogOnButtonClickForDates();
         SearchForFlightsBUTTON.setEnabled(false);
 
-        //drop down list for airports
-        dropdownlistMethod();
+        //pop up dialog for airport, drop down lists
+        popupDialogForAirports();
+
+        //pop up dialog for extra choices
+        popupDialogForExtraChoices();
 
         //set search button enable
         setSearchButtonEnabled();
@@ -106,6 +105,208 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void popupDialogForAirports() {
+
+        locationfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                View alertview = getLayoutInflater().inflate(R.layout.airports_fields_dialog, null);
+
+                //casting
+                locationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.locationfield_in_dialog);
+                destinationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.destinationfield_in_dialog);
+                ok_button_in_dialog = (Button) alertview.findViewById(R.id.ok_button_in_dialog);
+
+                builder.setView(alertview);
+                final AlertDialog showdialog = builder.create();
+                showdialog.show();
+
+                locationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                        int textFiledCharacterCounter = locationfield_in_dialog.getText().toString().length();
+
+                        if(textFiledCharacterCounter > 1){
+                            Log.i(getClass().toString(), locationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                            new conversionMethod(locationfield_in_dialog, autoCompleteDropDownList_forLocationAirport).execute();
+                        }
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
+
+                destinationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                        int textFiledCharacterCounter = destinationfield_in_dialog.getText().toString().length();
+
+                        if(textFiledCharacterCounter > 1){
+                            Log.i(getClass().toString(), destinationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                            new conversionMethod(destinationfield_in_dialog, autoCompleteDropDownList_forDestinationAirport).execute();
+                        }
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
+
+                ok_button_in_dialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        locationfield.setText(locationfield_in_dialog.getText().toString());
+                        destinationfield.setText(destinationfield_in_dialog.getText().toString());
+                        showdialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        destinationfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                View alertview = getLayoutInflater().inflate(R.layout.airports_fields_dialog, null);
+
+                //casting
+                locationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.locationfield_in_dialog);
+                destinationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.destinationfield_in_dialog);
+                ok_button_in_dialog = (Button) alertview.findViewById(R.id.ok_button_in_dialog);
+
+                builder.setView(alertview);
+                final AlertDialog showdialog = builder.create();
+                showdialog.show();
+
+                locationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                        int textFiledCharacterCounter = locationfield_in_dialog.getText().toString().length();
+
+                        if(textFiledCharacterCounter > 1){
+                            Log.i(getClass().toString(), locationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                            new conversionMethod(locationfield_in_dialog, autoCompleteDropDownList_forLocationAirport).execute();
+                        }
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
+
+                destinationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                        int textFiledCharacterCounter = destinationfield_in_dialog.getText().toString().length();
+
+                        if(textFiledCharacterCounter > 1){
+                            Log.i(getClass().toString(), destinationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                            new conversionMethod(destinationfield_in_dialog, autoCompleteDropDownList_forDestinationAirport).execute();
+                        }
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
+
+                ok_button_in_dialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        locationfield.setText(locationfield_in_dialog.getText().toString());
+                        destinationfield.setText(destinationfield_in_dialog.getText().toString());
+                        showdialog.dismiss();
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    public void popupDialogForExtraChoices(){
+
+        more_choices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                View extraview = getLayoutInflater().inflate(R.layout.extra_choises, null);
+
+                nonstop_flight = (Switch) extraview.findViewById(R.id.idswitch);
+                spinner_travel_class = (Spinner) extraview.findViewById(R.id.spinner_travel_class);
+                progressTextview = (TextView) extraview.findViewById(R.id.progressTextview);
+                seekBar = (SeekBar) extraview.findViewById(R.id.seekBarForPrice);
+                adutlsnumber = (Spinner) extraview.findViewById(R.id.adultsnumber);
+                ok_button_at_extra = (Button) extraview.findViewById(R.id.ok_button_at_extra) ;
+
+                builder.setView(extraview);
+                final AlertDialog showdialog = builder.create();
+                showdialog.show();
+
+                // adapter for travel class
+                ArrayAdapter<CharSequence> SPadapter = ArrayAdapter.createFromResource(
+                        MainActivity.this, R.array.travel_class, R.layout.drop_down_extra);
+                spinner_travel_class.setAdapter(SPadapter);
+
+                // adapter for adults number
+                ArrayAdapter<CharSequence> wdadapter = ArrayAdapter.createFromResource(
+                        MainActivity.this,  R.array.numbers, R.layout.drop_down_extra );
+                adutlsnumber.setAdapter(wdadapter);
+
+                // progress bar for the max price
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    int progress_value;
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                        int MIN = 50;
+                        progressTextview.setText(MIN + progress +"");
+                        progress_value = MIN + progress;
+                        if(progress_value == 50)
+                            progressTextview.setText("none");
+                    }
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar){}
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        if(progress_value == 50)
+                            progressTextview.setText("none");
+                        else
+                            progressTextview.setText(progress_value +"");
+                    }
+                });
+
+                // no stop flight
+                if(nonstop_flight.isChecked())
+                    IfswitchIsChecked = "TRUE";
+                else
+                    IfswitchIsChecked = "FALSE";
+
+                // ok return button
+                ok_button_at_extra.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showdialog.dismiss();
+                    }
+                });
+            }
+        });
+
+    }
+
     public void setSearchButtonEnabled(){
         if (locationfield.equals("") || destinationfield.equals("") || departureDate.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "One of the required fields is empty", Toast.LENGTH_LONG).show();
@@ -113,66 +314,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public void dropdownlistMethod(){
-
-        locationfield.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
-                int textFiledCharacterCounter = locationfield.getText().toString().length();
-
-                if(textFiledCharacterCounter > 1){
-                    Log.i(getClass().toString(), locationfield.toString() +" - "+ textFiledCharacterCounter + "");
-                    new conversionMethod(locationfield, autoCompleteDropDownList_forLocationAirport).execute();
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        destinationfield.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
-                int textFiledCharacterCounter = destinationfield.getText().toString().length();
-
-                if(textFiledCharacterCounter > 1){
-                    Log.i(getClass().toString(), destinationfield.toString() +" - "+ textFiledCharacterCounter + "");
-                    new conversionMethod(destinationfield, autoCompleteDropDownList_forDestinationAirport).execute();
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-    }
-
-
-
-    public void castingWidgets(){
-        SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
-        sin = (Button) findViewById(R.id.sin);
+    public void castingWidgets() {
         locationfield = (AutoCompleteTextView) findViewById(R.id.locationfield);
         destinationfield = (AutoCompleteTextView) findViewById(R.id.destinationfield);
         swap_image_button = (ImageView) findViewById(R.id.swap_image_button);
         departureDate = (EditText) findViewById(R.id.departureDate);
         clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
         returnDate = (EditText) findViewById(R.id.returnDate);
-        clearReturnDateField = (ImageView) findViewById(R.id.removeDate2) ;
-        aSwitch = (Switch) findViewById(R.id.idswitch);
-        spinner = (Spinner) findViewById(R.id.spinner);
-        progressTextview = (TextView) findViewById(R.id.progressTextview);
-        seekBar = (SeekBar) findViewById(R.id.seekBarForPrice);
-        plin = (Button) findViewById(R.id.plin);
-        adutlsnumber = (EditText) findViewById(R.id.adultsnumber);
+        clearReturnDateField = (ImageView) findViewById(R.id.removeDate2);
+        more_choices = (ImageView) findViewById(R.id.more_choices);
+        SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
     }
 
     public void firstDateShowAtField(){
@@ -219,62 +370,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void SwitchWidget(){
-       if(aSwitch.isChecked())
-           IfswitchIsChecked = "TRUE";
-       else
-           IfswitchIsChecked = "FALSE";
-
-    }
-
-
-    public void SpinnerWidget() {
-        ArrayAdapter<CharSequence> SPadapter = ArrayAdapter.createFromResource(this, R.array.travel_class, android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(SPadapter);
-    }
-
-    public void SeekBarWidget(){
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progress_value;
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                int MIN = 50;
-                progressTextview.setText(MIN + progress +"");
-                progress_value = MIN + progress;
-                if(progress_value == 50)
-                    progressTextview.setText("none");
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar){}
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if(progress_value == 50)
-                    progressTextview.setText("none");
-                else
-                    progressTextview.setText(progress_value +"");
-            }
-        });
-    }
-
-    public void adults(){
-        plin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NUMBER_OF_ADULTS = Integer.parseInt(adutlsnumber.getText().toString());
-                NUMBER_OF_ADULTS --;
-                adutlsnumber.setText(NUMBER_OF_ADULTS +"");
-            }
-        });
-        sin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NUMBER_OF_ADULTS = Integer.parseInt(adutlsnumber.getText().toString());
-                NUMBER_OF_ADULTS ++;
-                adutlsnumber.setText(NUMBER_OF_ADULTS +"");
-            }
-        });
-    }
-
     public void Call_Next_Activity(){
 
         //εαν το κουμπι για την επιστροφη έχει το αρχικο κειμενο τοτε κανει τα παρακατω και ψάχνει πτησεις χωρις επιστροφη
@@ -288,14 +383,10 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("nonstop", IfswitchIsChecked);
             intent.putExtra("labelGo", labelGo);
             intent.putExtra("labelDestination", labelDestination);
-            intent.putExtra("adults", NUMBER_OF_ADULTS);
-            if(!spinner.getSelectedItem().equals("Economy"))
-                intent.putExtra("travel_class", spinner.getSelectedItem().toString());
+            intent.putExtra("adults", adutlsnumber.getSelectedItem().toString());
+            intent.putExtra("travel_class", spinner_travel_class.getSelectedItem().toString());
             if(!progressTextview.getText().equals("none"))
                 intent.putExtra("max_price", progressTextview.getText().toString());
-            else
-                intent.putExtra("max_price", "none");
-
             startActivity(intent);
         }
         //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
@@ -309,12 +400,13 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("r_year", return_year);
             intent.putExtra("r_month", return_month_String);
             intent.putExtra("r_day", return_day_String);
+            Log.i("nonstop", IfswitchIsChecked);
             intent.putExtra("nonstop", IfswitchIsChecked);
             intent.putExtra("labelGo", labelGo);
             intent.putExtra("labelDestination", labelDestination);
             intent.putExtra("adults", NUMBER_OF_ADULTS);
-            if(!spinner.getSelectedItem().equals("Economy"))
-                intent.putExtra("travel_class", spinner.getSelectedItem().toString());
+            if(!spinner_travel_class.getSelectedItem().equals("Economy"))
+                intent.putExtra("travel_class", spinner_travel_class.getSelectedItem().toString());
             if(!progressTextview.getText().equals("none"))
                 intent.putExtra("max_price", progressTextview.getText().toString());
             else
@@ -470,7 +562,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                    R.layout.support_simple_spinner_dropdown_item, theListinConvensionMethod);
+                    R.layout.drop_down, theListinConvensionMethod);
             textViewinConvensionMethod.setAdapter(dropDownAdapter);
 
             textViewinConvensionMethod.setOnItemClickListener(new AdapterView.OnItemClickListener() {

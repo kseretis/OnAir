@@ -4,9 +4,6 @@
     <item name="list_itemID_" type="id" />
     <string name="USD">USD</string>
 
-
-
-
     <string-array name="nomismata">
         <item>USD</item>
         <item>EUR</item>
@@ -17,5 +14,17 @@
         <item>Economy</item>
         <item>Business</item>
         <item>First</item>
+    </string-array>
+
+    <string-array name="numbers">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
     </string-array>
 </resources>

@@ -75,12 +75,12 @@ public class Http_Request_Activity extends AppCompatActivity {
         departure_year = getIntent().getIntExtra("d_year", 0);
         departure_month_String = getIntent().getStringExtra("d_month");
         departure_day_String = getIntent().getStringExtra("d_day");
-        nonStop_forAPI = getIntent().getStringExtra("nonStop_forAPI");
+        nonStop_forAPI = getIntent().getStringExtra("nonstop");
         labelGo = getIntent().getStringExtra("labelGo");
         labelDestination = getIntent().getStringExtra("labelDestination");
         adults_forAPI = getIntent().getIntExtra("adults", 0);
-        travelClass_forAPI = getIntent().getStringExtra("travelClass_forAPI");
-        maxPrice_forAPI = getIntent().getStringExtra("maxPrice_forAPI");
+        travelClass_forAPI = getIntent().getStringExtra("travel_class");
+        maxPrice_forAPI = getIntent().getStringExtra("max_price");
 
         //get currency from sharedpreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -148,9 +148,9 @@ public class Http_Request_Activity extends AppCompatActivity {
                 final String departureDayParam = "departure_date";
                 final String adultsParam = "adults";
                 final String currencyParam = "currency";
-                final String travelClassParam = "travelClass_forAPI";
-                final String maxPriceParam = "maxPrice_forAPI";
-                final String nonStopParam = "nonStop_forAPI";
+                final String travelClassParam = "travel_class";
+                final String maxPriceParam = "max_price";
+                final String nonStopParam = "nonstop";
                 final String ApiKeyParam = "apikey";
 
                 Uri buildUri = Uri.parse(baseUrl).buildUpon()
