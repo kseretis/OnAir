@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public TextView progressTextview;
     public ImageView swap_image_button, clearDepartureDateField, clearReturnDateField, more_choices;
     public Spinner spinner_travel_class, adutlsnumber;
-    public SeekBar seekBar;
+    public SeekBar seekBar_max_price;
 
     int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
     String departure_day_String, departure_month_String;
@@ -249,13 +249,17 @@ public class MainActivity extends AppCompatActivity {
                 nonstop_flight = (Switch) extraview.findViewById(R.id.idswitch);
                 spinner_travel_class = (Spinner) extraview.findViewById(R.id.spinner_travel_class);
                 progressTextview = (TextView) extraview.findViewById(R.id.progressTextview);
-                seekBar = (SeekBar) extraview.findViewById(R.id.seekBarForPrice);
+                seekBar_max_price = (SeekBar) extraview.findViewById(R.id.seekBarForPrice);
                 adutlsnumber = (Spinner) extraview.findViewById(R.id.adultsnumber);
                 ok_button_at_extra = (Button) extraview.findViewById(R.id.ok_button_at_extra) ;
 
                 builder.setView(extraview);
                 final AlertDialog showdialog = builder.create();
                 showdialog.show();
+
+                //shared preferences
+                SharedPreferences sharedPreferences = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
+                final SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 // adapter for travel class
                 ArrayAdapter<CharSequence> SPadapter = ArrayAdapter.createFromResource(
@@ -268,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 adutlsnumber.setAdapter(wdadapter);
 
                 // progress bar for the max price
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                seekBar_max_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -289,16 +293,22 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                // no stop flight
-                if(nonstop_flight.isChecked())
-                    IfswitchIsChecked = "TRUE";
-                else
-                    IfswitchIsChecked = "FALSE";
-
                 // ok return button
                 ok_button_at_extra.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        editor.putString("travel_class", spinner_travel_class.getSelectedItem().toString());
+                        editor.putString("adults_number", adutlsnumber.getSelectedItem().toString());
+                        editor.putString("max_price", progressTextview.getText().toString());
+
+                        // no stop flight
+                        if(nonstop_flight.isChecked())
+                            editor.putString("nonstop", "true");
+                        else
+                            editor.putString("nonstop", "false");
+                        editor.commit();
+
                         showdialog.dismiss();
                     }
                 });
@@ -340,6 +350,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         storeCurrency = sharedPreferences.getString("currency", "");
         Log.i(getClass().toString(), storeCurrency + " selected currency!!!!!!!!!!!!!!!!!!!");
+
+        SharedPreferences sharedPreferencesExtra = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("travel_class", "economy");
+        editor.putString("adults_number", "1");
+        editor.commit();
+
     }
 
     // Κανει Swap τα πεδία των αεροδρομιων
@@ -380,13 +397,10 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("d_year", departure_year);
             intent.putExtra("d_month", departure_month_String);
             intent.putExtra("d_day", departure_day_String);
-            intent.putExtra("nonstop", IfswitchIsChecked);
+
             intent.putExtra("labelGo", labelGo);
             intent.putExtra("labelDestination", labelDestination);
-            intent.putExtra("adults", adutlsnumber.getSelectedItem().toString());
-            intent.putExtra("travel_class", spinner_travel_class.getSelectedItem().toString());
-            if(!progressTextview.getText().equals("none"))
-                intent.putExtra("max_price", progressTextview.getText().toString());
+
             startActivity(intent);
         }
         //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
@@ -400,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("r_year", return_year);
             intent.putExtra("r_month", return_month_String);
             intent.putExtra("r_day", return_day_String);
-            Log.i("nonstop", IfswitchIsChecked);
+
             intent.putExtra("nonstop", IfswitchIsChecked);
             intent.putExtra("labelGo", labelGo);
             intent.putExtra("labelDestination", labelDestination);

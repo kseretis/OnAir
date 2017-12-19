@@ -45,11 +45,10 @@ public class Http_Request_Activity extends AppCompatActivity {
     private int departure_year;
     private String departure_month_String, departure_day_String;
     private String originAirport_forAPI, destinationAirport_forAPI;
-    private String departureDay_forAPI, nonStop_forAPI, storeCurrency, adults, travelClass_forAPI, maxPrice_forAPI;
+    private String departureDay_forAPI, nonStop_forAPI, storeCurrency, adults, travelClass_forAPI, maxPrice_forAPI, adults_forAPI;
     ArrayList<HashMap<String, String>> theList;
     ArrayList<HashMap<String, String>> onlyForPrint;
     HashMap<String, String> AIRPORT_LIST = new HashMap<String, String>();
-    private int adults_forAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,17 +74,18 @@ public class Http_Request_Activity extends AppCompatActivity {
         departure_year = getIntent().getIntExtra("d_year", 0);
         departure_month_String = getIntent().getStringExtra("d_month");
         departure_day_String = getIntent().getStringExtra("d_day");
-        nonStop_forAPI = getIntent().getStringExtra("nonstop");
         labelGo = getIntent().getStringExtra("labelGo");
         labelDestination = getIntent().getStringExtra("labelDestination");
-        adults_forAPI = getIntent().getIntExtra("adults", 0);
-        travelClass_forAPI = getIntent().getStringExtra("travel_class");
-        maxPrice_forAPI = getIntent().getStringExtra("max_price");
 
-        //get currency from sharedpreferences
+        //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         storeCurrency = sharedPreferences.getString("currency", "");
         Log.i(getClass().toString(), "this is ---->>>" +  storeCurrency);
+        SharedPreferences sharedPreferencesFromMain = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
+        travelClass_forAPI = sharedPreferencesFromMain.getString("travel_class", "");
+        adults_forAPI = sharedPreferencesFromMain.getString("adults_number", "");
+        nonStop_forAPI = sharedPreferencesFromMain.getString("nonstop", "");
+        maxPrice_forAPI = sharedPreferencesFromMain.getString("max_price", "");
 
         /*//τιτλος
         if(adults_forAPI >1 )
@@ -157,13 +157,15 @@ public class Http_Request_Activity extends AppCompatActivity {
                         .appendQueryParameter(originParam, originAirport_forAPI)
                         .appendQueryParameter(destinationParam, destinationAirport_forAPI)
                         .appendQueryParameter(departureDayParam, departureDay_forAPI)
-                        .appendQueryParameter(adultsParam, String.valueOf(adults_forAPI))
+                        .appendQueryParameter(adultsParam, adults_forAPI)
                         .appendQueryParameter(currencyParam, storeCurrency)
                         .appendQueryParameter(travelClassParam, travelClass_forAPI)     // may be null
-                        .appendQueryParameter(maxPriceParam, maxPrice_forAPI)           // may be null
                         .appendQueryParameter(nonStopParam, nonStop_forAPI)             // may be null
                         .appendQueryParameter(ApiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
                         .build();
+
+                if(!maxPrice_forAPI.equals("none"))
+                    buildUri.buildUpon().appendQueryParameter(maxPriceParam, maxPrice_forAPI).build();
 
                 Log.i(getClass().toString(), buildUri.toString());
 
