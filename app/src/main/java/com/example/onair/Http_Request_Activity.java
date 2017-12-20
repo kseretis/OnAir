@@ -14,10 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -50,9 +47,9 @@ public class Http_Request_Activity extends AppCompatActivity {
     HashMap<String, String> AIRPORT_LIST = new HashMap<String, String>();
     ListView listView;
 
-    // arraylist with class Flights
-    ArrayList<Flights> allFlights = new ArrayList<>();
-    ArrayList<Itineraries> itineraries_flights = new ArrayList<>();
+    // arraylist for all flights separately and for itinerary
+    ArrayList<Flights> allFlights_theList = new ArrayList<>();
+    ArrayList<Outbound> outbound_flights_theList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,11 +127,6 @@ public class Http_Request_Activity extends AppCompatActivity {
 
     public class JSONTask extends AsyncTask<Void, Void, Void> {
         public String currency = null;
-        private String departs_at, arrives_at, origin_airport, destination_airport, marketing_airline, operating_airline,
-                flight_number, aircraft, travel_class, booking_code, total_price, total_fare, tax;
-        int seats_remaining;
-        boolean refundable, change_penalties;
-        String refundableString, change_penaltiesString;
         JSONObject parentObject;
 
         @Override
@@ -167,7 +159,8 @@ public class Http_Request_Activity extends AppCompatActivity {
 
                 // check if there is a max price or not
                 if(!maxPrice_forAPI.equals("none"))
-                    buildUri.buildUpon().appendQueryParameter(maxPriceParam, maxPrice_forAPI).build();
+                    buildUri.buildUpon().appendQueryParameter(maxPriceParam, maxPrice_forAPI).build();  // δεν φαίνεται να μπαίνει εδω
+
                 Log.i(getClass().toString(), buildUri.toString());
 
                 URL url = new URL(buildUri.toString());
@@ -186,7 +179,6 @@ public class Http_Request_Activity extends AppCompatActivity {
                 }
 
                 String finalJSon = buffer.toString();
-                int flightsLength = 0;
                 parentObject = new JSONObject(finalJSon);
 
                 currency = parentObject.getString("currency");
@@ -194,20 +186,21 @@ public class Http_Request_Activity extends AppCompatActivity {
                 for (int i = 0; i < results.length(); i++) {
 
                     //class Flights
+                    Outbound outbound_flights;
                     Flights flight;
 
                     JSONObject outside = results.getJSONObject(i);
                     JSONArray itineraries = outside.getJSONArray("itineraries");
-                    /* Με την μορφη JSON που πέρνουμε τα δεδομένα απο το http request υπάρχουν
-                     * αρκετά δρομολόγια συνεχόμενα με κοινά χαρακτηριστικά, όπως η τιμή, ο φόρος,
-                     * το εάν είναι επιστρέψιμο το εισιτήριο και οι κρατήσεις(ποινές) απο την επιστροφή
-                     * του εισιτήριο. Η παρακάτω ακέραια μεταβλητή (inineraries_with_the_same_price)
-                     * μετράει πόσες συνεχόμενες πτήσεις έχουν κοινά τα παραπάνω χαρακτηριστικά */
+
+                    int outbound_counter = 0;
                     for (int j = 0; j < itineraries.length(); j++) {
                         JSONObject testttt = itineraries.getJSONObject(j);
                         JSONObject outbound = testttt.getJSONObject("outbound");
-                        JSONArray flights = outbound.getJSONArray("flights");
 
+                        // cast outbound
+                        outbound_flights = new Outbound();
+
+                        JSONArray flights = outbound.getJSONArray("flights");
                         for (int k = 0; k < flights.length(); k++) {
 
                             flight = new Flights();
@@ -232,37 +225,36 @@ public class Http_Request_Activity extends AppCompatActivity {
                             flight.setSeats_remaining(booking_info.getInt("seats_remaining"));
 
                             //αποθήκευση στην ArrayList
-                            allFlights.add(flight);
+                            allFlights_theList.add(flight);
                         }
-                        flightsLength = flights.length();
+                        outbound_counter++;
+
+                        ArrayList<Flights> temporary_outbound_list = new ArrayList<>();
+                        for(int o=flights.length(); o>0; o--)
+                            temporary_outbound_list.add(allFlights_theList.get(allFlights_theList.size() - o));
+                        outbound_flights.setFlights_for_a_itinerary(temporary_outbound_list);
+                        outbound_flights_theList.add(outbound_flights);
+
                     }
-                    /* Μπορέι να περάσουν πολλές σερί πτήσεις χώρις να αποηκεύεται η τιμή τους
-                     * η παρακάτω for αντικαθιστά τα ανανεωμένα hashmap στη λίστα με τα κοινά
-                     * χαρακτηριστικά που έχουν οι πτήσεις */
 
-                    Itineraries itiner = new Itineraries();
+                    for(int ti=outbound_counter; ti>0; ti--){
+                        Outbound tempOutbound = new Outbound();
+                        tempOutbound = outbound_flights_theList.get(outbound_flights_theList.size() - ti);
 
-                    //fill the class
-                    JSONObject fare = outside.getJSONObject("fare");
-                    itiner.setTotal_price(fare.getString("total_price"));
+                        //fill the class
+                        JSONObject fare = outside.getJSONObject("fare");
+                        tempOutbound.setTotal_price(fare.getString("total_price"));
 
-                    JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
-                    itiner.setTotal_fare(price_per_adult.getString("total_fare"));
-                    itiner.setTax(price_per_adult.getString("tax"));
+                        JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
+                        tempOutbound.setTotal_fare(price_per_adult.getString("total_fare"));
+                        tempOutbound.setTax(price_per_adult.getString("tax"));
 
-                    JSONObject restrictions = fare.getJSONObject("restrictions");
-                    itiner.setRefundable(restrictions.getBoolean("refundable"));
-                    itiner.setChange_penalties(restrictions.getBoolean("change_penalties"));
+                        JSONObject restrictions = fare.getJSONObject("restrictions");
+                        tempOutbound.setRefundable(restrictions.getBoolean("refundable"));
+                        tempOutbound.setChange_penalties(restrictions.getBoolean("change_penalties"));
 
-                    // take the last flights
-                    ArrayList<Flights> tempFlights = new ArrayList<>();
-                    for(int ti=flightsLength; ti>0; ti--)
-                        tempFlights.add(allFlights.get(allFlights.size()-ti));
-                    itiner.setFlights_count(tempFlights);
-
-                    //add to array
-                    itineraries_flights.add(itiner);
-
+                        outbound_flights_theList.set((outbound_flights_theList.size() - ti), tempOutbound);
+                    }
                 }
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
@@ -298,7 +290,7 @@ public class Http_Request_Activity extends AppCompatActivity {
             }
 
             //new method. list view
-            myListAdapter listadapter = new myListAdapter(listView.getContext(), itineraries_flights);
+            myListAdapter listadapter = new myListAdapter(listView.getContext(), outbound_flights_theList);
             listView.setAdapter(listadapter);
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog

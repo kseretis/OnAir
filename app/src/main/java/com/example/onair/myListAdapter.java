@@ -15,15 +15,15 @@ import com.example.onair.R;
 
 import java.util.ArrayList;
 
-public class myListAdapter extends ArrayAdapter<Itineraries> {
+public class myListAdapter extends ArrayAdapter<Outbound> {
 
     private Context activityContext;
-    private ArrayList<Itineraries> list;
+    private ArrayList<Outbound> list;
     private ArrayList<Flights> flights;
     public static final String TAG = "ListView";
     private String origin, desti, depart_time, depart_day, direct;
 
-    public myListAdapter(Context context, ArrayList<Itineraries> list){
+    public myListAdapter(Context context, ArrayList<Outbound> list){
         super(context, R.layout.list_item, list);
         this.activityContext = context;
         this.list = list;
@@ -72,7 +72,7 @@ public class myListAdapter extends ArrayAdapter<Itineraries> {
     }
 
     public void draw_data_from_flights(int position){
-        flights = list.get(position).getFlights_count();
+        flights = list.get(position).getFlights_for_a_itinerary();
 
         if(flights.size() == 1) {
             origin = flights.get(0).getOrigin_airport();

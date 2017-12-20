@@ -253,12 +253,15 @@ public class MainActivity extends AppCompatActivity {
                 adutlsnumber = (Spinner) extraview.findViewById(R.id.adultsnumber);
                 ok_button_at_extra = (Button) extraview.findViewById(R.id.ok_button_at_extra) ;
 
+                //shared preferences check nonstop
+                SharedPreferences sharedPreferences = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
+                nonstop_flight.setChecked(Boolean.valueOf(sharedPreferences.getString("nonstop", "")));
+
                 builder.setView(extraview);
                 final AlertDialog showdialog = builder.create();
                 showdialog.show();
 
-                //shared preferences
-                SharedPreferences sharedPreferences = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
+                //create and editor to re-write
                 final SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 // adapter for travel class
@@ -346,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
         return_day = cal.get(Calendar.DAY_OF_MONTH);
     }
 
-    private void updatePreferences(){
+    private final void updatePreferences(){
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         storeCurrency = sharedPreferences.getString("currency", "");
         Log.i(getClass().toString(), storeCurrency + " selected currency!!!!!!!!!!!!!!!!!!!");
@@ -356,7 +359,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("travel_class", "economy");
         editor.putString("adults_number", "1");
         editor.commit();
-
     }
 
     // Κανει Swap τα πεδία των αεροδρομιων
@@ -397,7 +399,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("d_year", departure_year);
             intent.putExtra("d_month", departure_month_String);
             intent.putExtra("d_day", departure_day_String);
-
             intent.putExtra("labelGo", labelGo);
             intent.putExtra("labelDestination", labelDestination);
 
