@@ -3,13 +3,12 @@ package com.example.onair;
 public class Flights {
 
     private String departs_at, arrives_at, origin_airport, destination_airport, marketing_airline, operating_airline, flight_number, aircraft,
-                    travel_class, booking_code, total_price, total_fare, tax,  depart_time, depart_day;
-    private int  seats_remaining;
-    private boolean refundable, change_penalties;
+            travel_class, booking_code;
+    private int seats_remaining;
 
     public Flights(String departs_at, String arrives_at, String origin_airport, String destination_airport, String marketing_airline,
                    String operating_airline, String flight_number, String aircraft, String travel_class, String booking_code,
-                   int seats_remaining, String total_price, String total_fare, String tax, boolean refundable, boolean change_penalties) {
+                   int seats_remaining) {
         this.departs_at = departs_at;
         this.arrives_at = arrives_at;
         this.origin_airport = origin_airport;
@@ -21,15 +20,10 @@ public class Flights {
         this.travel_class = travel_class;
         this.booking_code = booking_code;
         this.seats_remaining = seats_remaining;
-        this.total_price = total_price;
-        this.total_fare = total_fare;
-        this.tax = tax;
-        this.refundable = refundable;
-        this.change_penalties = change_penalties;
     }
 
     //empty constructor
-    public Flights (){
+    public Flights() {
     }
 
     //setters
@@ -77,34 +71,6 @@ public class Flights {
         this.seats_remaining = seats_remaining;
     }
 
-    public void setTotal_price(String total_price) {
-        this.total_price = total_price;
-    }
-
-    public void setTotal_fare(String total_fare) {
-        this.total_fare = total_fare;
-    }
-
-    public void setTax(String tax) {
-        this.tax = tax;
-    }
-
-    public void setRefundable(boolean refundable) {
-        this.refundable = refundable;
-    }
-
-    public void setChange_penalties(boolean change_penalties) {
-        this.change_penalties = change_penalties;
-    }
-
-    public void setDepart_day(String depart_day) {
-        this.depart_day = depart_day;
-    }
-
-    public void setDepart_time(String depart_time) {
-        this.depart_time = depart_time;
-    }
-
     // getters
     public String getDeparts_at() {
         return departs_at;
@@ -148,33 +114,5 @@ public class Flights {
 
     public int getSeats_remaining() {
         return seats_remaining;
-    }
-
-    public String getTotal_price() {
-        return total_price;
-    }
-
-    public String getTotal_fare() {
-        return total_fare;
-    }
-
-    public String getTax() {
-        return tax;
-    }
-
-    public boolean isRefundable() {
-        return refundable;
-    }
-
-    public boolean isChange_penalties() {
-        return change_penalties;
-    }
-
-    public String getDepart_time() {
-        return depart_time;
-    }
-
-    public String getDepart_day() {
-        return depart_day;
     }
 }

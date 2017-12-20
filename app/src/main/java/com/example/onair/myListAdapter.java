@@ -85,8 +85,8 @@ public class myListAdapter extends ArrayAdapter<Itineraries> {
             direct = "Stops: " + (flights.size() - 1) ;
         }
 
-        depart_time = flights.get(0).getDepart_time();
-        depart_day = flights.get(0).getDepart_day();
+        depart_time = flights.get(0).getDeparts_at().substring(11);
+        depart_day = flights.get(0).getDeparts_at().substring(0,10);
 
     }
 }

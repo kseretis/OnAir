@@ -44,15 +44,15 @@ public class Http_Request_Activity extends AppCompatActivity {
     private int departure_year;
     private String departure_month_String, departure_day_String;
     private String originAirport_forAPI, destinationAirport_forAPI;
-    private String departureDay_forAPI, nonStop_forAPI, storeCurrency, adults, travelClass_forAPI, maxPrice_forAPI, adults_forAPI;
+    private String departureDay_forAPI, nonStop_forAPI, storeCurrency, travelClass_forAPI, maxPrice_forAPI, adults_forAPI;
     ArrayList<HashMap<String, String>> theList;
     ArrayList<HashMap<String, String>> onlyForPrint;
     HashMap<String, String> AIRPORT_LIST = new HashMap<String, String>();
     ListView listView;
 
     // arraylist with class Flights
-    ArrayList<Flights> allFlights = new ArrayList<Flights>();
-    ArrayList<Itineraries> itineraries_flights = new ArrayList<Itineraries>();
+    ArrayList<Flights> allFlights = new ArrayList<>();
+    ArrayList<Itineraries> itineraries_flights = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,67 +207,31 @@ public class Http_Request_Activity extends AppCompatActivity {
                         JSONObject testttt = itineraries.getJSONObject(j);
                         JSONObject outbound = testttt.getJSONObject("outbound");
                         JSONArray flights = outbound.getJSONArray("flights");
+
                         for (int k = 0; k < flights.length(); k++) {
+
                             flight = new Flights();
+
                             JSONObject inside = flights.getJSONObject(k);
-
-                            departs_at = inside.getString("departs_at");
-                            flight.setDeparts_at(departs_at);
-
-                            arrives_at = inside.getString("arrives_at");
-                            flight.setArrives_at(arrives_at);
+                            flight.setDeparts_at(inside.getString("departs_at"));
+                            flight.setArrives_at(inside.getString("arrives_at"));
 
                             JSONObject origin = inside.getJSONObject("origin");
-                            origin_airport = origin.getString("airport");
                             flight.setOrigin_airport(origin.getString("airport"));
 
                             JSONObject destination = inside.getJSONObject("destination");
-                            destination_airport = destination.getString("airport");
-                            flight.setDestination_airport(destination_airport);
-
-                            marketing_airline = inside.getString("marketing_airline");
-                            flight.setMarketing_airline(marketing_airline);
-
-                            operating_airline = inside.getString("operating_airline");
-                            flight.setOperating_airline(operating_airline);
-
-                            flight_number = inside.getString("flight_number");
-                            flight.setFlight_number(flight_number);
-
-                            aircraft = inside.getString("aircraft");
-                            flight.setAircraft(aircraft);
+                            flight.setDestination_airport(destination.getString("airport"));
+                            flight.setMarketing_airline(inside.getString("marketing_airline"));
+                            flight.setOperating_airline(inside.getString("operating_airline"));
+                            flight.setFlight_number(inside.getString("flight_number"));
+                            flight.setAircraft(inside.getString("aircraft"));
 
                             JSONObject booking_info = inside.getJSONObject("booking_info");
-                            travel_class = booking_info.getString("travel_class");
-                            flight.setTravel_class(travel_class);
-
-                            booking_code = booking_info.getString("booking_code");
-                            flight.setBooking_code(booking_code);
-
-                            seats_remaining = booking_info.getInt("seats_remaining");
-                            flight.setSeats_remaining(seats_remaining);
-
-                            //προσωρινή αποθήκευση τον στοιχείων σε hashmap
-                            HashMap<String, String> temp = new HashMap<>();
-
-                            temp.put("origin_airport", origin_airport);
-                            temp.put("destination_airport", destination_airport);
-                            temp.put("departs_at_day", departs_at.substring(0, 10)); //Αποθηκεύει την ημερομινία
-                            flight.setDepart_day(departs_at.substring(0, 10));
-                            temp.put("departs_at_time", departs_at.substring(11)); //Αποθηκεύει την ωρα
-                            flight.setDepart_time(departs_at.substring(11));
-                            temp.put("arrives_at_day", arrives_at.substring(0, 10));
-                            temp.put("arrives_at_time", arrives_at.substring(11));
-                            temp.put("marketing_airline", marketing_airline);
-                            temp.put("operating_airline", operating_airline);
-                            temp.put("flight_number", flight_number);
-                            temp.put("aircraft", aircraft);
-                            temp.put("travel_class", travel_class);
-                            temp.put("booking_code", booking_code);
-                            temp.put("seats_remaining", seats_remaining + "");
+                            flight.setTravel_class(booking_info.getString("travel_class"));
+                            flight.setBooking_code(booking_info.getString("booking_code"));
+                            flight.setSeats_remaining(booking_info.getInt("seats_remaining"));
 
                             //αποθήκευση στην ArrayList
-                            theList.add(temp);
                             allFlights.add(flight);
                         }
                         flightsLength = flights.length();
@@ -276,118 +240,29 @@ public class Http_Request_Activity extends AppCompatActivity {
                      * η παρακάτω for αντικαθιστά τα ανανεωμένα hashmap στη λίστα με τα κοινά
                      * χαρακτηριστικά που έχουν οι πτήσεις */
 
-
-
-                    JSONObject fare = outside.getJSONObject("fare");
-                    total_price = fare.getString("total_price");
-                    JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
-                    total_fare = price_per_adult.getString("total_fare");
-                    tax = price_per_adult.getString("tax");
-                    JSONObject restrictions = fare.getJSONObject("restrictions");
-                    refundable = restrictions.getBoolean("refundable");
-                    if (refundable)
-                        refundableString = "Yes";
-                    else
-                        refundableString = "No";
-                    change_penalties = restrictions.getBoolean("change_penalties");
-                    if (change_penalties)
-                        change_penaltiesString = "Yes";
-                    else
-                        change_penaltiesString = "No";
-
-
                     Itineraries itiner = new Itineraries();
+
+                    //fill the class
+                    JSONObject fare = outside.getJSONObject("fare");
+                    itiner.setTotal_price(fare.getString("total_price"));
+
+                    JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
+                    itiner.setTotal_fare(price_per_adult.getString("total_fare"));
+                    itiner.setTax(price_per_adult.getString("tax"));
+
+                    JSONObject restrictions = fare.getJSONObject("restrictions");
+                    itiner.setRefundable(restrictions.getBoolean("refundable"));
+                    itiner.setChange_penalties(restrictions.getBoolean("change_penalties"));
 
                     // take the last flights
                     ArrayList<Flights> tempFlights = new ArrayList<>();
                     for(int ti=flightsLength; ti>0; ti--)
                         tempFlights.add(allFlights.get(allFlights.size()-ti));
-
-                    //fill the class
                     itiner.setFlights_count(tempFlights);
-                    itiner.setTotal_price(total_price);
-                    itiner.setTotal_fare(total_fare);
-                    itiner.setTax(tax);
-                    itiner.setRefundable(refundable);
-                    itiner.setChange_penalties(change_penalties);
 
+                    //add to array
                     itineraries_flights.add(itiner);
 
-
-
-                    /* έαν ο αριθμός του flightLenght είναι 1 σημαίνει ότι οι πτήσεις είναι απευθείας
-                     * και ξεκινάει να βάζει την τιμη και όλα τα παρακάτω σε κάθε μία πτήσει ξεχωριστά */
-                    /*if (flightsLength == 1) {
-                        for (int p = itineraries.length(); p > 0; p--) {
-                            HashMap<String, String> cost = new HashMap<>(theList.get(theList.size() - p));
-                            cost.put("total_price", total_price);
-                            cost.put("total_fare", total_fare);
-                            cost.put("tax", tax);
-                            cost.put("refundable", refundableString);
-                            cost.put("change_penalties", change_penaltiesString);
-                            theList.set(theList.size() - p, cost);
-                            HashMap<String, String> forprint = new HashMap<>();
-                            forprint.put("origin", originAirport_forAPI);
-                            forprint.put("destination", destinationAirport_forAPI);
-                            forprint.put("direct", "Direct");
-                            forprint.put("depart_time", "Time: " + cost.get("departs_at_time"));
-                            forprint.put("departs_day", "(" + cost.get("departs_at_day") + ")");
-                            forprint.put("Price",  cost.get("total_price") );
-                            forprint.put("location", theList.size() -p + ""); //αποθηκεύει σε ποιο σημειο της theList βρισκονται οι πληροφοριες
-
-                            // the new way -- under construction
-                            Flights flight2 =  allFlights.get(allFlights.size() - p);
-
-                            flight2.setTotal_price(total_price);
-                            flight2.setTotal_fare(total_fare);
-                            flight2.setTax(tax);
-                            flight2.setRefundable(refundable);
-                            flight2.setChange_penalties(change_penalties);
-                            flight2.setDirect(flightsLength-1 +"");
-
-                            allFlights.add(flight2);
-
-                            onlyForPrint.add(forprint);
-                        }
-                    }*/
-                    /* εάν όμως το flightLenght είναι μεγαλύτερο απο 1 τοτε αυτό σημαίνει οτι για να συμπληρωθεί
-                     * το δρομολόγιο πρεπει να γίνουν παραπάνω πτήσεις, οπότε τοποθετεί τα παρακάτω στοιχεία
-                     * σε μία απο τις πτήσεις του δρομολογίου*//*
-                    else if (flightsLength > 1) {
-                        for (int n = itineraries.length() * flightsLength; n > 0; n -= flightsLength) {
-                            HashMap<String, String> cost = new HashMap<>(theList.get(theList.size() - n));
-                            cost.put("total_price", total_price);
-                            cost.put("total_fare", total_fare);
-                            cost.put("tax", tax);
-                            cost.put("refundable", refundableString);
-                            cost.put("change_penalties", change_penaltiesString);
-                            theList.set(theList.size() - n, cost);
-                            HashMap<String, String> forprint = new HashMap<>();
-                            forprint.put("origin", originAirport_forAPI);
-                            forprint.put("destination", destinationAirport_forAPI);
-                            forprint.put("direct", "Stops: " + (flightsLength-1)+"");
-                            forprint.put("depart_time", "Time: " + cost.get("departs_at_time"));
-                            forprint.put("departs_day", "(" + cost.get("departs_at_day") + ")");
-                            forprint.put("Price",  cost.get("total_price"));
-                            forprint.put("location", theList.size() -n + ""); //αποθηκεύει σε ποιο σημειο της theList βρισκονται οι πληροφοριες
-
-                            // the new way -- under construction
-                            Flights flight2 =  allFlights.get(allFlights.size() - n);
-
-                            flight2.setTotal_price(total_price);
-                            flight2.setTotal_fare(total_fare);
-                            flight2.setTax(tax);
-                            flight2.setRefundable(refundable);
-                            flight2.setChange_penalties(change_penalties);
-                            flight2.setDirect(flightsLength-1 +"");
-
-                            allFlights.add(flight2);
-
-                            Log.i("last item ori", flight2.getOrigin_airport());
-
-                            onlyForPrint.add(forprint);
-                        }
-                    }*/
                 }
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
@@ -422,22 +297,9 @@ public class Http_Request_Activity extends AppCompatActivity {
                 startActivity(new Intent(Http_Request_Activity.this , MainActivity.class));
             }
 
-            Log.i("size", allFlights.size() + "");
-
-
-
-
-            //new method
+            //new method. list view
             myListAdapter listadapter = new myListAdapter(listView.getContext(), itineraries_flights);
             listView.setAdapter(listadapter);
-
-            /*ListAdapter adapter = new SimpleAdapter(
-                    Http_Request_Activity.this, onlyForPrint,
-                    R.layout.list_item, new String[]{
-                    "origin", "destination", "depart_time", "departs_day", "direct", "Price"},
-                    new int[]{R.id.origin, R.id.destination, R.id.departureTime, R.id.departureday, R.id.direct, R.id.price});
-            listView.setAdapter(adapter);*/
-
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
             progressDialog.cancel();

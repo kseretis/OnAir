@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:id="@+id/list_itemID"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="10dp"
@@ -43,7 +42,8 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:text="time"
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:paddingLeft="10dp"
+                android:paddingLeft="15dp"
                 android:text="day"
                 android:textSize="14dp"
                 android:id="@+id/departureday"
