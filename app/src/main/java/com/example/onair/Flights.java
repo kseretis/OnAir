@@ -3,7 +3,7 @@ package com.example.onair;
 public class Flights {
 
     private String departs_at, arrives_at, origin_airport, destination_airport, marketing_airline, operating_airline, flight_number, aircraft,
-                    travel_class, booking_code, total_price, total_fare, tax;
+                    travel_class, booking_code, total_price, total_fare, tax,  depart_time, depart_day;
     private int  seats_remaining;
     private boolean refundable, change_penalties;
 
@@ -97,6 +97,14 @@ public class Flights {
         this.change_penalties = change_penalties;
     }
 
+    public void setDepart_day(String depart_day) {
+        this.depart_day = depart_day;
+    }
+
+    public void setDepart_time(String depart_time) {
+        this.depart_time = depart_time;
+    }
+
     // getters
     public String getDeparts_at() {
         return departs_at;
@@ -160,5 +168,13 @@ public class Flights {
 
     public boolean isChange_penalties() {
         return change_penalties;
+    }
+
+    public String getDepart_time() {
+        return depart_time;
+    }
+
+    public String getDepart_day() {
+        return depart_day;
     }
 }

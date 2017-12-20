@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -36,7 +37,6 @@ import java.util.concurrent.ExecutionException;
 
 
 public class Http_Request_Activity extends AppCompatActivity {
-    private ListView listView;
     private ProgressDialog progressDialog ;
     private boolean exception = false;
     String labelGo, labelDestination;
@@ -48,15 +48,20 @@ public class Http_Request_Activity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> theList;
     ArrayList<HashMap<String, String>> onlyForPrint;
     HashMap<String, String> AIRPORT_LIST = new HashMap<String, String>();
+    ListView listView;
 
     // arraylist with class Flights
     ArrayList<Flights> allFlights = new ArrayList<Flights>();
+    ArrayList<Itineraries> itineraries_flights = new ArrayList<Itineraries>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http__request_);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        listView = (ListView) findViewById(R.id.list);
+
 
         // ProgressDialog όσο τα αποτελέσματα φορτώνουν
         progressDialog = new ProgressDialog(Http_Request_Activity.this);
@@ -189,7 +194,7 @@ public class Http_Request_Activity extends AppCompatActivity {
                 for (int i = 0; i < results.length(); i++) {
 
                     //class Flights
-                    Flights flight = new Flights();
+                    Flights flight;
 
                     JSONObject outside = results.getJSONObject(i);
                     JSONArray itineraries = outside.getJSONArray("itineraries");
@@ -203,6 +208,7 @@ public class Http_Request_Activity extends AppCompatActivity {
                         JSONObject outbound = testttt.getJSONObject("outbound");
                         JSONArray flights = outbound.getJSONArray("flights");
                         for (int k = 0; k < flights.length(); k++) {
+                            flight = new Flights();
                             JSONObject inside = flights.getJSONObject(k);
 
                             departs_at = inside.getString("departs_at");
@@ -247,7 +253,9 @@ public class Http_Request_Activity extends AppCompatActivity {
                             temp.put("origin_airport", origin_airport);
                             temp.put("destination_airport", destination_airport);
                             temp.put("departs_at_day", departs_at.substring(0, 10)); //Αποθηκεύει την ημερομινία
+                            flight.setDepart_day(departs_at.substring(0, 10));
                             temp.put("departs_at_time", departs_at.substring(11)); //Αποθηκεύει την ωρα
+                            flight.setDepart_time(departs_at.substring(11));
                             temp.put("arrives_at_day", arrives_at.substring(0, 10));
                             temp.put("arrives_at_time", arrives_at.substring(11));
                             temp.put("marketing_airline", marketing_airline);
@@ -268,6 +276,8 @@ public class Http_Request_Activity extends AppCompatActivity {
                      * η παρακάτω for αντικαθιστά τα ανανεωμένα hashmap στη λίστα με τα κοινά
                      * χαρακτηριστικά που έχουν οι πτήσεις */
 
+
+
                     JSONObject fare = outside.getJSONObject("fare");
                     total_price = fare.getString("total_price");
                     JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
@@ -285,9 +295,29 @@ public class Http_Request_Activity extends AppCompatActivity {
                     else
                         change_penaltiesString = "No";
 
+
+                    Itineraries itiner = new Itineraries();
+
+                    // take the last flights
+                    ArrayList<Flights> tempFlights = new ArrayList<>();
+                    for(int ti=flightsLength; ti>0; ti--)
+                        tempFlights.add(allFlights.get(allFlights.size()-ti));
+
+                    //fill the class
+                    itiner.setFlights_count(tempFlights);
+                    itiner.setTotal_price(total_price);
+                    itiner.setTotal_fare(total_fare);
+                    itiner.setTax(tax);
+                    itiner.setRefundable(refundable);
+                    itiner.setChange_penalties(change_penalties);
+
+                    itineraries_flights.add(itiner);
+
+
+
                     /* έαν ο αριθμός του flightLenght είναι 1 σημαίνει ότι οι πτήσεις είναι απευθείας
                      * και ξεκινάει να βάζει την τιμη και όλα τα παρακάτω σε κάθε μία πτήσει ξεχωριστά */
-                    if (flightsLength == 1) {
+                    /*if (flightsLength == 1) {
                         for (int p = itineraries.length(); p > 0; p--) {
                             HashMap<String, String> cost = new HashMap<>(theList.get(theList.size() - p));
                             cost.put("total_price", total_price);
@@ -313,13 +343,16 @@ public class Http_Request_Activity extends AppCompatActivity {
                             flight2.setTax(tax);
                             flight2.setRefundable(refundable);
                             flight2.setChange_penalties(change_penalties);
+                            flight2.setDirect(flightsLength-1 +"");
+
+                            allFlights.add(flight2);
 
                             onlyForPrint.add(forprint);
                         }
-                    }
+                    }*/
                     /* εάν όμως το flightLenght είναι μεγαλύτερο απο 1 τοτε αυτό σημαίνει οτι για να συμπληρωθεί
                      * το δρομολόγιο πρεπει να γίνουν παραπάνω πτήσεις, οπότε τοποθετεί τα παρακάτω στοιχεία
-                     * σε μία απο τις πτήσεις του δρομολογίου*/
+                     * σε μία απο τις πτήσεις του δρομολογίου*//*
                     else if (flightsLength > 1) {
                         for (int n = itineraries.length() * flightsLength; n > 0; n -= flightsLength) {
                             HashMap<String, String> cost = new HashMap<>(theList.get(theList.size() - n));
@@ -346,10 +379,15 @@ public class Http_Request_Activity extends AppCompatActivity {
                             flight2.setTax(tax);
                             flight2.setRefundable(refundable);
                             flight2.setChange_penalties(change_penalties);
+                            flight2.setDirect(flightsLength-1 +"");
+
+                            allFlights.add(flight2);
+
+                            Log.i("last item ori", flight2.getOrigin_airport());
 
                             onlyForPrint.add(forprint);
                         }
-                    }
+                    }*/
                 }
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
@@ -384,12 +422,21 @@ public class Http_Request_Activity extends AppCompatActivity {
                 startActivity(new Intent(Http_Request_Activity.this , MainActivity.class));
             }
 
-            ListAdapter adapter = new SimpleAdapter(
+            Log.i("size", allFlights.size() + "");
+
+
+
+
+            //new method
+            myListAdapter listadapter = new myListAdapter(listView.getContext(), itineraries_flights);
+            listView.setAdapter(listadapter);
+
+            /*ListAdapter adapter = new SimpleAdapter(
                     Http_Request_Activity.this, onlyForPrint,
                     R.layout.list_item, new String[]{
                     "origin", "destination", "depart_time", "departs_day", "direct", "Price"},
                     new int[]{R.id.origin, R.id.destination, R.id.departureTime, R.id.departureday, R.id.direct, R.id.price});
-            listView.setAdapter(adapter);
+            listView.setAdapter(adapter);*/
 
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
