@@ -1,29 +1,13 @@
 package com.example.onair;
 
-public class Flights {
+public class Flight {
 
     private String departs_at, arrives_at, origin_airport, destination_airport, marketing_airline, operating_airline, flight_number, aircraft,
             travel_class, booking_code;
     private int seats_remaining;
 
-    public Flights(String departs_at, String arrives_at, String origin_airport, String destination_airport, String marketing_airline,
-                   String operating_airline, String flight_number, String aircraft, String travel_class, String booking_code,
-                   int seats_remaining) {
-        this.departs_at = departs_at;
-        this.arrives_at = arrives_at;
-        this.origin_airport = origin_airport;
-        this.destination_airport = destination_airport;
-        this.marketing_airline = marketing_airline;
-        this.operating_airline = operating_airline;
-        this.flight_number = flight_number;
-        this.aircraft = aircraft;
-        this.travel_class = travel_class;
-        this.booking_code = booking_code;
-        this.seats_remaining = seats_remaining;
-    }
-
     //empty constructor
-    public Flights() {
+    public Flight() {
     }
 
     //setters

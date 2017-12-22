@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:src="@drawable/plane" />
+        android:src="@drawable/exp_price_tag" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -25,7 +25,7 @@
             <TextView
                 android:text="origin"
                 android:textSize="19dp"
-                android:id="@+id/originR"
+                android:id="@+id/origin_togo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -33,11 +33,9 @@
                 android:text="destination"
                 android:textSize="19dp"
                 android:paddingLeft="15dp"
-                android:id="@+id/destinationR"
+                android:id="@+id/destination_togo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
         <LinearLayout
@@ -54,7 +52,7 @@
                 android:text="time"
                 android:textSize="15dp"
                 android:paddingLeft="5dp"
-                android:id="@+id/departureTimeR"
+                android:id="@+id/departureTime_togo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -62,7 +60,7 @@
                 android:paddingLeft="10dp"
                 android:text="day"
                 android:textSize="14dp"
-                android:id="@+id/departuredayR"
+                android:id="@+id/departureDay_togo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -75,7 +73,7 @@
             <TextView
                 android:text="origin"
                 android:textSize="19dp"
-                android:id="@+id/originReturn"
+                android:id="@+id/origin_return"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -83,11 +81,9 @@
                 android:text="destination"
                 android:textSize="19dp"
                 android:paddingLeft="15dp"
-                android:id="@+id/destinationReturn"
+                android:id="@+id/destination_return"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
         <LinearLayout
@@ -103,7 +99,7 @@
                 android:text="time"
                 android:textSize="15dp"
                 android:paddingLeft="5dp"
-                android:id="@+id/returnTimeR"
+                android:id="@+id/returnTime_return"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -111,7 +107,7 @@
                 android:paddingLeft="10dp"
                 android:text="day"
                 android:textSize="14dp"
-                android:id="@+id/returndayR"
+                android:id="@+id/returnDay_return"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -122,7 +118,7 @@
 
             <TextView
                 android:text="111111"
-                android:id="@+id/directdepart"
+                android:id="@+id/direct_togo"
                 android:textSize="15dp"
                 android:textColor="#5F8AFF"
                 android:layout_width="wrap_content"
@@ -133,9 +129,9 @@
                 android:id="@+id/slash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/directdepart"/>
+                android:layout_toEndOf="@+id/direct_togo"/>
             <TextView
-                android:id="@+id/directReturn"
+                android:id="@+id/direct_return"
                 android:textSize="15dp"
                 android:textColor="#5F8AFF"
                 android:text="222222"
@@ -145,7 +141,7 @@
 
             <TextView
                 android:text="price"
-                android:id="@+id/priceR"
+                android:id="@+id/price_return"
                 android:textColor="#FC6D45"
                 android:textSize="18dp"
                 android:layout_alignParentRight="true"

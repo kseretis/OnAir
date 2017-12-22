@@ -3,27 +3,23 @@ package com.example.onair;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.onair.Flights;
-import com.example.onair.R;
-
 import java.util.ArrayList;
 
-public class myListAdapter extends ArrayAdapter<Outbound> {
+public class myListAdapter extends ArrayAdapter<Itinerary> {
 
     private Context activityContext;
-    private ArrayList<Outbound> list;
-    private ArrayList<Flights> flights;
+    private ArrayList<Itinerary> list;
+    private ArrayList<Flight> flights;
     public static final String TAG = "ListView";
     private String origin, desti, depart_time, depart_day, direct;
 
-    public myListAdapter(Context context, ArrayList<Outbound> list){
+    public myListAdapter(Context context, ArrayList<Itinerary> list){
         super(context, R.layout.list_item, list);
         this.activityContext = context;
         this.list = list;
@@ -72,7 +68,7 @@ public class myListAdapter extends ArrayAdapter<Outbound> {
     }
 
     public void draw_data_from_flights(int position){
-        flights = list.get(position).getFlights_for_a_itinerary();
+        flights = list.get(position).getOutbound_list();
 
         if(flights.size() == 1) {
             origin = flights.get(0).getOrigin_airport();
@@ -87,6 +83,5 @@ public class myListAdapter extends ArrayAdapter<Outbound> {
 
         depart_time = flights.get(0).getDeparts_at().substring(11);
         depart_day = flights.get(0).getDeparts_at().substring(0,10);
-
     }
 }

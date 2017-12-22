@@ -399,6 +399,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("d_year", departure_year);
             intent.putExtra("d_month", departure_month_String);
             intent.putExtra("d_day", departure_day_String);
+
             intent.putExtra("labelGo", labelGo);
             intent.putExtra("labelDestination", labelDestination);
 
@@ -416,16 +417,8 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("r_month", return_month_String);
             intent.putExtra("r_day", return_day_String);
 
-            intent.putExtra("nonstop", IfswitchIsChecked);
             intent.putExtra("labelGo", labelGo);
             intent.putExtra("labelDestination", labelDestination);
-            intent.putExtra("adults", NUMBER_OF_ADULTS);
-            if(!spinner_travel_class.getSelectedItem().equals("Economy"))
-                intent.putExtra("travel_class", spinner_travel_class.getSelectedItem().toString());
-            if(!progressTextview.getText().equals("none"))
-                intent.putExtra("max_price", progressTextview.getText().toString());
-            else
-                intent.putExtra("max_price", "none");
 
             startActivity(intent);
         }
