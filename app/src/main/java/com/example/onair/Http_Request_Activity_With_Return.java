@@ -56,12 +56,12 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listReturn);
 
         // ProgressDialog όσο τα αποτελέσματα φορτώνουν
-     /*   progressDialog = new ProgressDialog(Http_Request_Activity_With_Return.this);
+        progressDialog = new ProgressDialog(Http_Request_Activity_With_Return.this);
         progressDialog.setTitle("Searching for results...");
         progressDialog.setMessage("Please wait!");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();*/
+        progressDialog.show();
 
         //Πέρνει της πληροφορίες απο το πρωτο activity
         originAirport_forAPI = getIntent().getStringExtra("loctown");
@@ -72,9 +72,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         return_year = getIntent().getIntExtra("r_year", 0);
         return_month_String = getIntent().getStringExtra("r_month");
         return_day_String = getIntent().getStringExtra("r_day");
-
-        labelGo = getIntent().getStringExtra("labelGo");
-        labelDestination = getIntent().getStringExtra("labelDestination");
+        setTitle(originAirport_forAPI +"-"+ destinationAirport_forAPI);
 
         //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -280,62 +278,14 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
             listView.setAdapter(adapter);
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
-           // progressDialog.cancel();
+            progressDialog.cancel();
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int Location, long l) {
-
-                   /* Intent intent = new Intent(Http_Request_Activity_With_Return.this, Detail_Activity.Detail_Activity_Return.class);
-                    intent.putExtra("detailsToGo", arrayListToGo);
-                    intent.putExtra("detailsReturn", arrayListReturn);
-                    intent.putExtra("currency", storeCurrency);
-                    intent.putExtra("PREVIOUS_ACTIVITY", this.getClass().getSimpleName());
-                    intent.putExtra("labelGo", labelGo);
-                    intent.putExtra("labelDestination", labelDestination);
-                    intent.putExtra("adults", NUMBER_OF_ADULTS);
-                    startActivity(intent);*/
+                // TODO
                 }
             });
-        }
-    }
-
-    public class findAirline extends AsyncTask<String, String, String> {
-        String name;
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            String param = params[0];
-
-            try {
-                String urlForAirlines = "https://iatacodes.org/api/v6/airlines?api_key=01b77c00-91c5-4417-ba5f-0e940713aea1&code=" +param;
-                URL url = new URL(urlForAirlines);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJSon = buffer.toString();
-                JSONObject parentObject = new JSONObject(finalJSon);
-                JSONArray response = parentObject.getJSONArray("response");
-                for(int i=0; i<response.length(); i++){
-                    JSONObject ob = response.getJSONObject(i);
-                    name = ob.getString("name");
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return name;
         }
     }
 

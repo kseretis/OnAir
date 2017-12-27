@@ -400,9 +400,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("d_month", departure_month_String);
             intent.putExtra("d_day", departure_day_String);
 
-            intent.putExtra("labelGo", labelGo);
-            intent.putExtra("labelDestination", labelDestination);
-
             startActivity(intent);
         }
         //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
@@ -416,9 +413,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("r_year", return_year);
             intent.putExtra("r_month", return_month_String);
             intent.putExtra("r_day", return_day_String);
-
-            intent.putExtra("labelGo", labelGo);
-            intent.putExtra("labelDestination", labelDestination);
 
             startActivity(intent);
         }

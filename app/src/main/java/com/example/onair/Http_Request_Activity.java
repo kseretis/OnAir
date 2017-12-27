@@ -60,12 +60,12 @@ public class Http_Request_Activity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list);
 
         // ProgressDialog όσο τα αποτελέσματα φορτώνουν
-       /* progressDialog = new ProgressDialog(Http_Request_Activity.this);
+        progressDialog = new ProgressDialog(Http_Request_Activity.this);
         progressDialog.setTitle("Searching for results...");
         progressDialog.setMessage("Please wait!");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();*/
+        progressDialog.show();
 
         listView = (ListView) findViewById(R.id.list);
 
@@ -75,8 +75,7 @@ public class Http_Request_Activity extends AppCompatActivity {
         departure_year = getIntent().getIntExtra("d_year", 0);
         departure_month_String = getIntent().getStringExtra("d_month");
         departure_day_String = getIntent().getStringExtra("d_day");
-        labelGo = getIntent().getStringExtra("labelGo");
-        labelDestination = getIntent().getStringExtra("labelDestination");
+        setTitle(originAirport_forAPI +"-"+ destinationAirport_forAPI);
 
         //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -92,34 +91,6 @@ public class Http_Request_Activity extends AppCompatActivity {
         departureDate_forAPI = departure_year + "-" + departure_month_String + "-" + departure_day_String;
 
         new JSONTask().execute();
-    }
-
-    public void findAirLine() {
-        for(int i=0; i<theList.size(); i++){
-            String mar = null, ope = null;
-            HashMap<String, String> find = new HashMap<>(theList.get(i));
-            String marketing = find.get("marketing_airline");
-            String operating = find.get("operating_airline");
-
-            try {
-                mar = new findAirline().execute(marketing).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                ope = new findAirline().execute(operating).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            find.put("marketing_airline", mar);
-            find.put("operating_airline", ope);
-            theList.set(i, find);
-        }
     }
 
     public class JSONTask extends AsyncTask<Void, Void, Void> {
@@ -276,113 +247,15 @@ public class Http_Request_Activity extends AppCompatActivity {
             listView.setAdapter(adapter);
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
-         //   progressDialog.cancel();
+            progressDialog.cancel();
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int Location, long l) {
+                    // TODO
 
-                    /* στην λίστα onlyForPrint στην θεση location αποθηκεύεται τπ σημειο που βρίσκονται τα δεδομένα στην λίστα
-                     * theList. Στην onlyForPrint βρίσκονται ΜΟΝΟ τα στοιχεία που θα εμφανιστούν "συμμαζεμένα"στην οθόνη του χρήστη.
-                     * και στην theList έχει αναλυτικά τις πληροφορίες για κάθε πτηση*/
-                    int counter = Integer.valueOf(onlyForPrint.get(Location).get("location"));
-                    ArrayList<HashMap<String, String>> arrayListToGo = new ArrayList<HashMap<String, String>>();
-                    Boolean firstFlight = true;
-                    do{
-                        if(!firstFlight)
-                            counter++;
-                        /* Ελέγχει εάν το μηκος του πεδίου που είναι αποθηκευμενος ο κωδικός της αεροπορικής εταιρίας είναι μκροτερος ή ισος του 2
-                         * Εάν ναι μπαινει στην if και κανει τα απαραίτητα request για να βρει το ονομα της εταιρίας, έτσι την επόμενη φορά που
-                         * θα πατηθεί η ίδια πτηση το πεδίου με την αεροπορική εταιρία θα είναι ήδη γεμάτο και δεν θα χρειαστεί να ξανα-κάνει τα
-                         * request. Αυτό το if κάνει τον αλγόριθμο πιο γρήγορα μετα την δευτερη φορά που θα πατηθει η ιδια επιλογη */
-                        if(theList.get(counter).get("marketing_airline").length() <= 2) {
-                        /* Για τον λογο ότι το κλειδί που διαθέτουμε δεν επιτρεπει παραπανω παο 60 request το λεπτο σε καθε κλικ του χρηστη
-                         * για να δει αναλυτικοτερα τις πληροφοριες στέλνει εκεινη την ωρα τα request για να βρει τις αεροπορικες εταιριες
-                         * Στην περιπτωση που ειχαμε την δυνατοτηα για απεριοριστα request, σε ένα αλλαο thread θα έψαχνε παραλληλα της
-                         * εταιριες όσο ο χρηστης θα εβλεπε την αρχική λιστα */
-                            HashMap<String, String> test = new HashMap<String, String>(theList.get(counter));
-                            String marketing = test.get("marketing_airline");
-                        /* Με την επιλογή ενος στοιχείου απο την λίστα ανοιγει ενα αλλο activity στο οποίο στέλνονται πληροφοριες και πριν απο
-                         * στέλνοντε κάποια request για να βρεθούν οι αεροπορικές εταιρείες. Στην περίπτωση που έχουμε κάποιο δρομολόγιο με αρκετές
-                         * πτήσεις τα request είναι πολλά με αποτέλεσμα να καθυστερή η εφαρμογή μας. Για αυτο αποθηκέυει στην μεταβλητη Previous_Flight_Airline
-                         * τον κωδικο της εταιρείας για πρωτη φορά και κάνει request. Στην δεύτερη πτήση θα ελένξει εάν ο κωδικός της εταιρείας είναι ίδιος
-                         * με αυτόν της προηγούμενης πτήσης, εάν ναι αποθηκεέυι το ίδιο ονομα εάν όχι κανει ξανα request. Με αυτόν τον τρόπο μπορούμε να
-                         * γλυτώσουμε χρόνο σε περίπτωση που υπάρχουν πτήσεις σε δρομλόγια με κοινές αεροπορικές εταιρείες.*/
-                            if (!AIRPORT_LIST.containsKey(marketing)) {
-                                try {
-                                    String mar = new findAirline().execute(marketing).get();
-                                    AIRPORT_LIST.put(marketing, mar);
-                                    test.put("marketing_airline", mar);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            else
-                                test.put("marketing_airline", AIRPORT_LIST.get(marketing));
-
-                            theList.set(counter, test);
-                        }
-                        firstFlight = false;
-                        arrayListToGo.add(theList.get(counter));
-                    }while(!theList.get(counter).get("destination_airport").equals(destinationAirport_forAPI));
-
-                    Intent intent = new Intent(Http_Request_Activity.this, Detail_Activity.class);
-                    intent.putExtra("detailsToGo", arrayListToGo);
-                    intent.putExtra("currency", storeCurrency);
-                    intent.putExtra("labelGo", labelGo);
-                    intent.putExtra("labelDestination", labelDestination);
-                    intent.putExtra("adults", adults_forAPI);
-                    startActivity(intent);
                 }
             });
-        }
-    }
-
-    public class findAirline extends AsyncTask<String, String, String> {
-        String name;
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            String param = params[0];
-
-            try {
-                final String baseUrl = "https://iatacodes.org/api/v6/airlines?";
-                final String apiKeyParam = "api_key";
-                final String codeParam = "code";
-                Uri buildUri = Uri.parse(baseUrl).buildUpon()
-                        .appendQueryParameter(apiKeyParam, "01b77c00-91c5-4417-ba5f-0e940713aea1")
-                        .appendQueryParameter(codeParam, param).build();
-
-                URL url = new URL(buildUri.toString());
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJSon = buffer.toString();
-                JSONObject parentObject = new JSONObject(finalJSon);
-                JSONArray response = parentObject.getJSONArray("response");
-                for(int i=0; i<response.length(); i++){
-                    JSONObject ob = response.getJSONObject(i);
-                    name = ob.getString("name");
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return name;
         }
     }
 

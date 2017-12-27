@@ -4,87 +4,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp"
-    android:weightSum="1">
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/exp_price_tag" />
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="10dp">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:text="origin"
-                android:textSize="19dp"
-                android:id="@+id/origin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="destination"
-                android:textSize="19dp"
-                android:paddingLeft="15dp"
-                android:id="@+id/destination"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/airline_name"
+            android:gravity="center"
+            android:textSize="25dp"
+            android:text="no airline"
+            android:textStyle="italic"
+            android:padding="5dp"
+            android:layout_weight="1" />
 
-            <TextView
-                android:text="time"
-                android:textSize="15dp"
-                android:id="@+id/departureTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:paddingLeft="15dp"
-                android:text="day"
-                android:textSize="14dp"
-                android:id="@+id/departureday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <RelativeLayout
+        <TextView
+            android:id="@+id/price"
+            android:textColor="#FC6D45"
+            android:textSize="20dp"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/direct"
-                android:textSize="15dp"
-                android:textColor="#5F8AFF"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:text="price"
-                android:id="@+id/price"
-                android:textColor="#FC6D45"
-                android:textSize="18dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-
-
-
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/long_arrow_pointing_to_the_right"
+            android:padding="5dp"/>
 
+        <TextView
+            android:textSize="19dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/departureTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="21dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/origin_airport"/>
+
+        <TextView
+            android:textSize="19dp"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/arriveTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginLeft="5dp"
+            android:textSize="21dp"
+            android:id="@+id/destination_airport"/>
+
+        <TextView
+            android:id="@+id/direct"
+            android:layout_marginLeft="15dp"
+            android:textSize="15dp"
+            android:textColor="#5F8AFF"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
 </LinearLayout>

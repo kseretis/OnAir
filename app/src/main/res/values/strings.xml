@@ -27,4 +27,122 @@
         <item>8</item>
         <item>9</item>
     </string-array>
+
+    <string-array name="airline_codes">
+        <item>EL</item>
+        <item>GQ</item>
+        <item>PC</item>
+        <item>AZ</item>
+        <item>CT</item>
+        <item>SK</item>
+        <item>PS</item>
+        <item>LH</item>
+        <item>A3</item>
+        <item>U2</item>
+        <item>IB</item>
+        <item>VY</item>
+        <item>BA</item>
+        <item>LX</item>
+        <item>JU</item>
+        <item>RO</item>
+        <item>TK</item>
+        <item>OA</item>
+        <item>AY</item>
+        <item>EW</item>
+        <item>4U</item>
+        <item>E2</item>
+        <item>CL</item>
+        <item>SN</item>
+        <item>AF</item>
+        <item>KL</item>
+        <item>OS</item>
+        <item>2L</item>
+        <item>LZ</item>
+        <item>UL</item>
+        <item>FZ</item>
+        <item>SV</item>
+        <item>GF</item>
+        <item>H1</item>
+        <item>SG</item>
+        <item>XY</item>
+        <item>EY</item>
+        <item>EK</item>
+        <item>CZ</item>
+        <item>TG</item>
+        <item>PG</item>
+        <item>AI</item>
+        <item>CX</item>
+        <item>WW</item>
+        <item>FI</item>
+        <item>B6</item>
+        <item>LO</item>
+        <item>SU</item>
+        <item>AA</item>
+        <item>CJ</item>
+        <item>KE</item>
+        <item>AM</item>
+        <item>DL</item>
+        <item>UX</item>
+        <item>AC</item>
+        <item>2C</item>
+    </string-array>
+
+    <string-array name="airline_names">
+        <item>Air Nippon</item>
+        <item>Big Sky Airlines</item>
+        <item>Pegasus</item>
+        <item>Alitalia</item>
+        <item>Civil Air Transport</item>
+        <item>SAS</item>
+        <item>UIA</item>
+        <item>Lufthansa</item>
+        <item>Aegean Airlines</item>
+        <item>easyJet</item>
+        <item>Iberia</item>
+        <item>Vueling Airlines</item>
+        <item>British Airways</item>
+        <item>Swiss</item>
+        <item>Jat</item>
+        <item>Tarom - Romanian Transport</item>
+        <item>Turkish Airlines</item>
+        <item>Olympic Airlines</item>
+        <item>Finnair</item>
+        <item>Eurowings</item>
+        <item>Germanwings</item>
+        <item>Rio Grande Air</item>
+        <item>Lufthansa CityLine</item>
+        <item>Brussels Airlines</item>
+        <item>Air France</item>
+        <item>KLM</item>
+        <item>Austrian</item>
+        <item>Helvetic Airways</item>
+        <item>Balkan Bulgarian Airlines</item>
+        <item>Srilankan</item>
+        <item>FLYDUBAI</item>
+        <item>Saudi Arabian</item>
+        <item>Gulf Air</item>
+        <item>Hahn Air Systems</item>
+        <item>Spicejet</item>
+        <item>Nas Air</item>
+        <item>Etihad</item>
+        <item>Emirates</item>
+        <item>China Southern Airlines</item>
+        <item>Thai Airways</item>
+        <item>Bangkok Airways</item>
+        <item>Air India</item>
+        <item>Cathay Pacific</item>
+        <item>bmibaby</item>
+        <item>Icelandair</item>
+        <item>Jetblue Airways</item>
+        <item>Lot - Polish</item>
+        <item>Aeroflot</item>
+        <item>American Airlines</item>
+        <item>China Northern Airlines</item>
+        <item>Korean Air</item>
+        <item>Aeromexico</item>
+        <item>Delta</item>
+        <item>Europa Air</item>
+        <item>Air Canada</item>
+        <item>SNCF</item>
+    </string-array>
 </resources>
