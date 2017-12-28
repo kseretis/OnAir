@@ -283,7 +283,12 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int Location, long l) {
-                // TODO
+                    Intent intent = new Intent(getApplicationContext(), Detail_activity2.class);
+                    Bundle bundle = new Bundle();
+
+                    bundle.putSerializable("itinerary", the_list_of_itineraries.get(Location));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
         }

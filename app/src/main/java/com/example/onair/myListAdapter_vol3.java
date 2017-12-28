@@ -58,10 +58,10 @@ public class myListAdapter_vol3 extends ArrayAdapter<Flight>{
            viewHolder.destination_airport_detail.setText(destination_airport);
            viewHolder.arrive_time_detail.setText(arrive_time);
            viewHolder.arrive_date.setText(arrive_date);
-          // viewHolder.airline_name.setText(arrive_time);
-           viewHolder.flight_number.setText("flight number: " + flight_number);
-           viewHolder.aircraft.setText("aicraft: " + aircraft);
-           viewHolder.travel_class.setText("travel class: " + travel_class);
+           viewHolder.airline_name.setText( airline_name);
+           viewHolder.flight_number.setText(flight_number);
+           viewHolder.aircraft.setText(aircraft);
+           viewHolder.travel_class.setText(travel_class);
 
            view.setTag(viewHolder);
        }
@@ -77,17 +77,19 @@ public class myListAdapter_vol3 extends ArrayAdapter<Flight>{
 
     public void take_data_from_list(int position){
         //airports
-        origin_airport = list.get(0).getOrigin_airport();
-        destination_airport = list.get(list.size() -1).getDestination_airport();
+        origin_airport = list.get(position).getOrigin_airport();
+        destination_airport = list.get(position).getDestination_airport();
 
         //departure
-        departure_time = list.get(0).getDeparts_at().substring(11);
-        departure_date = list.get(0).getDeparts_at().substring(0,10);
+        departure_time = list.get(position).getDeparts_at().substring(11);
+        departure_date = list.get(position).getDeparts_at().substring(0,10);
 
         //arrive
-        arrive_time = list.get(list.size() -1).getArrives_at().substring(11);
-        arrive_date = list.get(list.size() -1).getArrives_at().substring(0,10);
+        arrive_time = list.get(position).getArrives_at().substring(11);
+        arrive_date = list.get(position).getArrives_at().substring(0,10);
 
+        //airline name
+        airline_name = list.get(position).getAirline_name();
 
         //more
         //airline_name = list.get(position).get

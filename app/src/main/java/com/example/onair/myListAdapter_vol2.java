@@ -54,7 +54,7 @@ public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
     public View getView(int position, @Nullable View view, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
-        if(view == null){
+        if(view == null) {
             view = LayoutInflater.from(activityContext).inflate(R.layout.list_item_with_return, null);
             viewHolder = new ViewHolder();
 
@@ -91,8 +91,6 @@ public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
             viewHolder.destination_airport_return.setText(destination_airport_return);
             viewHolder.direct_return.setText(direct_return);
             viewHolder.airline_name.setText(the_airline);
-
-            view.setTag(viewHolder);
         }
         else
             viewHolder = (ViewHolder) view.getTag();

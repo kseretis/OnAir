@@ -242,7 +242,7 @@ public class Http_Request_Activity extends AppCompatActivity {
             }
 
             //custom list adapter
-            myListAdapter adapter = new myListAdapter(listView.getContext(), the_list_of_itineraries);
+            final myListAdapter adapter = new myListAdapter(listView.getContext(), the_list_of_itineraries);
             listView.setAdapter(adapter);
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
