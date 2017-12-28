@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -67,15 +68,13 @@ public class Http_Request_Activity extends AppCompatActivity {
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
-        listView = (ListView) findViewById(R.id.list);
-
         //Πέρνει της πληροφορίες απο το πρωτο activity
         originAirport_forAPI = getIntent().getStringExtra("loctown");
         destinationAirport_forAPI = getIntent().getStringExtra("destown");
         departure_year = getIntent().getIntExtra("d_year", 0);
         departure_month_String = getIntent().getStringExtra("d_month");
         departure_day_String = getIntent().getStringExtra("d_day");
-        setTitle(originAirport_forAPI +"-"+ destinationAirport_forAPI);
+        setTitle(departureDate_forAPI);
 
         //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -252,7 +251,12 @@ public class Http_Request_Activity extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int Location, long l) {
-                    // TODO
+                    Intent intent = new Intent(getApplicationContext(), Detail_activity2.class);
+                    Bundle bundle = new Bundle();
+
+                    bundle.putSerializable("itinerary", the_list_of_itineraries.get(Location));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
 
                 }
             });

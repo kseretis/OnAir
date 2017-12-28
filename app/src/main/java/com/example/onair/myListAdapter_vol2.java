@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
 
@@ -93,9 +94,8 @@ public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
 
             view.setTag(viewHolder);
         }
-        else{
+        else
             viewHolder = (ViewHolder) view.getTag();
-        }
         return view;
     }
 
@@ -108,39 +108,18 @@ public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
         flights_togo = list.get(position).getOutbound_list();
         flights_return = list.get(position).getInbound_list();
 
-        String airline1 = null;
-        String airline2 = null;
-        // find airline name
-        // fill the airline textview
-        if(flights_togo.size() == 1)
-            airline1 = airlines.get(flights_togo.get(0).getOperating_airline());
-        else
-            if (!flights_togo.get(0).getOperating_airline().equals(flights_togo.get(1).getOperating_airline()))
-                airline1 = "Combination of airlines";
+        //set airline name at all flights
+        String the_airline_togo = set_airline_name(flights_togo);
+        String the_airline_return = set_airline_name(flights_return);
 
-
-        // find the airline name for return
-        if(flights_return.size() == 1)
-            airline2 = airlines.get(flights_return.get(0).getOperating_airline());
-        else
-            if (!flights_return.get(0).getOperating_airline().equals(flights_return.get(1).getOperating_airline()))
-                airline2 = "Combination of airlines";
-
-
-        if(airline1 == airline2)
-            the_airline = airline1;
+        if(the_airline_togo == the_airline_return)
+            the_airline = flights_togo.get(0).getAirline_name();
         else
             the_airline = "Combination of airlines";
 
-        if(flights_togo.size() == 1)
-            direct = "Direct";
-        else
-            direct = "Stops: " + (flights_togo.size() - 1) ;
-
-        if(flights_return.size() == 1)
-            direct_return = "Direct";
-        else
-            direct_return = "Stops: " + (flights_return.size() - 1) ;
+        //direct or no
+        direct = direct_or_no(flights_togo);
+        direct_return = direct_or_no(flights_return);
 
         //to go
         depart_time = flights_togo.get(0).getDeparts_at().substring(11);
@@ -155,49 +134,37 @@ public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
         destination_airport_return = flights_return.get(flights_return.size() - 1).getDestination_airport();
     }
 
-    public class findAirline extends AsyncTask<String, String, String> {
-        String name;
+    public String set_airline_name(ArrayList<Flight> flights){
+        ArrayList<String> temp_airlines_list = new ArrayList<>();
 
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            String param = params[0];
-
-            try {
-                final String baseUrl = "https://iatacodes.org/api/v6/airlines?";
-                final String apiKeyParam = "api_key";
-                final String codeParam = "code";
-                Uri buildUri = Uri.parse(baseUrl).buildUpon()
-                        .appendQueryParameter(apiKeyParam, "01b77c00-91c5-4417-ba5f-0e940713aea1")
-                        .appendQueryParameter(codeParam, param).build();
-
-                URL url = new URL(buildUri.toString());
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJSon = buffer.toString();
-                JSONObject parentObject = new JSONObject(finalJSon);
-                JSONArray response = parentObject.getJSONArray("response");
-                for(int i=0; i<response.length(); i++){
-                    JSONObject ob = response.getJSONObject(i);
-                    name = ob.getString("name");
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return name;
+        //set airline name at all flights
+        for(int pos=0; pos<flights.size(); pos++) {
+            flights.get(pos).setAirline_name(airlines.get(flights.get(pos).getOperating_airline()));
+            temp_airlines_list.add(flights.get(pos).getAirline_name());
+            Log.i("airline name added", flights.get(pos).getAirline_name() + "");
         }
+
+        //combination of airlines or just one airline
+        HashSet<String> duplicate_set = new HashSet<String>(temp_airlines_list);
+        Log.i("duplicates ", duplicate_set.size() +" / "+ temp_airlines_list.size() +" / "+ flights.size());
+        if(duplicate_set.size() < temp_airlines_list.size()){
+            //there are duplicates
+            if(duplicate_set.size() == 1)
+                return temp_airlines_list.get(0);
+            else
+                return "Combination of airlines";
+        }else
+            if(duplicate_set.size() == 1)
+                return temp_airlines_list.get(0);
+            else
+                return "Combination of airlines";
+    }
+
+    public String direct_or_no(ArrayList<Flight> flights){
+
+        if(flights.size() == 1)
+            return "Direct";
+        else
+            return "Stops: " + (flights.size() - 1) ;
     }
 }

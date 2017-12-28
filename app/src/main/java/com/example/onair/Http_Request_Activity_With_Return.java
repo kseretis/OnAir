@@ -72,7 +72,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         return_year = getIntent().getIntExtra("r_year", 0);
         return_month_String = getIntent().getStringExtra("r_month");
         return_day_String = getIntent().getStringExtra("r_day");
-        setTitle(originAirport_forAPI +"-"+ destinationAirport_forAPI);
+        setTitle(departureDate_forAPI);
 
         //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);

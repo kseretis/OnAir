@@ -3,6 +3,7 @@ package com.example.onair;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public class myListAdapter extends ArrayAdapter<Itinerary> {
 
@@ -74,13 +77,28 @@ public class myListAdapter extends ArrayAdapter<Itinerary> {
 
     public void draw_data_from_flights(int position) {
         flights = list.get(position).getOutbound_list();
+        ArrayList<String> temp_airlines_list = new ArrayList<>();
 
-        // find airline name
-        // fill the airline textview
-        if(flights.size() == 1)
-            the_airline = airlines.get(flights.get(0).getOperating_airline());
-        else
-            if(!flights.get(0).getOperating_airline().equals(flights.get(1).getOperating_airline()))
+        //set airline name at all flights
+        for(int pos=0; pos<flights.size(); pos++) {
+            flights.get(pos).setAirline_name(airlines.get(flights.get(pos).getOperating_airline()));
+            temp_airlines_list.add(flights.get(pos).getAirline_name());
+            Log.i("airline name added", flights.get(pos).getAirline_name() + "");
+        }
+
+        //combination of airlines or just one airline
+        HashSet<String> duplicate_set = new HashSet<String>(temp_airlines_list);
+        Log.i("duplicates ", duplicate_set.size() +" / "+ temp_airlines_list.size() +" / "+ flights.size());
+        if(duplicate_set.size() < temp_airlines_list.size()){
+            //there are duplicates
+            if(duplicate_set.size() == 1)
+                the_airline = temp_airlines_list.get(0);
+            else
+                the_airline = "Combination of airlines";
+        }else
+            if(duplicate_set.size() == 1)
+                the_airline = temp_airlines_list.get(0);
+            else
                 the_airline = "Combination of airlines";
 
         if(flights.size() == 1)

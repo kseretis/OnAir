@@ -1,9 +1,11 @@
 package com.example.onair;
 
-public class Flight {
+import java.io.Serializable;
+
+public class Flight implements Serializable{
 
     private String departs_at, arrives_at, origin_airport, destination_airport, marketing_airline, operating_airline, flight_number, aircraft,
-            travel_class, booking_code;
+            travel_class, booking_code, airline_name;
     private int seats_remaining;
 
     //empty constructor
@@ -55,6 +57,10 @@ public class Flight {
         this.seats_remaining = seats_remaining;
     }
 
+    public void setAirline_name(String airline_name) {
+        this.airline_name = airline_name;
+    }
+
     // getters
     public String getDeparts_at() {
         return departs_at;
@@ -98,5 +104,9 @@ public class Flight {
 
     public int getSeats_remaining() {
         return seats_remaining;
+    }
+
+    public String getAirline_name() {
+        return airline_name;
     }
 }

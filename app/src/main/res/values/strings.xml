@@ -85,6 +85,7 @@
         <item>UX</item>
         <item>AC</item>
         <item>2C</item>
+        <item>TD</item>
     </string-array>
 
     <string-array name="airline_names">
@@ -144,5 +145,6 @@
         <item>Europa Air</item>
         <item>Air Canada</item>
         <item>SNCF</item>
+        <item>Atlantis European Airways</item>
     </string-array>
 </resources>

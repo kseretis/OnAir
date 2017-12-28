@@ -1,8 +1,9 @@
 package com.example.onair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Itinerary {
+public class Itinerary implements Serializable{
     private ArrayList<Flight> outbound_list = new ArrayList<>();
     private ArrayList<Flight> inbound_list = new ArrayList<>();
     private String total_price, total_fare, tax;
@@ -10,7 +11,6 @@ public class Itinerary {
 
     //empty constructor
     void Itinerary(){
-
     }
 
     //custom methods
