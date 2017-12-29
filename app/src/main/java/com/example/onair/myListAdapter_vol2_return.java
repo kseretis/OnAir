@@ -1,8 +1,6 @@
 package com.example.onair;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,22 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
+public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
 
     private Context activityContext;
     private ArrayList<Itinerary> list;
@@ -39,8 +26,8 @@ public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
     private String[] airlines_codes = getContext().getResources().getStringArray(R.array.airline_codes);
     private String[] airlines_names = getContext().getResources().getStringArray(R.array.airline_names);
 
-    public myListAdapter_vol2(Context context, ArrayList<Itinerary> list){
-        super(context, R.layout.list_item_with_return, list);
+    public myListAdapter_vol2_return(Context context, ArrayList<Itinerary> list){
+        super(context, R.layout.my_list_adapter_vol2, list);
         this.activityContext = context;
         this.list = list;
         airlines = new HashMap<>();
@@ -55,7 +42,7 @@ public class myListAdapter_vol2 extends ArrayAdapter<Itinerary> {
         ViewHolder viewHolder;
 
         if(view == null) {
-            view = LayoutInflater.from(activityContext).inflate(R.layout.list_item_with_return, null);
+            view = LayoutInflater.from(activityContext).inflate(R.layout.my_list_adapter_vol2, null);
             viewHolder = new ViewHolder();
 
             //cast 1

@@ -13,9 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -30,7 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Http_Request_Activity_With_Return extends AppCompatActivity {
     private ProgressDialog progressDialog ;
@@ -274,7 +271,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
             }
 
             //new custom list adapter
-            myListAdapter_vol2 adapter = new myListAdapter_vol2(listView.getContext(), the_list_of_itineraries);
+            myListAdapter_vol2_return adapter = new myListAdapter_vol2_return(listView.getContext(), the_list_of_itineraries);
             listView.setAdapter(adapter);
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
@@ -283,7 +280,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int Location, long l) {
-                    Intent intent = new Intent(getApplicationContext(), Detail_activity2.class);
+                    Intent intent = new Intent(getApplicationContext(), Details_activity.class);
                     Bundle bundle = new Bundle();
 
                     bundle.putSerializable("itinerary", the_list_of_itineraries.get(Location));

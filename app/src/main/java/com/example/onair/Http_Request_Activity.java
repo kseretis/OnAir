@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -30,22 +29,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 
 public class Http_Request_Activity extends AppCompatActivity {
     private ProgressDialog progressDialog ;
     private boolean exception = false;
-    String labelGo, labelDestination;
+
 
     private int departure_year;
     private String departure_month_String, departure_day_String;
     private String originAirport_forAPI, destinationAirport_forAPI;
     private String departureDate_forAPI, nonStop_forAPI, storeCurrency, travelClass_forAPI, maxPrice_forAPI, adults_forAPI;
-    ArrayList<HashMap<String, String>> theList;
-    ArrayList<HashMap<String, String>> onlyForPrint;
-    HashMap<String, String> AIRPORT_LIST = new HashMap<String, String>();
 
     // arraylist for all flights separately and for itinerary
     ArrayList<Flight> allFlights_theList = new ArrayList<>();
@@ -242,7 +236,7 @@ public class Http_Request_Activity extends AppCompatActivity {
             }
 
             //custom list adapter
-            final myListAdapter adapter = new myListAdapter(listView.getContext(), the_list_of_itineraries);
+            myListAdapter_vol1_single adapter = new myListAdapter_vol1_single(listView.getContext(), the_list_of_itineraries);
             listView.setAdapter(adapter);
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
@@ -251,13 +245,12 @@ public class Http_Request_Activity extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int Location, long l) {
-                    Intent intent = new Intent(getApplicationContext(), Detail_activity2.class);
+                    Intent intent = new Intent(getApplicationContext(), Details_activity.class);
                     Bundle bundle = new Bundle();
 
                     bundle.putSerializable("itinerary", the_list_of_itineraries.get(Location));
                     intent.putExtras(bundle);
                     startActivity(intent);
-
                 }
             });
         }

@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    String labelGo = null , labelDestination = null;
 
     ArrayList<String> autoCompleteDropDownList_forLocationAirport = new ArrayList<String>();
     ArrayList<String> autoCompleteDropDownList_forDestinationAirport = new ArrayList<String>();
@@ -63,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
     String departure_day_String, departure_month_String;
     int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
     String return_day_String, return_month_String;
-    String IfswitchIsChecked = "";
     String storeCurrency;
-    int NUMBER_OF_ADULTS = 1;
 
 
     @Override

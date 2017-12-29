@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class myListAdapter extends ArrayAdapter<Itinerary> {
+public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
 
     private Context activityContext;
     private ArrayList<Itinerary> list;
@@ -26,8 +26,8 @@ public class myListAdapter extends ArrayAdapter<Itinerary> {
     private String[] airlines_codes = getContext().getResources().getStringArray(R.array.airline_codes);
     private String[] airlines_names = getContext().getResources().getStringArray(R.array.airline_names);
 
-    public myListAdapter(Context context, ArrayList<Itinerary> list){
-        super(context, R.layout.list_item, list);
+    public myListAdapter_vol1_single(Context context, ArrayList<Itinerary> list){
+        super(context, R.layout.my_list_adapter_vol1, list);
         this.activityContext = context;
         this.list = list;
         airlines = new HashMap<>();
@@ -42,7 +42,7 @@ public class myListAdapter extends ArrayAdapter<Itinerary> {
         ViewHolder viewHolder;
 
         if(view == null){
-            view = LayoutInflater.from(activityContext).inflate(R.layout.list_item, null);
+            view = LayoutInflater.from(activityContext).inflate(R.layout.my_list_adapter_vol1, null);
             viewHolder = new ViewHolder();
 
             viewHolder.departureTime = (TextView) view.findViewById(R.id.departureTime);
