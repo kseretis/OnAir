@@ -140,7 +140,6 @@ public class Http_Request_Activity extends AppCompatActivity {
                 String finalJSon = buffer.toString();
                 JSONObject parentObject = new JSONObject(finalJSon);
 
-                String currency = parentObject.getString("currency");
                 JSONArray results = parentObject.getJSONArray("results");
                 for (int i = 0; i < results.length(); i++) {
 

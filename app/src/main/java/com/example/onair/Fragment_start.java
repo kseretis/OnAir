@@ -57,7 +57,7 @@ public class Fragment_start extends Fragment {
 
     public static class ViewHolder{
         TextView origin_airport_detail, departure_time_detail, airline_name, flight_number, aircraft,
-                        travel_class, departure_date;
+                        travel_class, departure_date, destination_airport, arrive_time, arrive_date;
     }
 
     public void take_data_from_first_flight(int position){

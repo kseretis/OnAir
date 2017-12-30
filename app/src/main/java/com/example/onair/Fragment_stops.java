@@ -19,7 +19,8 @@ public class Fragment_stops extends Fragment {
     private int list_position;
     public static final String TAG = "Fragment_stops";
     private String origin_airport, departure_time, destination_airport, arrive_time,
-            airline_name, flight_number, aircraft, travel_class, departure_date, arrive_date;
+            airline_name, flight_number, aircraft, travel_class, departure_date, arrive_date,
+            previous_destination_airport, previous_arrive_time, previous_arrive_date;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +43,11 @@ public class Fragment_stops extends Fragment {
         viewHolder.aircraft = (TextView) view.findViewById(R.id.aircraft_stops);
         viewHolder.travel_class = (TextView) view.findViewById(R.id.travel_class_stops);
 
+        // previous
+        viewHolder.previous_destination_airport = (TextView) view.findViewById(R.id.destination_airport_start);
+        viewHolder.previous_arrive_time = (TextView) view.findViewById(R.id.arrive_time_start);
+        viewHolder.previous_arrive_date = (TextView) view.findViewById(R.id.arrive_date_start);
+
         //take data
         take_data_for_stops();
 
@@ -50,20 +56,23 @@ public class Fragment_stops extends Fragment {
         viewHolder.departure_time_detail.setText(departure_time);
         viewHolder.departure_date.setText(departure_date);
 
+        //previus
+        viewHolder.previous_destination_airport.setText(previous_destination_airport);
+        viewHolder.previous_arrive_time.setText(previous_arrive_time);
+        viewHolder.previous_arrive_date.setText(previous_arrive_date);
+
         // extras
         viewHolder.airline_name.setText(airline_name);
         viewHolder.flight_number.setText(flight_number);
         viewHolder.aircraft.setText(aircraft);
         viewHolder.travel_class.setText(travel_class);
 
-
-
         // Inflate the layout for this fragment
         return view;
     }
 
     public static class ViewHolder{
-        TextView origin_airport_detail, departure_time_detail, destination_airport_detail, arrive_time_detail;
+        TextView origin_airport_detail, departure_time_detail, previous_destination_airport, previous_arrive_time, previous_arrive_date;
         TextView airline_name, flight_number, aircraft, travel_class, departure_date, arrive_date;
         ImageView location_icon;
     }
@@ -72,6 +81,7 @@ public class Fragment_stops extends Fragment {
         //airports
         origin_airport = list.get(list_position).getOrigin_airport();
         destination_airport = list.get(list_position).getDestination_airport();
+        previous_destination_airport = list.get(list_position -1).getDestination_airport();
 
         //departure
         departure_time = list.get(list_position).getDeparts_at().substring(11);
@@ -80,6 +90,8 @@ public class Fragment_stops extends Fragment {
         //arrive
         arrive_time = list.get(list_position).getArrives_at().substring(11);
         arrive_date = list.get(list_position).getArrives_at().substring(0,10);
+        previous_arrive_time = list.get(list_position -1).getArrives_at().substring(11);
+        previous_arrive_date = list.get(list_position -1).getArrives_at().substring(0,10);
 
         //airline name
         airline_name = list.get(list_position).getAirline_name();
