@@ -86,6 +86,7 @@
         <item>AC</item>
         <item>2C</item>
         <item>TD</item>
+        <item>HV</item>
     </string-array>
 
     <string-array name="airline_names">
@@ -146,5 +147,9 @@
         <item>Air Canada</item>
         <item>SNCF</item>
         <item>Atlantis European Airways</item>
+        <item>Transavia Holland</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

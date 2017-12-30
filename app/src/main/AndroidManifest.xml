@@ -47,7 +47,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Detail_Activity" />
         <activity
             android:name=".Settings_activity"
             android:parentActivityName=".MainActivity">
@@ -57,7 +56,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Detail_activity2"></activity>
+        <activity android:name=".Details_activity"></activity>
     </application>
 
 </manifest>

@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context="com.example.onair.Fragment_stops"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -14,9 +14,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/location_icon"
-            android:src="@drawable/flag24" />
+            android:src="@drawable/dot_and_circle"
+            android:layout_marginLeft="15dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,7 +23,7 @@
             android:layout_gravity="center"
             android:textSize="20dp"
             android:text="skg"
-            android:id="@+id/origin_airport_detail"/>
+            android:id="@+id/origin_airport_stops"/>
 
         <View
             android:layout_width="0dp"
@@ -44,7 +43,7 @@
             android:text="18:00"
             android:layout_gravity="center"
             android:padding="5dp"
-            android:id="@+id/departure_time_detail" />
+            android:id="@+id/departure_time_stops" />
 
         <View
             android:layout_width="0dp"
@@ -64,8 +63,7 @@
             android:text="2017-4-23"
             android:layout_gravity="center"
             android:padding="5dp"
-            android:id="@+id/departure_date_detail"/>
-
+            android:id="@+id/departure_date_stops"/>
     </LinearLayout>
 
     <LinearLayout
@@ -86,7 +84,7 @@
                 android:textSize="17dp"/>
 
             <TextView
-                android:id="@+id/airline_name_detail"
+                android:id="@+id/airline_name_stops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="aegean"
@@ -107,7 +105,7 @@
                 android:textSize="17dp"/>
 
             <TextView
-                android:id="@+id/flight_number_detail"
+                android:id="@+id/flight_number_stops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="flight numba"
@@ -127,7 +125,7 @@
                 android:textSize="17dp"/>
 
             <TextView
-                android:id="@+id/aircraft_detail"
+                android:id="@+id/aircraft_stops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="aircraft"
@@ -147,76 +145,13 @@
                 android:textSize="17dp"/>
 
             <TextView
-                android:id="@+id/travel_class_detail"
+                android:id="@+id/travel_class_stops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="economy"
                 android:textSize="19dp"/>
 
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/destination_icon"
-            android:src="@drawable/location24"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="20dp"
-            android:text="ath"
-            android:id="@+id/destination_airport_detail"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:src="@drawable/alarm_clock"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="5dp"
-            android:textSize="18dp"
-            android:text="19:00"
-            android:id="@+id/arrive_time_detail"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:src="@drawable/calendar"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:text="2017-4-24"
-            android:layout_gravity="center"
-            android:padding="5dp"
-            android:id="@+id/arrive_date_detail"/>
 
     </LinearLayout>
 

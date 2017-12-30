@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.onair.Detail_activity2">
+    tools:context="com.example.onair.Details_activity">
 
     <TextView
         android:layout_width="match_parent"
@@ -19,11 +19,29 @@
         android:text="Text"
         android:id="@+id/from_to"/>
 
-    <ListView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listview_detail">
-    </ListView>
+        android:id="@+id/start_part_frame_layout">
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mid_part_frame_layour">
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mid_part_2_frame_layour">
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/last_part_frame_layour">
+    </FrameLayout>
 
     <Button
         android:layout_width="wrap_content"
@@ -31,6 +49,7 @@
         android:layout_gravity="center"
         android:textSize="19dp"
         android:text="Buy now"
-        android:id="@+id/buy"/>
+        android:id="@+id/buy"
+        android:layout_marginBottom="10dp"/>
 
 </LinearLayout>

@@ -1,32 +1,31 @@
 package com.example.onair;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class Fragment_start extends Fragment {
 
-    Itinerary itinerary;
     ViewHolder viewHolder;
     private ArrayList<Flight> list;
+    public static final String TAG = "Fragment_start";
     private String origin_airport, departure_time,  airline_name, flight_number, aircraft,
             travel_class, departure_date;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.fragment_fragment_start, container, false);
+        View view = inflater.inflate(R.layout.fragment_fragment_start, container, false);
 
-        itinerary = (Itinerary) getArguments().getSerializable("itinerary");
+        Log.i(TAG, "started");
+
+        list = (ArrayList<Flight>) getArguments().getSerializable("outbound_list");
         viewHolder = new ViewHolder();
 
         viewHolder.origin_airport_detail = (TextView) view.findViewById(R.id.origin_airport_start);
@@ -38,12 +37,8 @@ public class Fragment_start extends Fragment {
         viewHolder.aircraft = (TextView) view.findViewById(R.id.aircraft_start);
         viewHolder.travel_class = (TextView) view.findViewById(R.id.travel_class_start);
 
-        Log.i("iti", itinerary.getOutbound_list().get(0).getAirline_name());
-
-        list = itinerary.getOutbound_list();
         //take data
-        take_data_from_list(0);
-
+        take_data_from_first_flight(0);
 
         // set values to widget
         viewHolder.origin_airport_detail.setText(origin_airport);
@@ -57,7 +52,7 @@ public class Fragment_start extends Fragment {
         viewHolder.travel_class.setText(travel_class);
 
         // Inflate the layout for this fragment
-       return view;
+        return view;
     }
 
     public static class ViewHolder{
@@ -65,7 +60,7 @@ public class Fragment_start extends Fragment {
                         travel_class, departure_date;
     }
 
-    public void take_data_from_list(int position){
+    public void take_data_from_first_flight(int position){
         //airports
         origin_airport = list.get(position).getOrigin_airport();
 
@@ -82,5 +77,4 @@ public class Fragment_start extends Fragment {
         aircraft = list.get(position).getAircraft();
         travel_class = list.get(position).getTravel_class();
     }
-
 }
