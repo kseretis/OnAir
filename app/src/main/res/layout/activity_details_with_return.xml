@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.onair.Details_activity">
+    tools:context="com.example.onair.Details_activity_with_return">
 
     <TextView
         android:layout_width="match_parent"
@@ -17,7 +16,7 @@
         android:textStyle="italic"
         android:textSize="23dp"
         android:text="Text"
-        android:id="@+id/from_to"/>
+        android:id="@+id/from_to_togo"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -31,25 +30,60 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/start_part_frame_layout">
+                android:id="@+id/start_part_frame_layout_togo">
             </FrameLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/mid_part_frame_layour">
+                android:id="@+id/mid_part_frame_layour_togo">
             </FrameLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/mid_part_2_frame_layour">
+                android:id="@+id/mid_part_2_frame_layour_togo">
             </FrameLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/last_part_frame_layour">
+                android:id="@+id/last_part_frame_layour_togo">
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="15dp"
+                android:textStyle="italic"
+                android:textSize="23dp"
+                android:text="Text"
+                android:id="@+id/from_to_return"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/start_part_frame_layout_return">
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mid_part_frame_layour_return">
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mid_part_2_frame_layour_return">
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/last_part_frame_layour_return">
             </FrameLayout>
 
             <Button

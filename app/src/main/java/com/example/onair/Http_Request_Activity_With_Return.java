@@ -32,13 +32,13 @@ import java.util.ArrayList;
 public class Http_Request_Activity_With_Return extends AppCompatActivity {
     private ProgressDialog progressDialog ;
     private boolean exception  = false;
-    String labelGo, labelDestination;
 
     private int departure_year, return_year;
-    private String departure_month_String, departure_day_String, return_day_String, return_month_String;;
+    private String departure_month_String, departure_day_String, return_day_String, return_month_String;
 
     private String originAirport_forAPI, destinationAirport_forAPI;
     private String departureDate_forAPI, returnDate_forAPI, nonStop_forAPI, storeCurrency, travelClass_forAPI, maxPrice_forAPI, adults_forAPI;
+    public static final String TAG = "Http_Request_Activity_w";
 
     // arraylist for all flights separately and for itinerary
     ArrayList<Flight> allFlights_theList = new ArrayList<>();
@@ -69,7 +69,6 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         return_year = getIntent().getIntExtra("r_year", 0);
         return_month_String = getIntent().getStringExtra("r_month");
         return_day_String = getIntent().getStringExtra("r_day");
-        setTitle(departureDate_forAPI);
 
         //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -80,6 +79,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         adults_forAPI = sharedPreferencesFromMain.getString("adults_number", "");
         nonStop_forAPI = sharedPreferencesFromMain.getString("nonstop", "");
         maxPrice_forAPI = sharedPreferencesFromMain.getString("max_price", "");
+        setTitle(departureDate_forAPI);
 
         //Βάζει την ημερομινία σε σωστή μορφή
         departureDate_forAPI = departure_year + "-" + departure_month_String + "-" + departure_day_String;
@@ -144,18 +144,21 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
                 JSONArray results = parentObject.getJSONArray("results");
                 for (int i = 0; i < results.length(); i++) {
 
-                    //class itinerary
-                    Itinerary itinerary = new Itinerary();
-
-                    //class for a single flight
-                    Flight to_go_flight, return_flight;
+                    // itineraries list without price and taxes
+                    ArrayList<Itinerary> itineraries_without_price = new ArrayList<>();
 
                     JSONObject outside = results.getJSONObject(i);
                     JSONArray itineraries = outside.getJSONArray("itineraries");
 
                     for (int j = 0; j < itineraries.length(); j++) {
-                        JSONObject outbound = itineraries.getJSONObject(j).getJSONObject("outbound");
 
+                        //class for a single flight
+                        Flight to_go_flight, return_flight;
+
+                        // cast itinerary
+                        Itinerary itinerary = new Itinerary();
+
+                        JSONObject outbound = itineraries.getJSONObject(j).getJSONObject("outbound");
                         JSONArray flights_togo_JSON = outbound.getJSONArray("flights");
                         for (int k = 0; k < flights_togo_JSON.length(); k++) {
 
@@ -181,10 +184,10 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
                             to_go_flight.setBooking_code(booking_info.getString("booking_code"));
                             to_go_flight.setSeats_remaining(booking_info.getInt("seats_remaining"));
 
-                            //αποθήκευση στην ArrayList
+                            // αποθήκευση στην ArrayList
                             allFlights_theList.add(to_go_flight);
 
-                            //add flight to arraylist<Flight> from class Itinerary
+                            // add flight to arraylist<Flight> from class Itinerary
                             itinerary.Outbound_list_adder(to_go_flight);
                         }
 
@@ -220,20 +223,29 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
                             //add flight to arraylist<Flight> from class Itinerary
                             itinerary.Inbound_list_adder(return_flight);
                         }
+                        itineraries_without_price.add(itinerary);
+                    }
+
+                    JSONObject fare = outside.getJSONObject("fare");
+                    String total_price = fare.getString("total_price");
+                    JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
+                    String total_fare = price_per_adult.getString("total_fare");
+                    String tax = price_per_adult.getString("tax");
+                    JSONObject restrictions = fare.getJSONObject("restrictions");
+                    Boolean refundable = restrictions.getBoolean("refundable");
+                    Boolean change_penalties = restrictions.getBoolean("change_penalties");
+
+                    for(Itinerary iti: itineraries_without_price){
                         // append more data to itinerary object class
-                        JSONObject fare = outside.getJSONObject("fare");
-                        itinerary.setTotal_price(fare.getString("total_price"));
-
-                        JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
-                        itinerary.setTotal_fare(price_per_adult.getString("total_fare"));
-                        itinerary.setTax(price_per_adult.getString("tax"));
-
-                        JSONObject restrictions = fare.getJSONObject("restrictions");
-                        itinerary.setRefundable(restrictions.getBoolean("refundable"));
-                        itinerary.setChange_penalties(restrictions.getBoolean("change_penalties"));
+                        iti.setTotal_price(total_price);
+                        iti.setTotal_fare(total_fare);
+                        iti.setTax(tax);
+                        iti.setRefundable(refundable);
+                        iti.setChange_penalties(change_penalties);
+                        Log.i("mesa mesa", iti.getTotal_price() +"");
 
                         //add itinerary to the list
-                        the_list_of_itineraries.add(itinerary);
+                        the_list_of_itineraries.add(iti);
                     }
                 }
             } catch (MalformedURLException ex) {
@@ -273,6 +285,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
             //new custom list adapter
             myListAdapter_vol2_return adapter = new myListAdapter_vol2_return(listView.getContext(), the_list_of_itineraries);
             listView.setAdapter(adapter);
+            Log.i(TAG, the_list_of_itineraries.size() +" <---before adapter list size");
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
             progressDialog.cancel();
@@ -280,7 +293,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int Location, long l) {
-                    Intent intent = new Intent(getApplicationContext(), Details_activity.class);
+                    Intent intent = new Intent(getApplicationContext(), Details_activity_with_return.class);
                     Bundle bundle = new Bundle();
 
                     bundle.putSerializable("itinerary", the_list_of_itineraries.get(Location));

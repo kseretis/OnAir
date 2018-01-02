@@ -32,14 +32,15 @@ import java.util.ArrayList;
 
 
 public class Http_Request_Activity extends AppCompatActivity {
+
     private ProgressDialog progressDialog ;
     private boolean exception = false;
-
 
     private int departure_year;
     private String departure_month_String, departure_day_String;
     private String originAirport_forAPI, destinationAirport_forAPI;
     private String departureDate_forAPI, nonStop_forAPI, storeCurrency, travelClass_forAPI, maxPrice_forAPI, adults_forAPI;
+    public static final String TAG = "Http_Request_Activity";
 
     // arraylist for all flights separately and for itinerary
     ArrayList<Flight> allFlights_theList = new ArrayList<>();
@@ -143,18 +144,21 @@ public class Http_Request_Activity extends AppCompatActivity {
                 JSONArray results = parentObject.getJSONArray("results");
                 for (int i = 0; i < results.length(); i++) {
 
-                    //class itinerary
-                    Itinerary itinerary = new Itinerary();
-
-                    //class Flight
-                    Flight flight;
+                    // itineraries list without price and taxes
+                    ArrayList<Itinerary> itineraries_without_price = new ArrayList<>();
 
                     JSONObject outside = results.getJSONObject(i);
                     JSONArray itineraries = outside.getJSONArray("itineraries");
 
                     for (int j = 0; j < itineraries.length(); j++) {
-                        JSONObject outbound = itineraries.getJSONObject(j).getJSONObject("outbound");
 
+                        //class Flight
+                        Flight flight;
+
+                        // cast itinerary
+                        Itinerary itinerary = new Itinerary();
+
+                        JSONObject outbound = itineraries.getJSONObject(j).getJSONObject("outbound");
                         JSONArray flights = outbound.getJSONArray("flights");
                         for (int k = 0; k < flights.length(); k++) {
 
@@ -179,27 +183,34 @@ public class Http_Request_Activity extends AppCompatActivity {
                             flight.setBooking_code(booking_info.getString("booking_code"));
                             flight.setSeats_remaining(booking_info.getInt("seats_remaining"));
 
-                            //αποθήκευση στην ArrayList
+                            // αποθήκευση στην ArrayList
                             allFlights_theList.add(flight);
 
-                            //add flight to arraylist<Flight> from class Itinerary
+                            // add flight to arraylist<Flight> from class Itinerary
                             itinerary.Outbound_list_adder(flight);
                         }
+                        itineraries_without_price.add(itinerary);
                     }
-                    // append more data to itinerary object class
+
                     JSONObject fare = outside.getJSONObject("fare");
-                    itinerary.setTotal_price(fare.getString("total_price"));
-
+                    String total_price = fare.getString("total_price");
                     JSONObject price_per_adult = fare.getJSONObject("price_per_adult");
-                    itinerary.setTotal_fare(price_per_adult.getString("total_fare"));
-                    itinerary.setTax(price_per_adult.getString("tax"));
-
+                    String total_fare = price_per_adult.getString("total_fare");
+                    String tax = price_per_adult.getString("tax");
                     JSONObject restrictions = fare.getJSONObject("restrictions");
-                    itinerary.setRefundable(restrictions.getBoolean("refundable"));
-                    itinerary.setChange_penalties(restrictions.getBoolean("change_penalties"));
+                    Boolean refundable = restrictions.getBoolean("refundable");
+                    Boolean change_penalties = restrictions.getBoolean("change_penalties");
+                    for(Itinerary iti: itineraries_without_price){
+                        // append more data to itinerary object class
+                        iti.setTotal_price(total_price);
+                        iti.setTotal_fare(total_fare);
+                        iti.setTax(tax);
+                        iti.setRefundable(refundable);
+                        iti.setChange_penalties(change_penalties);
 
-                    //add itinerary to the list
-                    the_list_of_itineraries.add(itinerary);
+                        //add itinerary to the list
+                        the_list_of_itineraries.add(iti);
+                    }
                 }
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
@@ -237,6 +248,7 @@ public class Http_Request_Activity extends AppCompatActivity {
             //custom list adapter
             myListAdapter_vol1_single adapter = new myListAdapter_vol1_single(listView.getContext(), the_list_of_itineraries);
             listView.setAdapter(adapter);
+            Log.i(TAG, the_list_of_itineraries.size() +"");
 
             // Με το που περάστουν τα αποτελέσματα στον adapter και εμφανιστουν και στην οθονη ακυρώνεται το progressDialog
             progressDialog.cancel();

@@ -34,6 +34,11 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
         for(int i=0; i<airlines_codes.length; i++){
             airlines.put(airlines_codes[i], airlines_names[i]);
         }
+        Log.i(TAG, list.size() +"<---adapter list.size");
+        for(Itinerary iti: list){
+            Log.i(TAG, iti.getTotal_price()+"");
+        }
+
     }
 
     @NonNull
@@ -61,7 +66,7 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
             viewHolder.direct_return = (TextView) view.findViewById(R.id.direct_return);
             viewHolder.airline_name = (TextView) view.findViewById(R.id.airline_name_vol2);
 
-            draw_data_from_flights(position);
+            draw_data_from_flights(getItem(position));
 
             //fill 1
             viewHolder.departureTime.setText(depart_time);
@@ -69,7 +74,6 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
             viewHolder.arriveTime.setText(arrive_time);
             viewHolder.destination_airport.setText(destination_airport);
             viewHolder.direct.setText(direct);
-            viewHolder.price.setText(list.get(position).getTotal_price());
 
             //fill 2
             viewHolder.departureTime_return.setText(depart_time_return);
@@ -77,10 +81,14 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
             viewHolder.arriveTime_return.setText(arrive_time_return);
             viewHolder.destination_airport_return.setText(destination_airport_return);
             viewHolder.direct_return.setText(direct_return);
+
+            //extras
             viewHolder.airline_name.setText(the_airline);
+            viewHolder.price.setText(getItem(position).getTotal_price());
         }
         else
             viewHolder = (ViewHolder) view.getTag();
+
         return view;
     }
 
@@ -89,11 +97,11 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
         TextView origin_airport_return, destination_airport_return, departureTime_return, arriveTime_return, direct_return;
     }
 
-    public void draw_data_from_flights(int position){
-        flights_togo = list.get(position).getOutbound_list();
-        flights_return = list.get(position).getInbound_list();
+    public void draw_data_from_flights(Itinerary item){
+        flights_togo = new ArrayList<>(list.get(item.getOutbound_list().size()).getOutbound_list());
+        flights_return = new ArrayList<>(list.get(item.getInbound_list().size()).getInbound_list());
 
-        //set airline name at all flights
+        // set airline name at all flights
         String the_airline_togo = set_airline_name(flights_togo);
         String the_airline_return = set_airline_name(flights_return);
 

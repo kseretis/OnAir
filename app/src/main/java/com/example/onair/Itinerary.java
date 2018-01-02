@@ -10,7 +10,7 @@ public class Itinerary implements Serializable{
     private Boolean refundable, change_penalties;
 
     //empty constructor
-    void Itinerary(){
+    public Itinerary() {
     }
 
     //custom methods
