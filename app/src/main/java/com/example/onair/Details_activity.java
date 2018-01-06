@@ -51,7 +51,7 @@ public class Details_activity extends AppCompatActivity {
     public static final String TAG = "Details_activity";
     private String origin_name, destination_name;
     Itinerary itinerary;
-    TextView from_to, refundable;
+    TextView from_to, refundable, penalty;
     Button buy;
 
     @Override
@@ -69,7 +69,13 @@ public class Details_activity extends AppCompatActivity {
         // cast
         from_to = (TextView) findViewById(R.id.from_to);
         refundable = (TextView) findViewById(R.id.refundable_single);
+        penalty = (TextView) findViewById(R.id.penalty_single) ;
         buy = (Button) findViewById(R.id.buy);
+
+        Moves();
+    }
+
+    public void Moves(){
 
         // get extra from intent
         Intent intent = this.getIntent();
@@ -111,43 +117,49 @@ public class Details_activity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(
                 R.id.last_part_frame_layour, fragment_end).commit();
 
-       if(itinerary.getOutbound_list().size() != 1 ){
+        if(itinerary.getOutbound_list().size() != 1 ){
 
-           // create bundle to parse list and position to fragment
-           Bundle fragment_bundle_stops = new Bundle();
-           fragment_bundle_stops.putSerializable("outbound_list", itinerary.getOutbound_list());
-           fragment_bundle_stops.putInt("list_position", 1);
+            // create bundle to parse list and position to fragment
+            Bundle fragment_bundle_stops = new Bundle();
+            fragment_bundle_stops.putSerializable("outbound_list", itinerary.getOutbound_list());
+            fragment_bundle_stops.putInt("list_position", 1);
 
-           // create middle fragment (stops)
-           Fragment_stops fragment_stops = new Fragment_stops();
-           fragment_stops.setArguments(fragment_bundle_stops);
+            // create middle fragment (stops)
+            Fragment_stops fragment_stops = new Fragment_stops();
+            fragment_stops.setArguments(fragment_bundle_stops);
 
-           //replace middle frame layout
-           getSupportFragmentManager().beginTransaction().replace(
-                   R.id.mid_part_frame_layour, fragment_stops).commit();
+            //replace middle frame layout
+            getSupportFragmentManager().beginTransaction().replace(
+                    R.id.mid_part_frame_layour, fragment_stops).commit();
 
-           if(itinerary.getOutbound_list().size() == 3){
+            if(itinerary.getOutbound_list().size() == 3){
 
-               // create bundle to parse list and position to fragment if list has more than 2 stops
-               Bundle fragment_bundle_stops2 = new Bundle();
-               fragment_bundle_stops2.putSerializable("outbound_list", itinerary.getOutbound_list());
-               fragment_bundle_stops2.putInt("list_position", 2);
+                // create bundle to parse list and position to fragment if list has more than 2 stops
+                Bundle fragment_bundle_stops2 = new Bundle();
+                fragment_bundle_stops2.putSerializable("outbound_list", itinerary.getOutbound_list());
+                fragment_bundle_stops2.putInt("list_position", 2);
 
-               //create second mid part frame layout if needed
-               Fragment_stops fragment_stops2 = new Fragment_stops();
-               fragment_stops2.setArguments(fragment_bundle_stops2);
+                //create second mid part frame layout if needed
+                Fragment_stops fragment_stops2 = new Fragment_stops();
+                fragment_stops2.setArguments(fragment_bundle_stops2);
 
-               //replace middle 2 frame layout
-               getSupportFragmentManager().beginTransaction().replace(
-                       R.id.mid_part_2_frame_layour, fragment_stops2).commit();
-           }
-       }
-        // set price and refundable
+                //replace middle 2 frame layout
+                getSupportFragmentManager().beginTransaction().replace(
+                        R.id.mid_part_2_frame_layour, fragment_stops2).commit();
+            }
+        }
+        // set price and refundable and penalties
         if(itinerary.getRefundable())
             refundable.setText("YES");
         else
             refundable.setText("NO");
-        buy.setText(itinerary.getTotal_price());
+
+        if(itinerary.getChange_penalties())
+            penalty.setText("YES");
+        else
+            penalty.setText("NO");
+
+        buy.setText("Buy now from " + itinerary.getTotal_price());
     }
 
     public class call_api_for_cities extends AsyncTask<Void, Void, String> {

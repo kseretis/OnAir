@@ -37,7 +37,7 @@ public class Details_activity_with_return extends AppCompatActivity {
     public static final String TAG = "Details_activity_return";
     private String origin_name, destination_name;
     Itinerary itinerary;
-    TextView from_to, from_to_return, refundable;
+    TextView from_to, from_to_return, refundable, penalty;
     Button buy;
 
     @Override
@@ -56,6 +56,7 @@ public class Details_activity_with_return extends AppCompatActivity {
         from_to = (TextView) findViewById(R.id.from_to_togo);
         from_to_return = (TextView) findViewById(R.id.from_to_return);
         refundable = (TextView) findViewById(R.id.refundable_return);
+        penalty = (TextView) findViewById(R.id.penalty_return);
         buy = (Button) findViewById(R.id.buy);
 
         // get extra from intent
@@ -79,6 +80,10 @@ public class Details_activity_with_return extends AppCompatActivity {
         from_to.setText(origin_name + " - " + destination_name);
         from_to_return.setText(destination_name + " - " + origin_name);
 
+        Moves();
+    }
+
+    public void Moves(){
         // PART 1
         // create bundle to parse data to fragments
         Bundle fragment_bundle_start = new Bundle();
@@ -189,7 +194,15 @@ public class Details_activity_with_return extends AppCompatActivity {
             refundable.setText("YES");
         else
             refundable.setText("NO");
-        buy.setText(itinerary.getTotal_price());
+
+        refundable.setText("NO");
+
+        if(itinerary.getChange_penalties())
+            penalty.setText("YES");
+        else
+            penalty.setText("NO");
+
+        buy.setText("Buy now from " + itinerary.getTotal_price());
     }
 
     public class call_api_for_cities extends AsyncTask<Void, Void, String> {
