@@ -16,7 +16,7 @@ public class Fragment_start extends Fragment {
     private ArrayList<Flight> list;
     public static final String TAG = "Fragment_start";
     private String origin_airport, departure_time,  airline_name, flight_number, aircraft,
-            travel_class, departure_date;
+            travel_class, departure_date, seats;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,6 +36,7 @@ public class Fragment_start extends Fragment {
         viewHolder.flight_number = (TextView) view.findViewById(R.id.flight_number_start);
         viewHolder.aircraft = (TextView) view.findViewById(R.id.aircraft_start);
         viewHolder.travel_class = (TextView) view.findViewById(R.id.travel_class_start);
+        viewHolder.seats = (TextView) view.findViewById(R.id.seats_remaining_start);
 
         //take data
         take_data_from_first_flight(0);
@@ -50,6 +51,7 @@ public class Fragment_start extends Fragment {
         viewHolder.flight_number.setText(flight_number);
         viewHolder.aircraft.setText(aircraft);
         viewHolder.travel_class.setText(travel_class);
+        viewHolder.seats.setText(seats);
 
         // Inflate the layout for this fragment
         return view;
@@ -57,7 +59,7 @@ public class Fragment_start extends Fragment {
 
     public static class ViewHolder{
         TextView origin_airport_detail, departure_time_detail, airline_name, flight_number, aircraft,
-                        travel_class, departure_date, destination_airport, arrive_time, arrive_date;
+                        travel_class, departure_date, seats;
     }
 
     public void take_data_from_first_flight(int position){
@@ -76,5 +78,6 @@ public class Fragment_start extends Fragment {
         flight_number = list.get(position).getFlight_number();
         aircraft = list.get(position).getAircraft();
         travel_class = list.get(position).getTravel_class();
+        seats = String.valueOf(list.get(position).getSeats_remaining());
     }
 }

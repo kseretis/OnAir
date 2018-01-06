@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
     private Context activityContext;
     private ArrayList<Itinerary> list;
     private ArrayList<Flight> flights_togo, flights_return;
-    public static final String TAG = "ListView";
+    public static final String TAG = "ListView_return";
     private String depart_time, origin_airport, arrive_time, destination_airport, direct, the_airline,
             depart_time_return, origin_airport_return, arrive_time_return, destination_airport_return, direct_return;
     private HashMap<String, String> airlines;
@@ -34,11 +35,6 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
         for(int i=0; i<airlines_codes.length; i++){
             airlines.put(airlines_codes[i], airlines_names[i]);
         }
-        Log.i(TAG, list.size() +"<---adapter list.size");
-        for(Itinerary iti: list){
-            Log.i(TAG, iti.getTotal_price()+"");
-        }
-
     }
 
     @NonNull
@@ -66,7 +62,7 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
             viewHolder.direct_return = (TextView) view.findViewById(R.id.direct_return);
             viewHolder.airline_name = (TextView) view.findViewById(R.id.airline_name_vol2);
 
-            draw_data_from_flights(getItem(position));
+            draw_data_from_flights(position);
 
             //fill 1
             viewHolder.departureTime.setText(depart_time);
@@ -97,18 +93,30 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
         TextView origin_airport_return, destination_airport_return, departureTime_return, arriveTime_return, direct_return;
     }
 
-    public void draw_data_from_flights(Itinerary item){
-        flights_togo = new ArrayList<>(list.get(item.getOutbound_list().size()).getOutbound_list());
-        flights_return = new ArrayList<>(list.get(item.getInbound_list().size()).getInbound_list());
+    public void draw_data_from_flights(int position){
+        flights_togo = list.get(position).getOutbound_list();
+        flights_return = list.get(position).getInbound_list();
 
+        // temp 1
+        ArrayList<String> temp_airlines_list = new ArrayList<>();
         // set airline name at all flights
-        String the_airline_togo = set_airline_name(flights_togo);
-        String the_airline_return = set_airline_name(flights_return);
+        for(int pos=0; pos<flights_togo.size(); pos++) {
+            flights_togo.get(pos).setAirline_name(airlines.get(flights_togo.get(pos).getOperating_airline()));
+            temp_airlines_list.add(flights_togo.get(pos).getAirline_name());
+            Log.i("airline name added", flights_togo.get(pos).getAirline_name() + "");
+        }
 
-        if(the_airline_togo == the_airline_return)
-            the_airline = flights_togo.get(0).getAirline_name();
-        else
-            the_airline = "Combination of airlines";
+        // temp 2
+        ArrayList<String> temp_airlines_list2 = new ArrayList<>();
+        for(int pos=0; pos<flights_return.size(); pos++){
+            flights_return.get(pos).setAirline_name(airlines.get(flights_return.get(pos).getOperating_airline()));
+            temp_airlines_list2.add(flights_return.get(pos).getAirline_name());
+            Log.i("airline name added", flights_return.get(pos).getAirline_name() + "");
+        }
+
+        // set airline name or combination
+        the_airline = set_airline_name(temp_airlines_list, temp_airlines_list2);
+        Log.i(TAG, the_airline +"");
 
         //direct or no
         direct = direct_or_no(flights_togo);
@@ -127,30 +135,32 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
         destination_airport_return = flights_return.get(flights_return.size() - 1).getDestination_airport();
     }
 
-    public String set_airline_name(ArrayList<Flight> flights){
-        ArrayList<String> temp_airlines_list = new ArrayList<>();
-
-        //set airline name at all flights
-        for(int pos=0; pos<flights.size(); pos++) {
-            flights.get(pos).setAirline_name(airlines.get(flights.get(pos).getOperating_airline()));
-            temp_airlines_list.add(flights.get(pos).getAirline_name());
-            Log.i("airline name added", flights.get(pos).getAirline_name() + "");
-        }
+    public String set_airline_name(ArrayList<String> temp_airlines_list1, ArrayList<String> temp_airlines_list2){
+        ArrayList<String> temp_airlines = temp_airlines_list1;
+        temp_airlines.addAll(temp_airlines_list2);
+        String airline_name;
 
         //combination of airlines or just one airline
-        HashSet<String> duplicate_set = new HashSet<String>(temp_airlines_list);
-        Log.i("duplicates ", duplicate_set.size() +" / "+ temp_airlines_list.size() +" / "+ flights.size());
-        if(duplicate_set.size() < temp_airlines_list.size()){
+        HashSet<String> duplicate_set = new HashSet<String>(temp_airlines);
+        if(duplicate_set.size() < temp_airlines.size()){
             //there are duplicates
             if(duplicate_set.size() == 1)
-                return temp_airlines_list.get(0);
+                airline_name = temp_airlines.get(0);
+            else if(duplicate_set.size() == 2)
+                airline_name = temp_airlines.get(0) + " & " + temp_airlines.get(1);
             else
-                return "Combination of airlines";
+                airline_name = "Combination of airlines";
         }else
             if(duplicate_set.size() == 1)
-                return temp_airlines_list.get(0);
+                airline_name = temp_airlines.get(0);
+            else if(duplicate_set.size() == 2)
+                airline_name = temp_airlines.get(0) + " & " + temp_airlines.get(1);
             else
-                return "Combination of airlines";
+                airline_name = "Combination of airlines";
+
+        Log.i(TAG, airline_name+"");
+        return airline_name;
+
     }
 
     public String direct_or_no(ArrayList<Flight> flights){

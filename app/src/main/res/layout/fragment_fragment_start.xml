@@ -14,8 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:src="@drawable/flag24"
-            android:layout_marginLeft="15dp"/>
+            android:src="@drawable/flag24" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,7 +41,6 @@
             android:textSize="18dp"
             android:text="18:00"
             android:layout_gravity="center"
-            android:padding="5dp"
             android:id="@+id/departure_time_start" />
 
         <View
@@ -61,8 +59,8 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:text="2017-4-23"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center"
-            android:padding="5dp"
             android:id="@+id/departure_date_start"/>
     </LinearLayout>
 
@@ -81,14 +79,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Airline: "
-                android:textSize="17dp"/>
+                android:textSize="16dp"/>
 
             <TextView
                 android:id="@+id/airline_name_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="aegean"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 android:textStyle="bold"/>
 
         </LinearLayout>
@@ -102,14 +100,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Flight number: "
-                android:textSize="17dp"/>
+                android:textSize="16dp"/>
 
             <TextView
                 android:id="@+id/flight_number_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="flight numba"
-                android:textSize="19dp"/>
+                android:textSize="17dp"/>
 
         </LinearLayout>
 
@@ -122,14 +120,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Aircraft: "
-                android:textSize="17dp"/>
+                android:textSize="16dp"/>
 
             <TextView
                 android:id="@+id/aircraft_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="aircraft"
-                android:textSize="19dp"/>
+                android:textSize="17dp"/>
 
         </LinearLayout>
 
@@ -142,17 +140,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Travel class: "
-                android:textSize="17dp"/>
+                android:textSize="16dp"/>
 
             <TextView
                 android:id="@+id/travel_class_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#3399ff"
                 android:text="economy"
-                android:textSize="19dp"/>
+                android:textSize="17dp"/>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seats remaining: "
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/seats_remaining_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ff4d4d"
+                android:text="1"
+                android:textSize="17dp"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

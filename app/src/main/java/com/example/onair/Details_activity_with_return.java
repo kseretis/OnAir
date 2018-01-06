@@ -1,5 +1,6 @@
 package com.example.onair;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,13 +29,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class Details_activity_with_return extends AppCompatActivity {
 
     public static String storeCurrency;
-    public static final String TAG = "Details_activity";
+    public static final String TAG = "Details_activity_return";
     private String origin_name, destination_name;
     Itinerary itinerary;
-    TextView from_to, from_to_return;
+    TextView from_to, from_to_return, refundable;
     Button buy;
 
     @Override
@@ -52,6 +55,7 @@ public class Details_activity_with_return extends AppCompatActivity {
         // cast
         from_to = (TextView) findViewById(R.id.from_to_togo);
         from_to_return = (TextView) findViewById(R.id.from_to_return);
+        refundable = (TextView) findViewById(R.id.refundable_return);
         buy = (Button) findViewById(R.id.buy);
 
         // get extra from intent
@@ -60,7 +64,7 @@ public class Details_activity_with_return extends AppCompatActivity {
         itinerary = (Itinerary) bundle.getSerializable("itinerary");
 
         //set airports name
-        /*try {
+        try {
             origin_name = new call_api_for_cities(itinerary.getOutbound_list().get(0).getOrigin_airport()).execute().get();
             Log.i(TAG, origin_name +"");
             destination_name = new call_api_for_cities(itinerary.getOutbound_list().get(
@@ -70,7 +74,7 @@ public class Details_activity_with_return extends AppCompatActivity {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }*/
+        }
 
         from_to.setText(origin_name + " - " + destination_name);
         from_to_return.setText(destination_name + " - " + origin_name);
@@ -180,8 +184,11 @@ public class Details_activity_with_return extends AppCompatActivity {
                         R.id.mid_part_2_frame_layour_return, fragment_stops2).commit();
             }
         }
-
-        // set price
+        // set price and refundable
+        if(itinerary.getRefundable())
+            refundable.setText("YES");
+        else
+            refundable.setText("NO");
         buy.setText(itinerary.getTotal_price());
     }
 
@@ -199,18 +206,14 @@ public class Details_activity_with_return extends AppCompatActivity {
             BufferedReader reader = null;
 
             try{
-                final String baseUrl = "https://iatacodes.org/api/v6/cities?";
-                final String ApiKeyParam = "api_key";
-                final String codeParam = "code";
+                final String baseUrl = "https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json";
 
-                Uri buildUri = Uri.parse(baseUrl).buildUpon()
-                        .appendQueryParameter(ApiKeyParam, BuildConfig.iata_api_for_cities)
-                        .appendQueryParameter(codeParam, iata_code).build();
+                Uri buildUri = Uri.parse(baseUrl).buildUpon().build();
 
                 Log.i(getClass().toString(), buildUri.toString());
                 URL url = new URL(buildUri.toString());
 
-                connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
 
                 InputStream stream = connection.getInputStream();
@@ -224,16 +227,17 @@ public class Details_activity_with_return extends AppCompatActivity {
                 }
 
                 String finalJSon = buffer.toString();
-                JSONObject parentObject = new JSONObject(finalJSon);
-
-                JSONObject request = parentObject.getJSONObject("request");
-                String lang = request.getString("lang");
-                Log.i("lang", lang +"");
-
-                JSONArray response = parentObject.getJSONArray("response");
-                JSONObject inside = response.getJSONObject(0);
-                name = inside.getString("name");
-                Log.i(TAG, name + "");
+                JSONArray parentArray = new JSONArray(finalJSon);
+                Log.i("iata code: ", iata_code);
+                for(int i=0; i<parentArray.length(); i++){
+                    JSONObject item = parentArray.getJSONObject(i);
+                    String code = item.getString("code");
+                    if(code.equals(iata_code)){
+                        name = item.getString("city");
+                        break;
+                    }
+                }
+                Log.i(TAG, "city name: " + name);
             }
             catch (MalformedURLException ex) {
                 ex.printStackTrace();

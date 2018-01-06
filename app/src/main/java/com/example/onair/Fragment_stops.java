@@ -20,7 +20,7 @@ public class Fragment_stops extends Fragment {
     public static final String TAG = "Fragment_stops";
     private String origin_airport, departure_time, destination_airport, arrive_time,
             airline_name, flight_number, aircraft, travel_class, departure_date, arrive_date,
-            previous_destination_airport, previous_arrive_time, previous_arrive_date;
+            previous_destination_airport, previous_arrive_time, previous_arrive_date, seats;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +42,7 @@ public class Fragment_stops extends Fragment {
         viewHolder.flight_number = (TextView) view.findViewById(R.id.flight_number_stops);
         viewHolder.aircraft = (TextView) view.findViewById(R.id.aircraft_stops);
         viewHolder.travel_class = (TextView) view.findViewById(R.id.travel_class_stops);
+        viewHolder.seats = (TextView) view.findViewById(R.id.seats_remaining_stop);
 
         // previous
         viewHolder.previous_destination_airport = (TextView) view.findViewById(R.id.destination_airport_start);
@@ -66,6 +67,7 @@ public class Fragment_stops extends Fragment {
         viewHolder.flight_number.setText(flight_number);
         viewHolder.aircraft.setText(aircraft);
         viewHolder.travel_class.setText(travel_class);
+        viewHolder.seats.setText(seats);
 
         // Inflate the layout for this fragment
         return view;
@@ -73,8 +75,7 @@ public class Fragment_stops extends Fragment {
 
     public static class ViewHolder{
         TextView origin_airport_detail, departure_time_detail, previous_destination_airport, previous_arrive_time, previous_arrive_date;
-        TextView airline_name, flight_number, aircraft, travel_class, departure_date, arrive_date;
-        ImageView location_icon;
+        TextView airline_name, flight_number, aircraft, travel_class, departure_date, seats;
     }
 
     public void take_data_for_stops(){
@@ -101,5 +102,6 @@ public class Fragment_stops extends Fragment {
         flight_number = list.get(list_position).getFlight_number();
         aircraft = list.get(list_position).getAircraft();
         travel_class = list.get(list_position).getTravel_class();
+        seats = String.valueOf(list.get(list_position).getSeats_remaining());
     }
 }

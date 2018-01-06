@@ -20,7 +20,7 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
     private Context activityContext;
     private ArrayList<Itinerary> list;
     private ArrayList<Flight> flights;
-    public static final String TAG = "ListView";
+    public static final String TAG = "ListView_single";
     private String depart_time, arrive_time, direct, the_airline, origin_airport, destination_airport;
     private HashMap<String, String> airlines;
     private String[] airlines_codes = getContext().getResources().getStringArray(R.array.airline_codes);
@@ -79,7 +79,7 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
         flights = list.get(position).getOutbound_list();
         ArrayList<String> temp_airlines_list = new ArrayList<>();
 
-        //set airline name at all flights
+        // set airline name at all flights
         for(int pos=0; pos<flights.size(); pos++) {
             flights.get(pos).setAirline_name(airlines.get(flights.get(pos).getOperating_airline()));
             temp_airlines_list.add(flights.get(pos).getAirline_name());
@@ -93,11 +93,15 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
             //there are duplicates
             if(duplicate_set.size() == 1)
                 the_airline = temp_airlines_list.get(0);
+            else if(duplicate_set.size() == 2)
+                the_airline = temp_airlines_list.get(0) + " & " + temp_airlines_list.get(1);
             else
                 the_airline = "Combination of airlines";
         }else
             if(duplicate_set.size() == 1)
                 the_airline = temp_airlines_list.get(0);
+            else if(duplicate_set.size() == 2)
+                the_airline = temp_airlines_list.get(0) + " & " + temp_airlines_list.get(1);
             else
                 the_airline = "Combination of airlines";
 

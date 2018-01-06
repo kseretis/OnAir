@@ -1,5 +1,6 @@
 package com.example.onair;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,14 +20,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.concurrent.ExecutionException;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManagerFactory;
 
 public class Details_activity extends AppCompatActivity {
 
@@ -34,7 +51,7 @@ public class Details_activity extends AppCompatActivity {
     public static final String TAG = "Details_activity";
     private String origin_name, destination_name;
     Itinerary itinerary;
-    TextView from_to;
+    TextView from_to, refundable;
     Button buy;
 
     @Override
@@ -51,6 +68,7 @@ public class Details_activity extends AppCompatActivity {
 
         // cast
         from_to = (TextView) findViewById(R.id.from_to);
+        refundable = (TextView) findViewById(R.id.refundable_single);
         buy = (Button) findViewById(R.id.buy);
 
         // get extra from intent
@@ -59,7 +77,7 @@ public class Details_activity extends AppCompatActivity {
         itinerary = (Itinerary) bundle.getSerializable("itinerary");
 
         //set airports name
-        /*try {
+        try {
             origin_name = new call_api_for_cities(itinerary.getOutbound_list().get(0).getOrigin_airport()).execute().get();
             Log.i(TAG, origin_name +"");
             destination_name = new call_api_for_cities(itinerary.getOutbound_list().get(
@@ -69,7 +87,7 @@ public class Details_activity extends AppCompatActivity {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }*/
+        }
 
         from_to.setText(origin_name + " - " + destination_name);
 
@@ -124,7 +142,11 @@ public class Details_activity extends AppCompatActivity {
                        R.id.mid_part_2_frame_layour, fragment_stops2).commit();
            }
        }
-        // set price
+        // set price and refundable
+        if(itinerary.getRefundable())
+            refundable.setText("YES");
+        else
+            refundable.setText("NO");
         buy.setText(itinerary.getTotal_price());
     }
 
@@ -138,22 +160,18 @@ public class Details_activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            HttpURLConnection connection = null;
+            HttpsURLConnection connection = null;
             BufferedReader reader = null;
 
             try{
-                final String baseUrl = "https://iatacodes.org/api/v6/cities?";
-                final String ApiKeyParam = "api_key";
-                final String codeParam = "code";
+                final String baseUrl = "https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json";
 
-                Uri buildUri = Uri.parse(baseUrl).buildUpon()
-                        .appendQueryParameter(ApiKeyParam, BuildConfig.iata_api_for_cities)
-                        .appendQueryParameter(codeParam, iata_code).build();
+                Uri buildUri = Uri.parse(baseUrl).buildUpon().build();
 
                 Log.i(getClass().toString(), buildUri.toString());
                 URL url = new URL(buildUri.toString());
 
-                connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
 
                 InputStream stream = connection.getInputStream();
@@ -167,16 +185,17 @@ public class Details_activity extends AppCompatActivity {
                 }
 
                 String finalJSon = buffer.toString();
-                JSONObject parentObject = new JSONObject(finalJSon);
-
-                JSONObject request = parentObject.getJSONObject("request");
-                String lang = request.getString("lang");
-                Log.i("lang", lang +"");
-
-                JSONArray response = parentObject.getJSONArray("response");
-                JSONObject inside = response.getJSONObject(0);
-                name = inside.getString("name");
-                Log.i(TAG, name + "");
+                JSONArray parentArray = new JSONArray(finalJSon);
+                Log.i("iata code: ", iata_code);
+                for(int i=0; i<parentArray.length(); i++){
+                    JSONObject item = parentArray.getJSONObject(i);
+                    String code = item.getString("code");
+                    if(code.equals(iata_code)){
+                        name = item.getString("city");
+                        break;
+                    }
+                }
+                Log.i(TAG, "city name: " + name);
             }
             catch (MalformedURLException ex) {
                 ex.printStackTrace();

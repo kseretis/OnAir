@@ -14,7 +14,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:layout_marginLeft="10dp"
             android:src="@drawable/location24"
             android:id="@+id/location_icon"/>
 
@@ -41,7 +40,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="5dp"
             android:textSize="18dp"
             android:text="19:00"
             android:id="@+id/arrive_time_end"/>
@@ -62,10 +60,9 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:text="2017-4-24"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center"
-            android:padding="5dp"
             android:id="@+id/arrive_date_end"/>
 
     </LinearLayout>
-
 </LinearLayout>
