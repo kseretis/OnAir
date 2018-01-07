@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -48,27 +49,30 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> autoCompleteDropDownList_forDestinationAirport = new ArrayList<String>();
 
     // widget
-    public Button SearchForFlightsBUTTON, ok_button_in_dialog, ok_button_at_extra;
-    public EditText departureDate, returnDate;
-    public AutoCompleteTextView locationfield_in_dialog, destinationfield_in_dialog;
-    public TextView  locationfield, destinationfield;
-    public Switch nonstop_flight;
-    public TextView progressTextview;
-    public ImageView swap_image_button, clearDepartureDateField, clearReturnDateField, more_choices;
+    private Button SearchForFlightsBUTTON, ok_button_in_dialog, ok_button_at_extra;
+    private EditText departureDate, returnDate;
+    private AutoCompleteTextView locationfield_in_dialog, destinationfield_in_dialog;
+    private TextView  locationfield, destinationfield;
+    private Switch nonstop_flight;
+    private TextView progressTextview;
+    private ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
+    private LinearLayout show_more_layour;
     public Spinner spinner_travel_class, adutlsnumber;
     public SeekBar seekBar_max_price;
 
-    int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
-    String departure_day_String, departure_month_String;
-    int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
-    String return_day_String, return_month_String;
-    String storeCurrency;
+    private int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
+    private String departure_day_String, departure_month_String;
+    private int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
+    private String return_day_String, return_month_String;
+    private String storeCurrency;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        show_more_layour = (LinearLayout) findViewById(R.id.show_more_layout);
 
         updatePreferences();
 
@@ -80,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Άνοιγμα ημερολόγιου και επιλογή μέρας
         showDialogOnButtonClickForDates();
-        SearchForFlightsBUTTON.setEnabled(false);
 
         //pop up dialog for airport, drop down lists
         popupDialogForAirports();
@@ -88,18 +91,12 @@ public class MainActivity extends AppCompatActivity {
         //pop up dialog for extra choices
         popupDialogForExtraChoices();
 
-        //set search button enable
-        setSearchButtonEnabled();
-
-
-
         SearchForFlightsBUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Call_Next_Activity();
             }
         });
-
     }
 
     public void popupDialogForAirports() {
@@ -237,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void popupDialogForExtraChoices(){
 
-        more_choices.setOnClickListener(new View.OnClickListener() {
+        show_more_layour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -317,13 +314,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setSearchButtonEnabled(){
-        if (locationfield.equals("") || destinationfield.equals("") || departureDate.getText().toString().equals("")) {
-            Toast.makeText(getApplicationContext(), "One of the required fields is empty", Toast.LENGTH_LONG).show();
-            SearchForFlightsBUTTON.setEnabled(true);
-        }
-    }
-
     public void castingWidgets() {
         locationfield = (AutoCompleteTextView) findViewById(R.id.locationfield);
         destinationfield = (AutoCompleteTextView) findViewById(R.id.destinationfield);
@@ -332,7 +322,6 @@ public class MainActivity extends AppCompatActivity {
         clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
         returnDate = (EditText) findViewById(R.id.returnDate);
         clearReturnDateField = (ImageView) findViewById(R.id.removeDate2);
-        more_choices = (ImageView) findViewById(R.id.more_choices);
         SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
     }
 
@@ -349,10 +338,10 @@ public class MainActivity extends AppCompatActivity {
     private final void updatePreferences(){
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         storeCurrency = sharedPreferences.getString("currency", "");
-        Log.i(getClass().toString(), storeCurrency + " selected currency!!!!!!!!!!!!!!!!!!!");
+        Log.i(getClass().toString(), "stored Currency: " + storeCurrency);
 
         SharedPreferences sharedPreferencesExtra = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        final SharedPreferences.Editor editor = sharedPreferencesExtra.edit();
         editor.putString("travel_class", "economy");
         editor.putString("adults_number", "1");
         editor.commit();
@@ -388,30 +377,34 @@ public class MainActivity extends AppCompatActivity {
 
     public void Call_Next_Activity(){
 
-        //εαν το κουμπι για την επιστροφη έχει το αρχικο κειμενο τοτε κανει τα παρακατω και ψάχνει πτησεις χωρις επιστροφη
-        if(returnDate.getText().toString().equals("")){
-            Intent intent = new Intent(MainActivity.this, Http_Request_Activity.class);
-            intent.putExtra("loctown", locationfield.getText().toString());
-            intent.putExtra("destown", destinationfield.getText().toString());
-            intent.putExtra("d_year", departure_year);
-            intent.putExtra("d_month", departure_month_String);
-            intent.putExtra("d_day", departure_day_String);
-
-            startActivity(intent);
-        }
-        //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
+        if (locationfield.equals("") || destinationfield.equals("") || departureDate.getText().toString().equals(""))
+            Toast.makeText(getApplicationContext(), "Fill the required fields!", Toast.LENGTH_LONG).show();
         else{
-            Intent intent = new Intent(MainActivity.this, Http_Request_Activity_With_Return.class);
-            intent.putExtra("loctown", locationfield.getText().toString());
-            intent.putExtra("destown", destinationfield.getText().toString());
-            intent.putExtra("d_year", departure_year);
-            intent.putExtra("d_month", departure_month_String);
-            intent.putExtra("d_day", departure_day_String);
-            intent.putExtra("r_year", return_year);
-            intent.putExtra("r_month", return_month_String);
-            intent.putExtra("r_day", return_day_String);
+            //εαν το κουμπι για την επιστροφη έχει το αρχικο κειμενο τοτε κανει τα παρακατω και ψάχνει πτησεις χωρις επιστροφη
+            if (returnDate.getText().toString().equals("")) {
+                Intent intent = new Intent(MainActivity.this, Http_Request_Activity.class);
+                intent.putExtra("loctown", locationfield.getText().toString());
+                intent.putExtra("destown", destinationfield.getText().toString());
+                intent.putExtra("d_year", departure_year);
+                intent.putExtra("d_month", departure_month_String);
+                intent.putExtra("d_day", departure_day_String);
 
-            startActivity(intent);
+                startActivity(intent);
+            }
+            //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
+            else {
+                Intent intent = new Intent(MainActivity.this, Http_Request_Activity_With_Return.class);
+                intent.putExtra("loctown", locationfield.getText().toString());
+                intent.putExtra("destown", destinationfield.getText().toString());
+                intent.putExtra("d_year", departure_year);
+                intent.putExtra("d_month", departure_month_String);
+                intent.putExtra("d_day", departure_day_String);
+                intent.putExtra("r_year", return_year);
+                intent.putExtra("r_month", return_month_String);
+                intent.putExtra("r_day", return_day_String);
+
+                startActivity(intent);
+            }
         }
     }
 
@@ -433,8 +426,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        SearchForFlightsBUTTON.setEnabled(false);
     }
 
     public Dialog onCreateDialog(int id){

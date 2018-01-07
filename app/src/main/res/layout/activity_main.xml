@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/locationfield"
-                android:hint="*City of departure"
+                android:hint="City of departure"
 
                 android:maxLines="1"
                 android:imeOptions="actionDone"/>
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/destinationfield"
-                android:hint="*Destination"
+                android:hint="Destination"
                 android:maxLines="1"
                 android:imeOptions="actionDone"/>
 
@@ -145,16 +145,32 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="10dp"
-        android:id="@+id/more_choices"
-        android:src="@drawable/more"
-        android:clickable="true"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:clickable="true"
+        android:id="@+id/show_more_layout">
+
+        <ImageView
+            android:layout_marginStart="-10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:src="@drawable/more" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show more"
+            android:layout_gravity="center"
+            android:textSize="17dp" />
+
+    </LinearLayout>
 
     <Button
+        android:layout_marginTop="15dp"
         android:text="Search for flights"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -163,7 +179,4 @@
         android:textAllCaps="false"
         android:id="@+id/button"
         android:layout_gravity="center" />
-
-
-
 </LinearLayout>

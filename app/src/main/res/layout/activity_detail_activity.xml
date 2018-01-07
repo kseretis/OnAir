@@ -115,6 +115,7 @@
                 android:layout_margin="10dp"
                 android:textColor="#FC6D45"
                 android:padding="10dp"
+                android:textAllCaps="false"
                 android:text="Buy now"
                 android:textSize="19dp"/>
         </LinearLayout>

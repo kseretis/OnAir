@@ -10,13 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Choose Airports"
-        android:textSize="30dp" />
+        android:textSize="25dp" />
 
     <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/locationfield_in_dialog"
-        android:hint="*City of departure"
+        android:hint="City of departure"
         android:maxLines="1"
         android:imeOptions="actionDone"/>
 
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/destinationfield_in_dialog"
-        android:hint="*Where do you want to travel"
+        android:hint="Destination"
         android:maxLines="1"
         android:paddingTop="10dp"
         android:imeOptions="actionDone"/>

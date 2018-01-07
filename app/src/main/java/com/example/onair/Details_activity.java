@@ -159,7 +159,6 @@ public class Details_activity extends AppCompatActivity {
         else
             penalty.setText("NO");
 
-        buy.setAllCaps(false);
         buy.setText("Buy now! " + itinerary.getTotal_price());
 
     }
