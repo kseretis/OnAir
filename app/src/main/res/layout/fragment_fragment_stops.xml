@@ -64,6 +64,37 @@
             android:id="@+id/arrive_date_start"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="35dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/wait"
+            android:padding="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Waiting time: "
+            android:textSize="16dp"/>
+
+        <TextView
+            android:id="@+id/waiting_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 hour &amp; 45 minutes"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:textSize="17dp" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -75,7 +106,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:src="@drawable/dot"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="5dp"/>
 
         <TextView
             android:layout_width="wrap_content"

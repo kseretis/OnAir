@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/airline_name_vol2"
             android:gravity="center"
-            android:textSize="25dp"
+            android:textSize="20dp"
             android:text="no airline"
             android:textStyle="italic"
             android:padding="5dp"
@@ -42,7 +42,7 @@
             android:padding="5dp"/>
 
         <TextView
-            android:textSize="19dp"
+            android:textSize="18dp"
             android:layout_marginLeft="10dp"
             android:id="@+id/departureTime_togo"
             android:layout_width="wrap_content"
@@ -52,12 +52,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textSize="21dp"
+            android:textSize="19dp"
             android:layout_marginLeft="5dp"
             android:id="@+id/origin_airport_togo"/>
 
         <TextView
-            android:textSize="19dp"
+            android:textSize="18dp"
             android:layout_marginLeft="15dp"
             android:id="@+id/arriveTime_togo"
             android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:layout_marginLeft="5dp"
-            android:textSize="21dp"
+            android:textSize="19dp"
             android:id="@+id/destination_airport_togo"/>
 
         <TextView
@@ -95,7 +95,7 @@
             android:padding="5dp"/>
 
         <TextView
-            android:textSize="19dp"
+            android:textSize="18dp"
             android:layout_marginLeft="10dp"
             android:id="@+id/returnTime_return"
             android:layout_width="wrap_content"
@@ -105,12 +105,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textSize="21dp"
+            android:textSize="19dp"
             android:layout_marginLeft="5dp"
             android:id="@+id/origin_airport_return"/>
 
         <TextView
-            android:textSize="19dp"
+            android:textSize="18dp"
             android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:layout_marginLeft="5dp"
-            android:textSize="21dp"
+            android:textSize="19dp"
             android:id="@+id/destination_airport_return"/>
 
         <TextView

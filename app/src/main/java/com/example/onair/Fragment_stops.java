@@ -9,7 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class Fragment_stops extends Fragment {
@@ -20,7 +24,7 @@ public class Fragment_stops extends Fragment {
     public static final String TAG = "Fragment_stops";
     private String origin_airport, departure_time, destination_airport, arrive_time,
             airline_name, flight_number, aircraft, travel_class, departure_date, arrive_date,
-            previous_destination_airport, previous_arrive_time, previous_arrive_date, seats;
+            previous_destination_airport, previous_arrive_time, previous_arrive_date, seats, waiting_time;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +47,7 @@ public class Fragment_stops extends Fragment {
         viewHolder.aircraft = (TextView) view.findViewById(R.id.aircraft_stops);
         viewHolder.travel_class = (TextView) view.findViewById(R.id.travel_class_stops);
         viewHolder.seats = (TextView) view.findViewById(R.id.seats_remaining_stop);
+        viewHolder.waiting_time = (TextView) view.findViewById(R.id.waiting_time);
 
         // previous
         viewHolder.previous_destination_airport = (TextView) view.findViewById(R.id.destination_airport_start);
@@ -68,6 +73,7 @@ public class Fragment_stops extends Fragment {
         viewHolder.aircraft.setText(aircraft);
         viewHolder.travel_class.setText(travel_class);
         viewHolder.seats.setText(seats);
+        viewHolder.waiting_time.setText(waiting_time);
 
         // Inflate the layout for this fragment
         return view;
@@ -75,7 +81,7 @@ public class Fragment_stops extends Fragment {
 
     public static class ViewHolder{
         TextView origin_airport_detail, departure_time_detail, previous_destination_airport, previous_arrive_time, previous_arrive_date;
-        TextView airline_name, flight_number, aircraft, travel_class, departure_date, seats;
+        TextView airline_name, flight_number, aircraft, travel_class, departure_date, seats, waiting_time;
     }
 
     public void take_data_for_stops(){
@@ -103,5 +109,21 @@ public class Fragment_stops extends Fragment {
         aircraft = list.get(list_position).getAircraft();
         travel_class = list.get(list_position).getTravel_class();
         seats = String.valueOf(list.get(list_position).getSeats_remaining());
+
+        // calculate the waiting time
+        try{
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date date1 = simpleDateFormat.parse(previous_arrive_time);
+            Date date2 = simpleDateFormat.parse(departure_time);
+
+            // at minutes
+            Long tempDate = (date2.getTime() - date1.getTime()) / 1000 / 60;
+            // hours and minutes
+            Long hours = tempDate / 60;
+            Long minutes = tempDate % 60;
+            waiting_time = hours + " hours & " + minutes + " minutes";
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -85,6 +85,9 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         departureDate_forAPI = departure_year + "-" + departure_month_String + "-" + departure_day_String;
         returnDate_forAPI = return_year + "-" + return_month_String + "-" + return_day_String;
 
+        // set title
+        setTitle("adults: " + adults_forAPI + "| " + travelClass_forAPI);
+
         new JSONTaskR().execute();
     }
 

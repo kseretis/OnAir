@@ -202,7 +202,8 @@ public class Details_activity_with_return extends AppCompatActivity {
         else
             penalty.setText("NO");
 
-        buy.setText("Buy now from " + itinerary.getTotal_price());
+        buy.setAllCaps(false);
+        buy.setText("Buy now! " + itinerary.getTotal_price());
     }
 
     public class call_api_for_cities extends AsyncTask<Void, Void, String> {
