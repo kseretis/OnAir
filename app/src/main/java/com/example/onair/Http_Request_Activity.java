@@ -216,25 +216,13 @@ public class Http_Request_Activity extends AppCompatActivity {
                     }
                 }
             } catch (MalformedURLException ex) {
-                ex.printStackTrace();
-                exception = true;
+                Log.i(TAG, "MalformedURLException exception");
             } catch (IOException ex) {
-                ex.printStackTrace();
-                exception = true;
+                Log.i(TAG, "IO exception. No results found");
+                Intent error_intent = new Intent(Http_Request_Activity.this, ErrorActivity.class);
+                startActivity(error_intent);
             } catch (JSONException e) {
-                e.printStackTrace();
-                exception = true;
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Log.i(TAG, "JSON exception");
             }
             return null;
         }
@@ -242,11 +230,6 @@ public class Http_Request_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
-            if(exception){
-                Toast.makeText(getApplicationContext(), "ERROR Occurred", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Http_Request_Activity.this , MainActivity.class));
-            }
 
             //custom list adapter
             myListAdapter_vol1_single adapter = new myListAdapter_vol1_single(listView.getContext(), the_list_of_itineraries);

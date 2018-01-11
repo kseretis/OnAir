@@ -119,8 +119,8 @@ public class Fragment_stops extends Fragment {
             // at minutes
             Long tempDate = (date2.getTime() - date1.getTime()) / 1000 / 60;
             // hours and minutes
-            Long hours = tempDate / 60;
-            Long minutes = tempDate % 60;
+            Long hours = Math.abs(tempDate / 60);
+            Long minutes = Math.abs(tempDate % 60);
             waiting_time = hours + " hours & " + minutes + " minutes";
         } catch (ParseException e) {
             e.printStackTrace();

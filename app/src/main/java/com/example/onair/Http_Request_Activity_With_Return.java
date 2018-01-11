@@ -252,25 +252,13 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
                     }
                 }
             } catch (MalformedURLException ex) {
-                ex.printStackTrace();
-                exception = true;
+                Log.i(TAG, "MalformedURLException exception");
             } catch (IOException ex) {
-                ex.printStackTrace();
-                exception = true;
+                Log.i(TAG, "IO exception. No results found");
+                Intent error_intent = new Intent(Http_Request_Activity_With_Return.this, ErrorActivity.class);
+                startActivity(error_intent);
             } catch (JSONException e) {
-                e.printStackTrace();
-                exception = true;
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Log.i(TAG, "JSON exception");
             }
             return null;
         }
@@ -278,12 +266,6 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
-            //TO-DO καινουργια μεθοδο για exceptions αναλυτικα για το καθενα
-            if(exception){
-                Toast.makeText(getApplicationContext(), "ERROR Occurred", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Http_Request_Activity_With_Return.this , MainActivity.class));
-            }
 
             //new custom list adapter
             myListAdapter_vol2_return adapter = new myListAdapter_vol2_return(listView.getContext(), the_list_of_itineraries);

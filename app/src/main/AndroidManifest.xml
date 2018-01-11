@@ -40,9 +40,9 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Detail_Activity$Detail_Activity_Return">
+        <activity android:name=".Details_activity">
             <intent-filter>
-                <action android:name="com.example.onair.List_Item_Data" />
+                <action android:name="com.example.onair.Details_activity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -56,8 +56,23 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Details_activity" />
-        <activity android:name=".Details_activity_with_return"></activity>
+        <activity android:name=".Details_activity_with_return">
+            <intent-filter>
+                <action android:name="com.example.onair.Details_activity_with_return" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".ErrorActivity"
+            android:parentActivityName=".MainActivity">
+            <intent-filter>
+                <action android:name="com.example.onair.ErrorActivity" />
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

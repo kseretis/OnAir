@@ -39,20 +39,23 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <AutoCompleteTextView
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/locationfield"
                 android:hint="City of departure"
-
+                android:editable="false"
+                android:inputType="none"
                 android:maxLines="1"
                 android:imeOptions="actionDone"/>
 
-            <AutoCompleteTextView
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/destinationfield"
                 android:hint="Destination"
+                android:editable="false"
+                android:inputType="none"
                 android:maxLines="1"
                 android:imeOptions="actionDone"/>
 

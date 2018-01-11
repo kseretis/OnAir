@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Button SearchForFlightsBUTTON, ok_button_in_dialog, ok_button_at_extra;
     private EditText departureDate, returnDate;
     private AutoCompleteTextView locationfield_in_dialog, destinationfield_in_dialog;
-    private TextView  locationfield, destinationfield;
+    private EditText  locationfield, destinationfield;
     private Switch nonstop_flight;
     private TextView progressTextview;
     private ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
@@ -86,7 +86,18 @@ public class MainActivity extends AppCompatActivity {
         showDialogOnButtonClickForDates();
 
         //pop up dialog for airport, drop down lists
-        popupDialogForAirports();
+        locationfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationClickListener();
+            }
+        });
+        destinationfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                destinationClickListener();
+            }
+        });
 
         //pop up dialog for extra choices
         popupDialogForExtraChoices();
@@ -99,137 +110,134 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void popupDialogForAirports() {
+    public void locationClickListener(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        View alertview = getLayoutInflater().inflate(R.layout.airports_fields_dialog, null);
 
-        locationfield.setOnClickListener(new View.OnClickListener() {
+        //casting
+        locationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.locationfield_in_dialog);
+        destinationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.destinationfield_in_dialog);
+        ok_button_in_dialog = (Button) alertview.findViewById(R.id.ok_button_in_dialog);
+
+        builder.setView(alertview);
+        final AlertDialog showdialog = builder.create();
+        showdialog.show();
+
+        //set previous text
+        locationfield_in_dialog.setText(locationfield.getText().toString());
+        destinationfield_in_dialog.setText(destinationfield.getText().toString());
+
+        locationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
             @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                View alertview = getLayoutInflater().inflate(R.layout.airports_fields_dialog, null);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-                //casting
-                locationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.locationfield_in_dialog);
-                destinationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.destinationfield_in_dialog);
-                ok_button_in_dialog = (Button) alertview.findViewById(R.id.ok_button_in_dialog);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                int textFiledCharacterCounter = locationfield_in_dialog.getText().toString().length();
 
-                builder.setView(alertview);
-                final AlertDialog showdialog = builder.create();
-                showdialog.show();
-
-                locationfield_in_dialog.addTextChangedListener(new TextWatcher() {
-
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
-                        int textFiledCharacterCounter = locationfield_in_dialog.getText().toString().length();
-
-                        if(textFiledCharacterCounter > 1){
-                            Log.i(getClass().toString(), locationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
-                            new conversionMethod(locationfield_in_dialog, autoCompleteDropDownList_forLocationAirport).execute();
-                        }
-                    }
-                    @Override
-                    public void afterTextChanged(Editable s) {}
-                });
-
-                destinationfield_in_dialog.addTextChangedListener(new TextWatcher() {
-
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
-                        int textFiledCharacterCounter = destinationfield_in_dialog.getText().toString().length();
-
-                        if(textFiledCharacterCounter > 1){
-                            Log.i(getClass().toString(), destinationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
-                            new conversionMethod(destinationfield_in_dialog, autoCompleteDropDownList_forDestinationAirport).execute();
-                        }
-                    }
-                    @Override
-                    public void afterTextChanged(Editable s) {}
-                });
-
-                ok_button_in_dialog.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        locationfield.setText(locationfield_in_dialog.getText().toString());
-                        destinationfield.setText(destinationfield_in_dialog.getText().toString());
-                        showdialog.dismiss();
-                    }
-                });
+                if(textFiledCharacterCounter > 1){
+                    Log.i(getClass().toString(), locationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                    new conversionMethod(locationfield_in_dialog, autoCompleteDropDownList_forLocationAirport).execute();
+                }
             }
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
-        destinationfield.setOnClickListener(new View.OnClickListener() {
+        destinationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
             @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                View alertview = getLayoutInflater().inflate(R.layout.airports_fields_dialog, null);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-                //casting
-                locationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.locationfield_in_dialog);
-                destinationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.destinationfield_in_dialog);
-                ok_button_in_dialog = (Button) alertview.findViewById(R.id.ok_button_in_dialog);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                int textFiledCharacterCounter = destinationfield_in_dialog.getText().toString().length();
 
-                builder.setView(alertview);
-                final AlertDialog showdialog = builder.create();
-                showdialog.show();
-
-                locationfield_in_dialog.addTextChangedListener(new TextWatcher() {
-
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
-                        int textFiledCharacterCounter = locationfield_in_dialog.getText().toString().length();
-
-                        if(textFiledCharacterCounter > 1){
-                            Log.i(getClass().toString(), locationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
-                            new conversionMethod(locationfield_in_dialog, autoCompleteDropDownList_forLocationAirport).execute();
-                        }
-                    }
-                    @Override
-                    public void afterTextChanged(Editable s) {}
-                });
-
-                destinationfield_in_dialog.addTextChangedListener(new TextWatcher() {
-
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
-                        int textFiledCharacterCounter = destinationfield_in_dialog.getText().toString().length();
-
-                        if(textFiledCharacterCounter > 1){
-                            Log.i(getClass().toString(), destinationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
-                            new conversionMethod(destinationfield_in_dialog, autoCompleteDropDownList_forDestinationAirport).execute();
-                        }
-                    }
-                    @Override
-                    public void afterTextChanged(Editable s) {}
-                });
-
-                ok_button_in_dialog.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        locationfield.setText(locationfield_in_dialog.getText().toString());
-                        destinationfield.setText(destinationfield_in_dialog.getText().toString());
-                        showdialog.dismiss();
-                    }
-                });
+                if(textFiledCharacterCounter > 1){
+                    Log.i(getClass().toString(), destinationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                    new conversionMethod(destinationfield_in_dialog, autoCompleteDropDownList_forDestinationAirport).execute();
+                }
             }
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
+        ok_button_in_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationfield.setText(locationfield_in_dialog.getText().toString());
+                destinationfield.setText(destinationfield_in_dialog.getText().toString());
+                showdialog.dismiss();
+            }
+        });
+    }
 
+    public void destinationClickListener(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        View alertview = getLayoutInflater().inflate(R.layout.airports_fields_dialog, null);
+
+        //casting
+        locationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.locationfield_in_dialog);
+        destinationfield_in_dialog = (AutoCompleteTextView) alertview.findViewById(R.id.destinationfield_in_dialog);
+        ok_button_in_dialog = (Button) alertview.findViewById(R.id.ok_button_in_dialog);
+
+        builder.setView(alertview);
+        final AlertDialog showdialog = builder.create();
+        showdialog.show();
+
+        ///set previous text
+        locationfield_in_dialog.setText(locationfield.getText().toString());
+        destinationfield_in_dialog.setText(destinationfield.getText().toString());
+
+        locationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                int textFiledCharacterCounter = locationfield_in_dialog.getText().toString().length();
+
+                if(textFiledCharacterCounter > 1){
+                    Log.i(getClass().toString(), locationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                    new conversionMethod(locationfield_in_dialog, autoCompleteDropDownList_forLocationAirport).execute();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        destinationfield_in_dialog.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ξεκινάει να κάνει http request αφου συμπληρωθούν 2 και παραπάνω ψηφία
+                int textFiledCharacterCounter = destinationfield_in_dialog.getText().toString().length();
+
+                if(textFiledCharacterCounter > 1){
+                    Log.i(getClass().toString(), destinationfield_in_dialog.toString() +" - "+ textFiledCharacterCounter + "");
+                    new conversionMethod(destinationfield_in_dialog, autoCompleteDropDownList_forDestinationAirport).execute();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        ok_button_in_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationfield.setText(locationfield_in_dialog.getText().toString());
+                destinationfield.setText(destinationfield_in_dialog.getText().toString());
+                showdialog.dismiss();
+            }
+        });
     }
 
     public void popupDialogForExtraChoices(){
@@ -248,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                 ok_button_at_extra = (Button) extraview.findViewById(R.id.ok_button_at_extra) ;
 
                 //shared preferences check nonstop
-                SharedPreferences sharedPreferences = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                 nonstop_flight.setChecked(Boolean.valueOf(sharedPreferences.getString("nonstop", "")));
 
                 builder.setView(extraview);
@@ -266,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 // adapter for adults number
                 ArrayAdapter<CharSequence> wdadapter = ArrayAdapter.createFromResource(
                         MainActivity.this,  R.array.numbers, R.layout.drop_down_extra );
+
                 adutlsnumber.setAdapter(wdadapter);
 
                 // progress bar for the max price
@@ -315,8 +324,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void castingWidgets() {
-        locationfield = (AutoCompleteTextView) findViewById(R.id.locationfield);
-        destinationfield = (AutoCompleteTextView) findViewById(R.id.destinationfield);
+        locationfield = (EditText) findViewById(R.id.locationfield);
+        destinationfield = (EditText) findViewById(R.id.destinationfield);
         swap_image_button = (ImageView) findViewById(R.id.swap_image_button);
         departureDate = (EditText) findViewById(R.id.departureDate);
         clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
@@ -336,15 +345,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final void updatePreferences(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        storeCurrency = sharedPreferences.getString("currency", "");
-        Log.i(getClass().toString(), "stored Currency: " + storeCurrency);
 
-        SharedPreferences sharedPreferencesExtra = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPreferencesExtra.edit();
+        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("travel_class", "economy");
         editor.putString("adults_number", "1");
+        editor.putString("nonstop", "false");
+        editor.putString("currency", "USD");
         editor.commit();
+
+        storeCurrency = sharedPreferences.getString("currency", "");
+        Log.i(getClass().toString(), "stored Currency: " + storeCurrency);
     }
 
     // Κανει Swap τα πεδία των αεροδρομιων
@@ -478,10 +489,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         else if(id == R.id.menurestart){
-            Toast.makeText(getApplicationContext(), "Temporary Disabled", Toast.LENGTH_SHORT).show();
-            /*Intent intent = getIntent();
-            startActivity(intent);
-            return true;*/
+            Toast.makeText(getApplicationContext(), "Activity reloaded", Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(getIntent());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -493,8 +503,8 @@ public class MainActivity extends AppCompatActivity {
         AutoCompleteTextView textViewinConvensionMethod;
         ArrayList<String> theListinConvensionMethod;
 
-        public conversionMethod(AutoCompleteTextView AtextViewParam, ArrayList<String> theList) {
-            this.textViewinConvensionMethod = AtextViewParam;
+        public conversionMethod(AutoCompleteTextView autoCompleteItem, ArrayList<String> theList) {
+            this.textViewinConvensionMethod = autoCompleteItem;
             this.theListinConvensionMethod = theList;
         }
 

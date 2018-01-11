@@ -21,6 +21,7 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
     private ArrayList<Itinerary> list;
     private ArrayList<Flight> flights;
     public static final String TAG = "ListView_single";
+    private int size_of_the_list, counter;
     private String depart_time, arrive_time, direct, the_airline, origin_airport, destination_airport;
     private HashMap<String, String> airlines;
     private String[] airlines_codes = getContext().getResources().getStringArray(R.array.airline_codes);
@@ -34,6 +35,7 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
         for(int i = 0; i< airlines_codes.length; i++){
             airlines.put(airlines_codes[i], airlines_names[i]);
         }
+        size_of_the_list = list.size();
     }
 
     @NonNull
@@ -76,6 +78,9 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
     }
 
     public void draw_data_from_flights(int position) {
+
+        Log.i(TAG, position + " /pos");
+
         flights = list.get(position).getOutbound_list();
         ArrayList<String> temp_airlines_list = new ArrayList<>();
 
@@ -114,5 +119,9 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
         origin_airport = flights.get(0).getOrigin_airport();
         arrive_time = flights.get(flights.size() - 1).getArrives_at().substring(11);
         destination_airport = flights.get(flights.size() - 1).getDestination_airport();
+
+        // check if counter is equals with size_of_the_list
+        if(counter <= size_of_the_list)
+            counter++;
     }
 }
