@@ -17,6 +17,7 @@ public class ErrorActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // back button changed
         Intent setIntent = new Intent(ErrorActivity.this, MainActivity.class);
         startActivity(setIntent);
     }
