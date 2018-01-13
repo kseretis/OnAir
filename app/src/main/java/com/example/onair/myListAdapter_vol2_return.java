@@ -62,28 +62,31 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
             viewHolder.direct_return = (TextView) view.findViewById(R.id.direct_return);
             viewHolder.airline_name = (TextView) view.findViewById(R.id.airline_name_vol2);
 
-            draw_data_from_flights(position);
-
-            //fill 1
-            viewHolder.departureTime.setText(depart_time);
-            viewHolder.origin_airport.setText(origin_airport);
-            viewHolder.arriveTime.setText(arrive_time);
-            viewHolder.destination_airport.setText(destination_airport);
-            viewHolder.direct.setText(direct);
-
-            //fill 2
-            viewHolder.departureTime_return.setText(depart_time_return);
-            viewHolder.origin_airport_return.setText(origin_airport_return);
-            viewHolder.arriveTime_return.setText(arrive_time_return);
-            viewHolder.destination_airport_return.setText(destination_airport_return);
-            viewHolder.direct_return.setText(direct_return);
-
-            //extras
-            viewHolder.airline_name.setText(the_airline);
-            viewHolder.price.setText(getItem(position).getTotal_price());
+            view.setTag(viewHolder);
         }
         else
             viewHolder = (ViewHolder) view.getTag();
+
+        // call method to draw data
+        draw_data_from_flights(position);
+
+        //fill 1
+        viewHolder.departureTime.setText(depart_time);
+        viewHolder.origin_airport.setText(origin_airport);
+        viewHolder.arriveTime.setText(arrive_time);
+        viewHolder.destination_airport.setText(destination_airport);
+        viewHolder.direct.setText(direct);
+
+        //fill 2
+        viewHolder.departureTime_return.setText(depart_time_return);
+        viewHolder.origin_airport_return.setText(origin_airport_return);
+        viewHolder.arriveTime_return.setText(arrive_time_return);
+        viewHolder.destination_airport_return.setText(destination_airport_return);
+        viewHolder.direct_return.setText(direct_return);
+
+        //extras
+        viewHolder.airline_name.setText(the_airline);
+        viewHolder.price.setText(getItem(position).getTotal_price());
 
         return view;
     }

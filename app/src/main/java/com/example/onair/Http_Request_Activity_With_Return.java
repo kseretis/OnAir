@@ -31,7 +31,6 @@ import java.util.ArrayList;
 
 public class Http_Request_Activity_With_Return extends AppCompatActivity {
     private ProgressDialog progressDialog ;
-    private boolean exception  = false;
 
     private int departure_year, return_year;
     private String departure_month_String, departure_day_String, return_day_String, return_month_String;
@@ -69,17 +68,15 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
         return_year = getIntent().getIntExtra("r_year", 0);
         return_month_String = getIntent().getStringExtra("r_month");
         return_day_String = getIntent().getStringExtra("r_day");
+        setTitle(departureDate_forAPI);
 
         //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        storeCurrency = sharedPreferences.getString("currency", "");
-        Log.i(getClass().toString(), "this is ---->>>" +  storeCurrency);
-        SharedPreferences sharedPreferencesFromMain = getSharedPreferences("ExtraChoices", Context.MODE_PRIVATE);
-        travelClass_forAPI = sharedPreferencesFromMain.getString("travel_class", "");
-        adults_forAPI = sharedPreferencesFromMain.getString("adults_number", "");
-        nonStop_forAPI = sharedPreferencesFromMain.getString("nonstop", "");
-        maxPrice_forAPI = sharedPreferencesFromMain.getString("max_price", "");
-        setTitle(departureDate_forAPI);
+        storeCurrency = sharedPreferences.getString("currency", null);
+        travelClass_forAPI = sharedPreferences.getString("travel_class", null);
+        adults_forAPI = sharedPreferences.getString("adults_number", null);
+        nonStop_forAPI = sharedPreferences.getString("nonstop", null);
+        maxPrice_forAPI = sharedPreferences.getString("max_price", null);
 
         //Βάζει την ημερομινία σε σωστή μορφή
         departureDate_forAPI = departure_year + "-" + departure_month_String + "-" + departure_day_String;
@@ -111,19 +108,25 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
                 final String nonStopParam = "nonstop";
                 final String ApiKeyParam = "apikey";
 
-                Uri buildUri = Uri.parse(baseUrl).buildUpon()
+                Uri.Builder buildUri = Uri.parse(baseUrl).buildUpon()
                         .appendQueryParameter(originParam, originAirport_forAPI)
                         .appendQueryParameter(destinationParam, destinationAirport_forAPI)
                         .appendQueryParameter(departureDateParam, departureDate_forAPI)
                         .appendQueryParameter(returnDateParam, returnDate_forAPI)
-                        .appendQueryParameter(adultsParam, adults_forAPI)
-                        .appendQueryParameter(currencyParam, storeCurrency)
-                        .appendQueryParameter(travelClassParam, travelClass_forAPI)
-                        .appendQueryParameter(nonStopParam, nonStop_forAPI)
-                        .appendQueryParameter(ApiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY)
-                        .build();
+                        .appendQueryParameter(ApiKeyParam, BuildConfig.LOW_FARE_FLIGHTS_API_KEY);
 
-                Log.i(getClass().toString(), buildUri.toString());
+                if(storeCurrency != null)
+                    buildUri.appendQueryParameter(currencyParam, storeCurrency);
+                if(travelClass_forAPI != null)
+                    buildUri.appendQueryParameter(travelClassParam, travelClass_forAPI);
+                if(adults_forAPI != null)
+                    buildUri.appendQueryParameter(adultsParam, adults_forAPI);
+                if(nonStop_forAPI != null)
+                    buildUri.appendQueryParameter(nonStopParam, nonStop_forAPI);
+                if(maxPrice_forAPI != null)
+                    buildUri.appendQueryParameter(maxPriceParam, maxPrice_forAPI);
+
+                Log.i(TAG, buildUri.toString());
 
                 URL url = new URL(buildUri.toString());
 
@@ -291,7 +294,7 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(storeCurrency.equals("USD")) {
+        if(storeCurrency == null || storeCurrency.equals("USD")){
             getMenuInflater().inflate(R.menu.menu1, menu);
             return true;
         }

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private Switch nonstop_flight;
     private TextView progressTextview;
     private ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
-    private LinearLayout show_more_layour;
+    private LinearLayout show_more_layout;
     public Spinner spinner_travel_class, adutlsnumber;
     public SeekBar seekBar_max_price;
 
@@ -64,17 +64,14 @@ public class MainActivity extends AppCompatActivity {
     private String departure_day_String, departure_month_String;
     private int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
     private String return_day_String, return_month_String;
-    private String storeCurrency;
-
+    String value_of_max_price = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        show_more_layour = (LinearLayout) findViewById(R.id.show_more_layout);
-
-        updatePreferences();
+        show_more_layout = (LinearLayout) findViewById(R.id.show_more_layout);
 
         castingWidgets();   //cast widgets
         Swap_location_and_destination_field();  //swap location and destination field
@@ -242,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void popupDialogForExtraChoices(){
 
-        show_more_layour.setOnClickListener(new View.OnClickListener() {
+        show_more_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -257,27 +254,45 @@ public class MainActivity extends AppCompatActivity {
 
                 //shared preferences check nonstop
                 SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-                nonstop_flight.setChecked(Boolean.valueOf(sharedPreferences.getString("nonstop", "")));
 
-                builder.setView(extraview);
-                final AlertDialog showdialog = builder.create();
-                showdialog.show();
-
-                //create and editor to re-write
-                final SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                // adapter for travel class
+                // prefs adapter for travel class
+                String prefs_travel_class = sharedPreferences.getString("travel_class", null);
                 ArrayAdapter<CharSequence> SPadapter = ArrayAdapter.createFromResource(
                         MainActivity.this, R.array.travel_class, R.layout.drop_down_extra);
                 spinner_travel_class.setAdapter(SPadapter);
 
-                // adapter for adults number
+                if(prefs_travel_class != null){
+                    String[] travel_class_string_array = getResources().getStringArray(R.array.travel_class);
+                    for(int pos = 0; pos<travel_class_string_array.length; pos++)
+                        if(travel_class_string_array[pos].equals(prefs_travel_class))
+                            spinner_travel_class.setSelection(pos);
+                }
+
+                // prefs adapter for adults number
+                String prefs_adults_number = sharedPreferences.getString("adults_number", null);
                 ArrayAdapter<CharSequence> wdadapter = ArrayAdapter.createFromResource(
                         MainActivity.this,  R.array.numbers, R.layout.drop_down_extra );
-
                 adutlsnumber.setAdapter(wdadapter);
+                if(prefs_adults_number != null) {
+                    String[] adults_number_string_array = getResources().getStringArray(R.array.numbers);
+                    for(int pos = 0; pos<adults_number_string_array.length; pos++)
+                        if(adults_number_string_array[pos].equals(prefs_adults_number))
+                            adutlsnumber.setSelection(pos);
+                }
 
-                // progress bar for the max price
+                // prefs non stop
+                String prefs_non_stop = sharedPreferences.getString("nonstop", null);
+                Boolean prefs_non_stop_bool = false;
+                if(prefs_non_stop != null)
+                    if(Boolean.valueOf(prefs_non_stop))
+                        prefs_non_stop_bool = true;
+
+                Log.i("bool", String.valueOf(prefs_non_stop_bool));
+                nonstop_flight.setChecked(prefs_non_stop_bool);
+
+                //create and editor to re-write
+                final SharedPreferences.Editor editor = sharedPreferences.edit();
+
                 seekBar_max_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
                     @Override
@@ -289,15 +304,24 @@ public class MainActivity extends AppCompatActivity {
                             progressTextview.setText("none");
                     }
                     @Override
-                    public void onStartTrackingTouch(SeekBar seekBar){}
+                    public void onStartTrackingTouch(SeekBar seekBar){
+                    }
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        if(progress_value == 50)
+                        if(progress_value == 50){
                             progressTextview.setText("none");
-                        else
-                            progressTextview.setText(progress_value +"");
+                            value_of_max_price = null;
+                        }
+                        else{
+                            progressTextview.setText(String.valueOf(progress_value));
+                            value_of_max_price = String.valueOf(progress_value);
+                        }
                     }
                 });
+
+                builder.setView(extraview);
+                final AlertDialog showdialog = builder.create();
+                showdialog.show();
 
                 // ok return button
                 ok_button_at_extra.setOnClickListener(new View.OnClickListener() {
@@ -306,15 +330,14 @@ public class MainActivity extends AppCompatActivity {
 
                         editor.putString("travel_class", spinner_travel_class.getSelectedItem().toString());
                         editor.putString("adults_number", adutlsnumber.getSelectedItem().toString());
-                        editor.putString("max_price", progressTextview.getText().toString());
+                        editor.putString("nonstop", String.valueOf(nonstop_flight.isChecked()));
+                        editor.putString("max_price", value_of_max_price);
 
-                        // no stop flight
-                        if(nonstop_flight.isChecked())
-                            editor.putString("nonstop", "true");
-                        else
-                            editor.putString("nonstop", "false");
+                        Log.i("shrd", spinner_travel_class.getSelectedItem().toString() +" / "+
+                                adutlsnumber.getSelectedItem().toString() +" / " + progressTextview.getText().toString()
+                                    + " / " + String.valueOf(nonstop_flight.isChecked()));
+
                         editor.commit();
-
                         showdialog.dismiss();
                     }
                 });
@@ -334,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
     }
 
-    public void firstDateShowAtField(){
+    public void firstDateShowAtField() {
         final Calendar cal = Calendar.getInstance();
         departure_year = cal.get(Calendar.YEAR);
         departure_month = cal.get(Calendar.MONTH);
@@ -342,20 +365,6 @@ public class MainActivity extends AppCompatActivity {
         return_year = cal.get(Calendar.YEAR);
         return_month = cal.get(Calendar.MONTH);
         return_day = cal.get(Calendar.DAY_OF_MONTH);
-    }
-
-    private final void updatePreferences(){
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("travel_class", "economy");
-        editor.putString("adults_number", "1");
-        editor.putString("nonstop", "false");
-        editor.putString("currency", "USD");
-        editor.commit();
-
-        storeCurrency = sharedPreferences.getString("currency", "");
-        Log.i(getClass().toString(), "stored Currency: " + storeCurrency);
     }
 
     // Κανει Swap τα πεδία των αεροδρομιων

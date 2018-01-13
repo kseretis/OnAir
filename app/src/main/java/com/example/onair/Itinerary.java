@@ -71,4 +71,17 @@ public class Itinerary implements Serializable{
     public void setChange_penalties(Boolean change_penalties) {
         this.change_penalties = change_penalties;
     }
+
+    @Override
+    public String toString() {
+        return "Itinerary{" +
+                "outbound_list=" + outbound_list +
+                ", inbound_list=" + inbound_list +
+                ", total_price='" + total_price + '\'' +
+                ", total_fare='" + total_fare + '\'' +
+                ", tax='" + tax + '\'' +
+                ", refundable=" + refundable +
+                ", change_penalties=" + change_penalties +
+                '}';
+    }
 }

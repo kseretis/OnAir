@@ -43,6 +43,8 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
     public View getView(int position, @Nullable View view, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
+        Log.i(TAG, "pos: " + position);
+
         if(view == null){
             view = LayoutInflater.from(activityContext).inflate(R.layout.my_list_adapter_vol1, null);
             viewHolder = new ViewHolder();
@@ -55,21 +57,22 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
             viewHolder.price = (TextView) view.findViewById(R.id.price);
             viewHolder.airline_name = (TextView) view.findViewById(R.id.airline_name);
 
-            draw_data_from_flights(position);
-
-            viewHolder.departureTime.setText(depart_time);
-            viewHolder.origin_airport.setText(origin_airport);
-            viewHolder.arriveTime.setText(arrive_time);
-            viewHolder.destination_airport.setText(destination_airport);
-            viewHolder.airline_name.setText(the_airline);
-            viewHolder.direct.setText(direct);
-            viewHolder.price.setText(list.get(position).getTotal_price());
-
             view.setTag(viewHolder);
         }
-        else{
+        else
             viewHolder = (ViewHolder) view.getTag();
-        }
+
+        // call method to draw data
+        draw_data_from_flights(position);
+
+        viewHolder.departureTime.setText(depart_time);
+        viewHolder.origin_airport.setText(origin_airport);
+        viewHolder.arriveTime.setText(arrive_time);
+        viewHolder.destination_airport.setText(destination_airport);
+        viewHolder.airline_name.setText(the_airline);
+        viewHolder.direct.setText(direct);
+        viewHolder.price.setText(list.get(position).getTotal_price());
+
         return view;
     }
 
@@ -79,8 +82,6 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
 
     public void draw_data_from_flights(int position) {
 
-        Log.i(TAG, position + " /pos");
-
         flights = list.get(position).getOutbound_list();
         ArrayList<String> temp_airlines_list = new ArrayList<>();
 
@@ -88,12 +89,12 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
         for(int pos=0; pos<flights.size(); pos++) {
             flights.get(pos).setAirline_name(airlines.get(flights.get(pos).getOperating_airline()));
             temp_airlines_list.add(flights.get(pos).getAirline_name());
-            Log.i("airline name added", flights.get(pos).getAirline_name() + "");
+            //Log.i("airline name added", flights.get(pos).getAirline_name() + "");
         }
 
         //combination of airlines or just one airline
         HashSet<String> duplicate_set = new HashSet<String>(temp_airlines_list);
-        Log.i("duplicates ", duplicate_set.size() +" / "+ temp_airlines_list.size() +" / "+ flights.size());
+        //Log.i("duplicates ", duplicate_set.size() +" / "+ temp_airlines_list.size() +" / "+ flights.size());
         if(duplicate_set.size() < temp_airlines_list.size()){
             //there are duplicates
             if(duplicate_set.size() == 1)

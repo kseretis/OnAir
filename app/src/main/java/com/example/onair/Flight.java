@@ -109,4 +109,22 @@ public class Flight implements Serializable{
     public String getAirline_name() {
         return airline_name;
     }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "departs_at='" + departs_at + '\'' +
+                ", arrives_at='" + arrives_at + '\'' +
+                ", origin_airport='" + origin_airport + '\'' +
+                ", destination_airport='" + destination_airport + '\'' +
+                ", marketing_airline='" + marketing_airline + '\'' +
+                ", operating_airline='" + operating_airline + '\'' +
+                ", flight_number='" + flight_number + '\'' +
+                ", aircraft='" + aircraft + '\'' +
+                ", travel_class='" + travel_class + '\'' +
+                ", booking_code='" + booking_code + '\'' +
+                ", airline_name='" + airline_name + '\'' +
+                ", seats_remaining=" + seats_remaining +
+                '}';
+    }
 }
