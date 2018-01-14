@@ -40,13 +40,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> autoCompleteDropDownList_forLocationAirport = new ArrayList<String>();
-    ArrayList<String> autoCompleteDropDownList_forDestinationAirport = new ArrayList<String>();
+    ArrayList<String> autoCompleteDropDownList_forLocationAirport = new ArrayList<>();
+    ArrayList<String> autoCompleteDropDownList_forDestinationAirport = new ArrayList<>();
+    public static final String TAG = "MainActivity";
 
     // widget
     private Button SearchForFlightsBUTTON, ok_button_in_dialog, ok_button_at_extra;
@@ -60,10 +64,10 @@ public class MainActivity extends AppCompatActivity {
     public Spinner spinner_travel_class, adutlsnumber;
     public SeekBar seekBar_max_price;
 
-    private int departure_year,departure_month,departure_day, d_DIALOG_ID = 0;
-    private String departure_day_String, departure_month_String;
-    private int return_year,return_month, return_day, d_DIALOG_ID2 = 1;
-    private String return_day_String, return_month_String;
+    private int departure_year, departure_month, departure_day, return_year, return_month, return_day;
+    private int d_DIALOG_ID = 0, d_DIALOG_ID2 = 1;
+    private String departure_month_String, departure_day_String,
+                return_day_String, return_month_String;
     String value_of_max_price = null;
 
     @Override
@@ -76,8 +80,9 @@ public class MainActivity extends AppCompatActivity {
         castingWidgets();   //cast widgets
         Swap_location_and_destination_field();  //swap location and destination field
         Clear_Dates();  //clear dates
+        DecimalFormat formatter = new DecimalFormat("00");
         firstDateShowAtField(); //Για το dialog βγάζει σαν πρώτη φορά την σημερινή ημερομίνια
-        departureDate.setHint(departure_day +"/"+ departure_month +"/"+ departure_year);
+        departureDate.setHint(departure_day +"/"+ formatter.format(departure_month + 1 )+"/"+ departure_year);
 
         //Άνοιγμα ημερολόγιου και επιλογή μέρας
         showDialogOnButtonClickForDates();
@@ -359,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
         clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
         returnDate = (EditText) findViewById(R.id.returnDate);
         clearReturnDateField = (ImageView) findViewById(R.id.removeDate2);
-        SearchForFlightsBUTTON = (Button) findViewById(R.id.button);
+        SearchForFlightsBUTTON = (Button) findViewById(R.id.search_image);
     }
 
     public void firstDateShowAtField() {
@@ -401,9 +406,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Call_Next_Activity(){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        Date date_one = null, date_two = null;
+        try{
+            date_one = format.parse(departureDate.getText().toString());
+            if(!returnDate.getText().toString().equals("")){
+                date_two = format.parse(returnDate.getText().toString());
+                Log.i("de-dates", date_one.toString() + " -- " + date_two.toString());
+            }
+            Log.i("de-date", date_one.toString());
+        }
+        catch (ParseException  e){
+            Log.e(TAG, "error at dates formats");
+        }
 
-        if (locationfield.equals("") || destinationfield.equals("") || departureDate.getText().toString().equals(""))
+        if (locationfield.getText().toString().equals("") || destinationfield.getText().toString().equals("") || departureDate.getText().toString().equals("")){
+            Log.i(TAG, "Empty required fields");
             Toast.makeText(getApplicationContext(), "Fill the required fields!", Toast.LENGTH_LONG).show();
+        }
         else{
             //εαν το κουμπι για την επιστροφη έχει το αρχικο κειμενο τοτε κανει τα παρακατω και ψάχνει πτησεις χωρις επιστροφη
             if (returnDate.getText().toString().equals("")) {
@@ -416,8 +436,12 @@ public class MainActivity extends AppCompatActivity {
 
                 startActivity(intent);
             }
-            //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη
-            else {
+            //αλλιως αμα έχει βαλει ο χρηστης μια ημερομηνια επιστροφης ψαχνει πτησεις και για επιστροφη αφου ελένξει την ορθοτητα της
+            else if(date_one.after(date_two)) {
+                Log.i(TAG, "Departure date is after return date");
+                Toast.makeText(getApplicationContext(), "Departure date is after return date!", Toast.LENGTH_LONG).show();
+            }
+            else{
                 Intent intent = new Intent(MainActivity.this, Http_Request_Activity_With_Return.class);
                 intent.putExtra("loctown", locationfield.getText().toString());
                 intent.putExtra("destown", destinationfield.getText().toString());

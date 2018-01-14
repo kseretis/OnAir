@@ -146,7 +146,8 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:clickable="true"
-        android:id="@+id/show_more_layout">
+        android:id="@+id/show_more_layout"
+        android:layout_marginTop="10dp">
 
         <ImageView
             android:layout_marginStart="-10dp"
@@ -164,14 +165,42 @@
 
     </LinearLayout>
 
-    <Button
-        android:layout_marginTop="15dp"
-        android:text="Search for flights"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textColor="#FC6D45"
-        android:textAllCaps="false"
-        android:id="@+id/button"
-        android:layout_gravity="center" />
+    <!--TODO framelayout.. add fragment for seats -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/search_image"
+            android:layout_gravity="bottom"
+            android:layout_toStartOf="@+id/search_image"
+            android:paddingRight="10dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/search_white" />
+
+        <Button
+            android:id="@+id/search_image"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="30dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:text="Search for flights"
+            android:textAllCaps="false"
+            android:textSize="30dp"
+            android:textStyle="italic" />
+
+    </RelativeLayout>
+
 </LinearLayout>

@@ -92,13 +92,22 @@ public class Fragment_stops extends Fragment {
 
         //departure
         departure_time = list.get(list_position).getDeparts_at().substring(11);
-        departure_date = list.get(list_position).getDeparts_at().substring(0,10);
+        SimpleDateFormat formatter_before = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter_after = new SimpleDateFormat("dd-MM-yyyy");
+        String depart_date_after = null, arrive_date_after = null, prev_depart_date_after = null;
+        try{
+            depart_date_after = formatter_after.format(formatter_before.parse(list.get(list_position).getDeparts_at().substring(0,10)));
+            arrive_date_after = formatter_after.format(formatter_before.parse(list.get(list_position).getArrives_at().substring(0,10)));
+            prev_depart_date_after = formatter_after.format(formatter_before.parse(list.get(list_position -1).getArrives_at().substring(0,10)));
+        }catch (ParseException e){
+        }
+        departure_date = depart_date_after;
 
         //arrive
         arrive_time = list.get(list_position).getArrives_at().substring(11);
-        arrive_date = list.get(list_position).getArrives_at().substring(0,10);
+        arrive_date = arrive_date_after;
         previous_arrive_time = list.get(list_position -1).getArrives_at().substring(11);
-        previous_arrive_date = list.get(list_position -1).getArrives_at().substring(0,10);
+        previous_arrive_date = prev_depart_date_after;
 
         //airline name
         airline_name = list.get(list_position).getAirline_name();

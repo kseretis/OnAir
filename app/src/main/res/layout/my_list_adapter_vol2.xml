@@ -57,8 +57,15 @@
             android:id="@+id/origin_airport_togo"/>
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:layout_marginLeft="15dp"
+            android:text=" - "
+            android:layout_marginLeft="10dp"/>
+
+        <TextView
+            android:textSize="18dp"
+            android:layout_marginLeft="10dp"
             android:id="@+id/arriveTime_togo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -73,7 +80,7 @@
 
         <TextView
             android:id="@+id/direct_togo"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="20dp"
             android:textSize="15dp"
             android:textColor="#5F8AFF"
             android:layout_gravity="center"
@@ -110,8 +117,15 @@
             android:id="@+id/origin_airport_return"/>
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:layout_marginLeft="15dp"
+            android:text=" - "
+            android:layout_marginLeft="10dp"/>
+
+        <TextView
+            android:textSize="18dp"
+            android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/arriveTime_return"/>
@@ -126,7 +140,7 @@
 
         <TextView
             android:id="@+id/direct_return"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="20dp"
             android:textSize="15dp"
             android:textColor="#5F8AFF"
             android:layout_gravity="center"

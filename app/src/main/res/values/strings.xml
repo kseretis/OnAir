@@ -87,6 +87,8 @@
         <item>2C</item>
         <item>HV</item>
         <item>TD</item>
+        <item>QR</item>
+        <item>CA</item>
     </string-array>
 
     <string-array name="airline_names">
@@ -148,6 +150,8 @@
         <item>SNCF</item>
         <item>Transavia Holland</item>
         <item>Atlantis European Airways</item>
+        <item>Qatar</item>
+        <item>AIR CHINA INTERNATIONAL</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

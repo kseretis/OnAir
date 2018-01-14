@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Fragment_end extends Fragment {
@@ -53,6 +55,14 @@ public class Fragment_end extends Fragment {
 
         //arrive
         arrive_time = list.get(list.size() - 1).getArrives_at().substring(11);
-        arrive_date = list.get(list.size() - 1).getArrives_at().substring(0,10);
+        SimpleDateFormat formatter_before = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter_after = new SimpleDateFormat("dd-MM-yyyy");
+        String date_after = null;
+        try{
+            date_after = formatter_after.format(formatter_before.parse(list.get(list.size() - 1).getArrives_at().substring(0,10)));
+            Log.i("swap", date_after);
+        }catch (ParseException e){
+        }
+        arrive_date = date_after;
     }
 }

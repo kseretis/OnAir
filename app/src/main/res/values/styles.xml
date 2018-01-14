@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <item name="colorAccent">#303030</item>
+        <item name="colorButtonNormal">#acacac</item>
         <item name="android:datePickerStyle">@style/MyDatePickerStyle</item>
     </style>
 

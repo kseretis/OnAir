@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Fragment_start extends Fragment {
 
@@ -68,7 +71,15 @@ public class Fragment_start extends Fragment {
 
         //departure
         departure_time = list.get(position).getDeparts_at().substring(11);
-        departure_date = list.get(position).getDeparts_at().substring(0,10);
+        SimpleDateFormat formatter_before = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter_after = new SimpleDateFormat("dd-MM-yyyy");
+        String date_after = null;
+        try{
+            date_after = formatter_after.format(formatter_before.parse(list.get(position).getDeparts_at().substring(0,10)));
+            Log.i("swap", date_after);
+        }catch (ParseException e){
+        }
+        departure_date = date_after;
 
         //airline name
         airline_name = list.get(position).getAirline_name();

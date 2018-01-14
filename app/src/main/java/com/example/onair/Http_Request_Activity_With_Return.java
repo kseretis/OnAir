@@ -84,6 +84,8 @@ public class Http_Request_Activity_With_Return extends AppCompatActivity {
 
         // set title
         setTitle(travelClass_forAPI + " | adults: " + adults_forAPI);
+        if(travelClass_forAPI == null && adults_forAPI == null)
+            setTitle("Economy | adults: 1");
 
         new JSONTaskR().execute();
     }

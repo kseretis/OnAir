@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManagerFactory;
 
+import static android.view.View.GONE;
+
 public class Details_activity extends AppCompatActivity {
 
     public static String storeCurrency;
@@ -53,6 +57,7 @@ public class Details_activity extends AppCompatActivity {
     Itinerary itinerary;
     TextView from_to, refundable, penalty;
     Button buy;
+    ProgressBar loadingbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
