@@ -63,9 +63,6 @@ public class Details_activity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         storeCurrency = sharedPreferences.getString("currency", "");
 
-        // set activity name
-        setTitle("Details");
-
         // cast
         from_to = (TextView) findViewById(R.id.from_to);
         refundable = (TextView) findViewById(R.id.refundable_single);

@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                             value_of_max_price = null;
                         }
                         else{
-                            progressTextview.setText(String.valueOf(progress_value));
+                            progressTextview.setText(progress_value +"");
                             value_of_max_price = String.valueOf(progress_value);
                         }
                     }
@@ -336,6 +336,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("shrd", spinner_travel_class.getSelectedItem().toString() +" / "+
                                 adutlsnumber.getSelectedItem().toString() +" / " + progressTextview.getText().toString()
                                     + " / " + String.valueOf(nonstop_flight.isChecked()));
+                        Toast.makeText(MainActivity.this, "Travel class: "+ spinner_travel_class.getSelectedItem().toString()
+                                                                    +"\nAdults: "+ adutlsnumber.getSelectedItem().toString()
+                                                                    +"\nDirect: "+ String.valueOf(nonstop_flight.isChecked()
+                                                                    +"\nMax price: "+  progressTextview.getText().toString()),
+                                                                Toast.LENGTH_LONG).show();
 
                         editor.commit();
                         showdialog.dismiss();

@@ -50,7 +50,7 @@ public class Http_Request_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http__request_);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         listView = (ListView) findViewById(R.id.list);
 
@@ -68,7 +68,6 @@ public class Http_Request_Activity extends AppCompatActivity {
         departure_year = getIntent().getIntExtra("d_year", 0);
         departure_month_String = getIntent().getStringExtra("d_month");
         departure_day_String = getIntent().getStringExtra("d_day");
-        setTitle(departureDate_forAPI);
 
         //get currency from sharedpreferences from settings and main activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -82,7 +81,7 @@ public class Http_Request_Activity extends AppCompatActivity {
         departureDate_forAPI = departure_year + "-" + departure_month_String + "-" + departure_day_String;
 
         // set title
-        setTitle("adults: " + adults_forAPI + "| " + travelClass_forAPI);
+        setTitle(travelClass_forAPI + " | adults: " + adults_forAPI);
 
         new JSONTask().execute();
     }

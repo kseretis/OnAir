@@ -49,9 +49,6 @@ public class Details_activity_with_return extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         storeCurrency = sharedPreferences.getString("currency", "");
 
-        // set activity name
-        setTitle("Details");
-
         // cast
         from_to = (TextView) findViewById(R.id.from_to_togo);
         from_to_return = (TextView) findViewById(R.id.from_to_return);

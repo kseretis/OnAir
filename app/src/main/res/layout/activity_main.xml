@@ -7,16 +7,8 @@
     android:layout_height="match_parent"
     tools:context="com.example.onair.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="20dp"
-        android:paddingTop="10dp"
-        android:text="Origin and Destination Airports"
-        android:textColor="#000000"/>
-
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

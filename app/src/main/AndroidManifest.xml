@@ -40,7 +40,9 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Details_activity">
+        <activity
+            android:name=".Details_activity"
+            android:label="Details">
             <intent-filter>
                 <action android:name="com.example.onair.Details_activity" />
 
@@ -56,7 +58,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Details_activity_with_return">
+        <activity
+            android:name=".Details_activity_with_return"
+            android:label="Details">
             <intent-filter>
                 <action android:name="com.example.onair.Details_activity_with_return" />
 

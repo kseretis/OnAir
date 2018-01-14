@@ -8,9 +8,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:text="Extra choices"
-        android:textSize="30dp"/>
+        android:textSize="25dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -85,24 +85,27 @@
         <TextView
             android:text="Maximum price: "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"/>
 
         <TextView
             android:text="none"
+            android:textSize="17dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:id="@+id/progressTextview" />
 
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/seekBarForPrice"
-            android:max="2950"/>
-
     </LinearLayout>
 
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBarForPrice"
+        android:max="2950"/>
+
     <Button
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OK"
