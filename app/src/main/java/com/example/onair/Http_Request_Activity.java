@@ -281,7 +281,7 @@ public class Http_Request_Activity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "All prices shown are in Euro (EUR)", Toast.LENGTH_LONG).show();
         else if(id == R.id.pounds)
             Toast.makeText(getApplicationContext(), "All prices shown are in Pounds (GBP)", Toast.LENGTH_LONG).show();
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 }
 
