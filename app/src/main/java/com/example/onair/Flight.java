@@ -7,6 +7,7 @@ public class Flight implements Serializable{
     private String departs_at, arrives_at, origin_airport, destination_airport, marketing_airline, operating_airline, flight_number, aircraft,
             travel_class, booking_code, airline_name;
     private int seats_remaining;
+    private Airport_info airport_info;
 
     //empty constructor
     public Flight() {
@@ -61,6 +62,10 @@ public class Flight implements Serializable{
         this.airline_name = airline_name;
     }
 
+    public Airport_info getAirport_info() {
+        return airport_info;
+    }
+
     // getters
     public String getDeparts_at() {
         return departs_at;
@@ -108,6 +113,10 @@ public class Flight implements Serializable{
 
     public String getAirline_name() {
         return airline_name;
+    }
+
+    public void setAirport_info(Airport_info airport_info) {
+        this.airport_info = airport_info;
     }
 
     @Override

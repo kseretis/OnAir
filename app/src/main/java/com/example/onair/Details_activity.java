@@ -1,6 +1,5 @@
 package com.example.onair;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,10 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,32 +18,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.TrustManagerFactory;
-
-import static android.view.View.GONE;
 
 public class Details_activity extends AppCompatActivity {
 
@@ -57,7 +37,9 @@ public class Details_activity extends AppCompatActivity {
     Itinerary itinerary;
     TextView from_to, refundable, penalty;
     Button buy;
-    ProgressBar loadingbar;
+    Airport_info airport_info;
+    ArrayList<Airport_info> airport_info_list = new ArrayList<>();
+    private String finalJsonString = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,23 +56,22 @@ public class Details_activity extends AppCompatActivity {
         penalty = (TextView) findViewById(R.id.penalty_single) ;
         buy = (Button) findViewById(R.id.buy);
 
-        Moves();
-    }
-
-    public void Moves(){
-
         // get extra from intent
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         itinerary = (Itinerary) bundle.getSerializable("itinerary");
 
-        //set airports name
+        Moves();
+    }
+
+
+    public void Moves(){
+
+        // set departure and destination airports infos
         try {
-            origin_name = new call_api_for_cities(itinerary.getOutbound_list().get(0).getOrigin_airport()).execute().get();
-            Log.i(TAG, origin_name +"");
-            destination_name = new call_api_for_cities(itinerary.getOutbound_list().get(
-                    itinerary.getOutbound_list().size() -1).getDestination_airport()).execute().get();
-            Log.i(TAG, destination_name +"");
+            origin_name = new take_the_json_file(itinerary.getOutbound_list().get(0), false).execute().get();
+            destination_name = new take_the_json_file(itinerary.getOutbound_list().get(
+                    itinerary.getOutbound_list().size() - 1), true).execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -99,9 +80,13 @@ public class Details_activity extends AppCompatActivity {
 
         from_to.setText(origin_name + " - " + destination_name);
 
+        // search for others city names in background
+        background_airport_info_search();
+
         // create bundle to parse data to fragments
         Bundle fragment_bundle_start = new Bundle();
         fragment_bundle_start.putSerializable("outbound_list", itinerary.getOutbound_list());
+        fragment_bundle_start.putSerializable("airport_info_list", airport_info_list);
 
         // create first fragment (start)
         Fragment_start fragment_start = new Fragment_start();
@@ -125,6 +110,7 @@ public class Details_activity extends AppCompatActivity {
             Bundle fragment_bundle_stops = new Bundle();
             fragment_bundle_stops.putSerializable("outbound_list", itinerary.getOutbound_list());
             fragment_bundle_stops.putInt("list_position", 1);
+            fragment_bundle_stops.putSerializable("airport_info_list", airport_info_list);
 
             // create middle fragment (stops)
             Fragment_stops fragment_stops = new Fragment_stops();
@@ -140,6 +126,7 @@ public class Details_activity extends AppCompatActivity {
                 Bundle fragment_bundle_stops2 = new Bundle();
                 fragment_bundle_stops2.putSerializable("outbound_list", itinerary.getOutbound_list());
                 fragment_bundle_stops2.putInt("list_position", 2);
+                fragment_bundle_stops2.putSerializable("airport_info_list", airport_info_list);
 
                 //create second mid part frame layout if needed
                 Fragment_stops fragment_stops2 = new Fragment_stops();
@@ -165,61 +152,98 @@ public class Details_activity extends AppCompatActivity {
 
     }
 
-    public class call_api_for_cities extends AsyncTask<Void, Void, String> {
-        String iata_code;
-        String name;
+    public class take_the_json_file extends AsyncTask<Flight, Void, String>{
 
-        public call_api_for_cities(String iata_code) {
-            this.iata_code = iata_code;
+        Flight flight;
+        String iata_code;
+        String city = null;
+        public take_the_json_file(Flight flight, boolean dest_bool){
+            this.flight = flight;
+            iata_code = flight.getOrigin_airport();
+            //if true is the destination airport
+            if(dest_bool)
+                iata_code = flight.getDestination_airport();
         }
 
         @Override
-        protected String doInBackground(Void... voids) {
+        protected String doInBackground(Flight... flights) {
             HttpsURLConnection connection = null;
             BufferedReader reader = null;
+            URL url = null;
 
-            try{
-                final String baseUrl = "https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json";
+            try {
+                if(finalJsonString == null){
+                    final String baseUrl = "https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json";
+                    Uri buildUri = Uri.parse(baseUrl).buildUpon().build();
 
-                Uri buildUri = Uri.parse(baseUrl).buildUpon().build();
+                    Log.i(TAG, buildUri.toString());
+                    Log.i(TAG, "connected...");
 
-                Log.i(getClass().toString(), buildUri.toString());
-                URL url = new URL(buildUri.toString());
+                    url = new URL(buildUri.toString());
+                    connection = (HttpsURLConnection) url.openConnection();
+                    connection.connect();
 
-                connection = (HttpsURLConnection) url.openConnection();
-                connection.connect();
+                    InputStream stream = connection.getInputStream();
 
-                InputStream stream = connection.getInputStream();
+                    reader = new BufferedReader(new InputStreamReader(stream));
 
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
+                    StringBuffer buffer = new StringBuffer();
+                    String line = "";
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line);
+                    }
+                    finalJsonString = buffer.toString();
                 }
+                // fill the airports info
+                JSONArray parentArray = new JSONArray(finalJsonString);
 
-                String finalJSon = buffer.toString();
-                JSONArray parentArray = new JSONArray(finalJSon);
                 Log.i("iata code: ", iata_code);
-                for(int i=0; i<parentArray.length(); i++){
-                    JSONObject item = parentArray.getJSONObject(i);
+
+                for (int i = 0; i < parentArray.length(); i++) {
+                    JSONObject item = null;
+
+                    item = parentArray.getJSONObject(i);
+
                     String code = item.getString("code");
-                    if(code.equals(iata_code)){
-                        name = item.getString("city");
+                    if (code.equals(iata_code)) {
+                        airport_info = new Airport_info();
+
+                        airport_info.setCode(code);
+                        airport_info.setAirport_name(item.getString("name"));
+                        airport_info.setCity(item.getString("city"));
+                        airport_info.setCountry(item.getString("country"));
+                        city = airport_info.getCity();
+
+                        Log.i("info", airport_info.getCode() + " / " + airport_info.getAirport_name() + " / " + airport_info.getCity()
+                                + " / " + airport_info.getCountry());
+
+                        flight.setAirport_info(airport_info);
+                        airport_info_list.add(airport_info);
                         break;
                     }
                 }
-                Log.i(TAG, "city name: " + name);
-            }
-            catch (MalformedURLException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return name;
+            return city;
+        }
+    }
+
+    public void background_airport_info_search(){
+
+        for(Flight fl: itinerary.getOutbound_list()) {
+            Log.i("Airport infos for ", fl.getOrigin_airport());
+            try {
+                String useless = new take_the_json_file(fl, false).execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 

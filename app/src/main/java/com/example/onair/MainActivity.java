@@ -24,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -53,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     // widget
-    private Button SearchForFlightsBUTTON, ok_button_in_dialog, ok_button_at_extra;
+    private Button ok_button_in_dialog, ok_button_at_extra;
     private EditText departureDate, returnDate;
     private AutoCompleteTextView locationfield_in_dialog, destinationfield_in_dialog;
     private EditText  locationfield, destinationfield;
     private Switch nonstop_flight;
     private TextView progressTextview;
     private ImageView swap_image_button, clearDepartureDateField, clearReturnDateField;
-    private LinearLayout show_more_layout;
+    private LinearLayout show_more_layout, clear_filter_layout, search_for_flights_layout;
     public Spinner spinner_travel_class, adutlsnumber;
     public SeekBar seekBar_max_price;
 
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         show_more_layout = (LinearLayout) findViewById(R.id.show_more_layout);
+        clear_filter_layout = (LinearLayout) findViewById(R.id.clear_filter_layout);
+        search_for_flights_layout = (LinearLayout) findViewById(R.id.search_for_flights_layout);
 
         castingWidgets();   //cast widgets
         Swap_location_and_destination_field();  //swap location and destination field
@@ -104,7 +107,10 @@ public class MainActivity extends AppCompatActivity {
         //pop up dialog for extra choices
         popupDialogForExtraChoices();
 
-        SearchForFlightsBUTTON.setOnClickListener(new View.OnClickListener() {
+        //clear preferences;
+        clear_filter();
+
+        search_for_flights_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Call_Next_Activity();
@@ -356,6 +362,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void clear_filter(){
+
+        clear_filter_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = getSharedPreferences("MyData", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("travel_class", null);
+                editor.putString("adults_number", null);
+                editor.putString("nonstop", null);
+                editor.putString("max_price", null);
+                editor.commit();
+
+                Log.i(TAG, "Users preferences cleared");
+                Toast.makeText(MainActivity.this, "Filter is clear!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public void castingWidgets() {
         locationfield = (EditText) findViewById(R.id.locationfield);
         destinationfield = (EditText) findViewById(R.id.destinationfield);
@@ -364,7 +389,6 @@ public class MainActivity extends AppCompatActivity {
         clearDepartureDateField = (ImageView) findViewById(R.id.removeDate1);
         returnDate = (EditText) findViewById(R.id.returnDate);
         clearReturnDateField = (ImageView) findViewById(R.id.removeDate2);
-        SearchForFlightsBUTTON = (Button) findViewById(R.id.search_image);
     }
 
     public void firstDateShowAtField() {
@@ -480,8 +504,13 @@ public class MainActivity extends AppCompatActivity {
     public Dialog onCreateDialog(int id){
         if(id == d_DIALOG_ID)
             return new DatePickerDialog(this, daypickerlistener, departure_year, departure_month, departure_day);
-        else if(id == d_DIALOG_ID2)
+        else if(id == d_DIALOG_ID2){
+            if(!departureDate.getText().toString().equals("")){
+                return new DatePickerDialog(this, daypickerlistener2, departure_year, departure_month, departure_day);
+                // if departureDate is completed then this calenadar starting day is the day that the user choose to leave
+            }
             return new DatePickerDialog(this, daypickerlistener2, return_year, return_month, return_day);
+        }
         return null;
     }
     private DatePickerDialog.OnDateSetListener daypickerlistener =
@@ -492,9 +521,10 @@ public class MainActivity extends AppCompatActivity {
                     departure_year = year;
                     departure_month = month+ 1;
                     departure_month_String = formatter.format(departure_month);
-                    departure_day = 0 + day;
+                    departure_day = day;
                     departure_day_String = formatter.format(departure_day);
-                    departureDate.setText(departure_day_String +"/"+ departure_month_String +"/"+ departure_year);
+                    String temp_date = departure_day_String +"/"+ departure_month_String +"/"+ departure_year;
+                    departureDate.setText(temp_date);
                 }
             };
     private DatePickerDialog.OnDateSetListener daypickerlistener2 =
@@ -505,9 +535,10 @@ public class MainActivity extends AppCompatActivity {
                     return_year = year;
                     return_month = month+ 1;
                     return_month_String = formatter.format(return_month);
-                    return_day = 0 + day;
+                    return_day = day;
                     return_day_String = formatter.format(return_day);
-                    returnDate.setText(return_day_String +"/"+ return_month_String +"/"+ return_year);
+                    String temp_date = return_day_String +"/"+ return_month_String +"/"+ return_year ;
+                    returnDate.setText(temp_date);
                 }
             };
 

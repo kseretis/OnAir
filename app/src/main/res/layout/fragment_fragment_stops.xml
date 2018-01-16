@@ -22,6 +22,7 @@
             android:layout_gravity="center"
             android:textSize="20dp"
             android:text="ath"
+            android:clickable="true"
             android:id="@+id/destination_airport_start"/>
 
         <View
@@ -114,6 +115,7 @@
             android:layout_gravity="center"
             android:textSize="20dp"
             android:text="skg"
+            android:clickable="true"
             android:id="@+id/origin_airport_stops"/>
 
         <View

@@ -102,11 +102,11 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
 
         // temp 1
         ArrayList<String> temp_airlines_list = new ArrayList<>();
-        // set airline name at all flights
+        // set airline city at all flights
         for(int pos=0; pos<flights_togo.size(); pos++) {
             flights_togo.get(pos).setAirline_name(airlines.get(flights_togo.get(pos).getOperating_airline()));
             temp_airlines_list.add(flights_togo.get(pos).getAirline_name());
-            Log.i("airline name added", flights_togo.get(pos).getAirline_name() + "");
+            Log.i("airline city added", flights_togo.get(pos).getAirline_name() + "");
         }
 
         // temp 2
@@ -114,10 +114,10 @@ public class myListAdapter_vol2_return extends ArrayAdapter<Itinerary> {
         for(int pos=0; pos<flights_return.size(); pos++){
             flights_return.get(pos).setAirline_name(airlines.get(flights_return.get(pos).getOperating_airline()));
             temp_airlines_list2.add(flights_return.get(pos).getAirline_name());
-            Log.i("airline name added", flights_return.get(pos).getAirline_name() + "");
+            Log.i("airline city added", flights_return.get(pos).getAirline_name() + "");
         }
 
-        // set airline name or combination
+        // set airline city or combination
         the_airline = set_airline_name(temp_airlines_list, temp_airlines_list2);
         Log.i(TAG, the_airline +"");
 

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Time;
 import java.text.ParseException;
@@ -25,6 +26,7 @@ public class Fragment_stops extends Fragment {
     private String origin_airport, departure_time, destination_airport, arrive_time,
             airline_name, flight_number, aircraft, travel_class, departure_date, arrive_date,
             previous_destination_airport, previous_arrive_time, previous_arrive_date, seats, waiting_time;
+    ArrayList<Airport_info> airport_info_list;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +37,8 @@ public class Fragment_stops extends Fragment {
 
         list = (ArrayList<Flight>) getArguments().getSerializable("outbound_list");
         list_position = getArguments().getInt("list_position");
+        airport_info_list = (ArrayList<Airport_info>) getArguments().getSerializable("airport_info_list");
+
         viewHolder = new ViewHolder();
 
         // initialize widgets
@@ -75,6 +79,32 @@ public class Fragment_stops extends Fragment {
         viewHolder.seats.setText(seats);
         viewHolder.waiting_time.setText(waiting_time);
 
+        // airport setOnClick details
+        viewHolder.previous_destination_airport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(Airport_info ai: airport_info_list){
+                    if(ai.getCode().equals(previous_destination_airport)){
+                        Toast.makeText(getActivity(), "Airport: "+ ai.getAirport_name() +
+                                "\nCity: "+ ai.getCity() +
+                                "\nCountry: "+ ai.getCountry(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+        viewHolder.origin_airport_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(Airport_info ai: airport_info_list){
+                    if(ai.getCode().equals(origin_airport)){
+                        Toast.makeText(getActivity(), "Airport: "+ ai.getAirport_name() +
+                                "\nCity: "+ ai.getCity() +
+                                "\nCountry: "+ ai.getCountry(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -109,7 +139,7 @@ public class Fragment_stops extends Fragment {
         previous_arrive_time = list.get(list_position -1).getArrives_at().substring(11);
         previous_arrive_date = prev_depart_date_after;
 
-        //airline name
+        //airline city
         airline_name = list.get(list_position).getAirline_name();
 
         //more

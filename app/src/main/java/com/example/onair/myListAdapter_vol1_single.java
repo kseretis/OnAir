@@ -85,11 +85,11 @@ public class myListAdapter_vol1_single extends ArrayAdapter<Itinerary> {
         flights = list.get(position).getOutbound_list();
         ArrayList<String> temp_airlines_list = new ArrayList<>();
 
-        // set airline name at all flights
+        // set airline city at all flights
         for(int pos=0; pos<flights.size(); pos++) {
             flights.get(pos).setAirline_name(airlines.get(flights.get(pos).getOperating_airline()));
             temp_airlines_list.add(flights.get(pos).getAirline_name());
-            //Log.i("airline name added", flights.get(pos).getAirline_name() + "");
+            //Log.i("airline city added", flights.get(pos).getAirline_name() + "");
         }
 
         //combination of airlines or just one airline

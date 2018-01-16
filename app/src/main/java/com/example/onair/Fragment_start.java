@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Fragment_start extends Fragment {
 
@@ -20,6 +22,7 @@ public class Fragment_start extends Fragment {
     public static final String TAG = "Fragment_start";
     private String origin_airport, departure_time,  airline_name, flight_number, aircraft,
             travel_class, departure_date, seats;
+    ArrayList<Airport_info> airport_info_list;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,6 +32,8 @@ public class Fragment_start extends Fragment {
         Log.i(TAG, "started");
 
         list = (ArrayList<Flight>) getArguments().getSerializable("outbound_list");
+        airport_info_list = (ArrayList<Airport_info>) getArguments().getSerializable("airport_info_list");
+
         viewHolder = new ViewHolder();
 
         viewHolder.origin_airport_detail = (TextView) view.findViewById(R.id.origin_airport_start);
@@ -56,6 +61,20 @@ public class Fragment_start extends Fragment {
         viewHolder.travel_class.setText(travel_class);
         viewHolder.seats.setText(seats);
 
+        // airport setOnClick details
+        viewHolder.origin_airport_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(Airport_info ai: airport_info_list){
+                    if(ai.getCode().equals(origin_airport)){
+                        Toast.makeText(getActivity(), "Airport: "+ ai.getAirport_name() +
+                                                    "\nCity: "+ ai.getCity() +
+                                                    "\nCountry: "+ ai.getCountry(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -81,7 +100,7 @@ public class Fragment_start extends Fragment {
         }
         departure_date = date_after;
 
-        //airline name
+        //airline city
         airline_name = list.get(position).getAirline_name();
 
         //more

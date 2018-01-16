@@ -23,6 +23,7 @@
             android:layout_gravity="center"
             android:textSize="20dp"
             android:text="ath"
+            android:clickable="true"
             android:id="@+id/destination_airport_end"/>
 
         <View
