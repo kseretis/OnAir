@@ -1,1 +1,1 @@
-An Android application made for academic purpose. It designed to look for flights tickets using an API ke
+An Android application which was made for academic purposes. The app designed to look for flight tickets and pumping information from a well-known company using an API key.
