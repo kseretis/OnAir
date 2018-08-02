@@ -1,1 +1,1 @@
-Its an android application. It has been developing for academic purpose. Its looking for flights with the help of an API key
+An Android application made for academic purpose. It designed to look for flights tickets using an API ke
